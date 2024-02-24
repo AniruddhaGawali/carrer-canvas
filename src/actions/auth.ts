@@ -108,7 +108,7 @@ export async function signUp(
   signIn("credentials", {
     email,
     password,
-    redirect: false,
+    redirect: true,
     callbackUrl: "/",
   });
 

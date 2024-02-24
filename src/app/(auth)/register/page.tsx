@@ -20,7 +20,7 @@ const Register = (props: Props) => {
   const { data: session } = useSession();
 
   if (session) {
-    redirect("/dashboard");
+    redirect("/");
   }
 
   const [credentialsFormState, credentialsFormStateAction] = useFormState(
