@@ -4,7 +4,7 @@ import LoginForm from "@/components/forms/loginForm";
 import { Button } from "@/components/ui/button";
 import { Github } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { use } from "react";
 import { BsGoogle } from "react-icons/bs";
 import * as actions from "@/actions";
 import { toast } from "sonner";
@@ -17,7 +17,7 @@ const Login = (props: Props) => {
   const { data: session } = useSession();
 
   if (session) {
-    redirect("/dashboard");
+    redirect("/");
   }
 
   return (
@@ -29,12 +29,12 @@ const Login = (props: Props) => {
 
       <form
         className="mt-8 flex w-full flex-col items-center gap-5"
-        // action={async (formData: FormData) => {
-        // //   const { error } = await actions.loginFromCredentials(formData);
-        //   if (error) {
-        //     toast.error(error);
-        //   }
-        // }}
+        action={async (formData: FormData) => {
+          const { error, user } = await actions.loginFromCredentials(formData);
+          if (error) {
+            toast.error(error);
+          }
+        }}
       >
         <LoginForm />
       </form>

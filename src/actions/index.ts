@@ -1,1 +1,7 @@
-export { loginFromGoogle, loginFromGithub, logOut } from './auth';
+export {
+  loginFromGoogle,
+  loginFromGithub,
+  loginFromCredentials,
+  signUp,
+  logOut,
+} from "./auth";

@@ -23,18 +23,18 @@ const Register = (props: Props) => {
     redirect("/dashboard");
   }
 
-  //   const [credentialsFormState, credentialsFormStateAction] = useFormState(
-  //     actions.registerFromCredentials,
-  //     {
-  //       message: "",
-  //     },
-  //   );
+  const [credentialsFormState, credentialsFormStateAction] = useFormState(
+    actions.signUp,
+    {
+      message: "",
+    },
+  );
 
-  //   useEffect(() => {
-  //     if (credentialsFormState.message != "") {
-  //       toast.error(credentialsFormState.message);
-  //     }
-  //   }, [credentialsFormState.message]);
+  useEffect(() => {
+    if (credentialsFormState.message != "") {
+      toast.error(credentialsFormState.message);
+    }
+  }, [credentialsFormState]);
 
   return (
     <section className="mt-32 flex w-[90%] flex-col items-start rounded-lg bg-background p-10 shadow-lg sm:w-[75%] md:mt-10 md:h-[80%] md:w-[30%] md:min-w-[500px]">
@@ -46,7 +46,7 @@ const Register = (props: Props) => {
       </div>
 
       <form
-        // action={credentialsFormStateAction}
+        action={credentialsFormStateAction}
         className="mt-8 flex w-full flex-col items-center gap-5"
       >
         <RegisterForm />
