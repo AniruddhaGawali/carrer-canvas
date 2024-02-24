@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 
-import { getYourResume } from '@/data/step';
+import { getYourResume } from "@/data/slider";
 
-import Footer from '@/components/footer';
-import Navbar from '@/components/navbar';
-import HeroSection from '@/components/hero';
+import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
+import HeroSection from "@/components/hero";
 
 import {
   Carousel,
@@ -15,11 +15,11 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from '@/components/ui/carousel';
+} from "@/components/ui/carousel";
 
-import { type CarouselApi } from '@/components/ui/carousel';
-import { gsap } from 'gsap';
-import { useGSAP } from '@gsap/react';
+import { type CarouselApi } from "@/components/ui/carousel";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 
 export default function Home() {
   // this is the state for the carousel current step
@@ -40,7 +40,7 @@ export default function Home() {
       return;
     }
 
-    api.on('select', () => {
+    api.on("select", () => {
       setSelectStep(api.selectedScrollSnap());
     });
     api.scrollTo(selectStep);
@@ -56,10 +56,10 @@ export default function Home() {
         opacity: 0,
         duration: 0.5,
         scrollTrigger: {
-          start: 'top 80%',
+          start: "top 80%",
           trigger: stepParentRef.current,
         },
-      }
+      },
     );
   });
 
@@ -71,7 +71,8 @@ export default function Home() {
 
         <div
           className="container flex snap-center flex-col-reverse items-center justify-between lg:h-screen lg:flex-row"
-          onMouseEnter={() => setEnterOn(1)}>
+          onMouseEnter={() => setEnterOn(1)}
+        >
           <section className="flex h-full w-full flex-col justify-center lg:w-1/2">
             <h2 className="text-3xl font-medium lg:text-5xl ">
               Get your resume in 3 steps
@@ -82,7 +83,8 @@ export default function Home() {
                 <li
                   className={`steps flex cursor-pointer items-center  gap-5 rounded-md p-3 transition-all `}
                   key={index}
-                  onMouseOver={() => setSelectStep(index)}>
+                  onMouseOver={() => setSelectStep(index)}
+                >
                   <div className="grid h-[35px] w-[35px] items-center rounded-full bg-foreground text-center text-xl text-background md:h-[50px] md:w-[50px] md:text-2xl">
                     {step.stepNo}
                   </div>
@@ -90,8 +92,9 @@ export default function Home() {
                   <div className="flex  flex-col gap-4 overflow-hidden transition-all duration-500">
                     <span
                       className={`text-xl font-normal lg:text-3xl ${
-                        selectStep === index && 'underline underline-offset-4'
-                      }`}>
+                        selectStep === index && "underline underline-offset-4"
+                      }`}
+                    >
                       {step.title}
                     </span>
 
