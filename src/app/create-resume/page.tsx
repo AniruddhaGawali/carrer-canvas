@@ -1,6 +1,4 @@
 "use client";
-
-import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { WavyBackground } from "@/components/ui/wavy-background";
 import { useRouter } from "next/navigation";
@@ -26,8 +24,8 @@ function CreateResumePage({}: Props) {
         <form
           action={(formData: FormData) => {
             const title = formData.get("title");
-            if (typeof title === "string" && title.length > 0) {
-              setResumeTitle(title);
+            if (typeof title === "string") {
+              if (title.length > 0) setResumeTitle(title);
               router.push("create-resume/select-template");
             }
           }}

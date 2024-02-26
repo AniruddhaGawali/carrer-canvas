@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/popover";
 
 import { signOut } from "next-auth/react";
+import useResume from "@/redux/dispatch/useResume";
 
 type Props = {
   isDashboard?: boolean;
@@ -21,9 +22,11 @@ type Props = {
 };
 
 function Navbar({ isDashboard, title }: Props) {
-  const [show, setShow] = useState(true);
   const router = useRouter();
   const { data: session } = useSession();
+  const { setResumeTitle } = useResume();
+  const [show, setShow] = useState(true);
+  const [isTitleEditOn, setIsTitleEditOn] = useState(false);
 
   const controlNavbar = () => {
     if (window.scrollY > 10) {
@@ -77,7 +80,36 @@ function Navbar({ isDashboard, title }: Props) {
               )}{" "}
             </>
           ) : (
-            title
+            <>
+              {isTitleEditOn ? (
+                <form
+                  action={(formData: FormData) => {
+                    const title = formData.get("title");
+                    if (typeof title === "string" && title.length > 0)
+                      setResumeTitle(title);
+                    else setResumeTitle("Untitled");
+                    setIsTitleEditOn(false);
+                  }}
+                  className="flex w-full flex-col items-center"
+                >
+                  <input
+                    type="text"
+                    name="title"
+                    placeholder="Enter Your Title"
+                    className=" w-full border-primary bg-transparent  text-xl font-medium  outline-none"
+                    defaultValue={title}
+                  />
+                </form>
+              ) : (
+                <div
+                  onClick={() => {
+                    setIsTitleEditOn(true);
+                  }}
+                >
+                  {title}
+                </div>
+              )}
+            </>
           )}
         </h3>
       </div>
