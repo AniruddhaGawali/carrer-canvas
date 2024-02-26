@@ -19,7 +19,7 @@ type Resume = {
   id: string;
   title: string;
   userId: string;
-  template: number | null;
+  template?: number | null;
   personalInfo?: PersonalInfo | null;
   social?: Social | null;
   skills?: Skill[] | null;

@@ -3,12 +3,15 @@ import { Button } from "@/components/ui/button";
 import { WavyBackground } from "@/components/ui/wavy-background";
 import { useRouter } from "next/navigation";
 import useResume from "@/redux/dispatch/useResume";
+import { useSession } from "next-auth/react";
+import { LoadingSpinner } from "@/components/ui/loading";
 
 type Props = {};
 
 function CreateResumePage({}: Props) {
   const router = useRouter();
-  const { setResumeTitle } = useResume();
+  const { setResumeTitle, saveResumeState, resumeState } = useResume();
+  const { data: session } = useSession();
 
   return (
     <div className="relative h-screen">
@@ -25,7 +28,11 @@ function CreateResumePage({}: Props) {
           action={(formData: FormData) => {
             const title = formData.get("title");
             if (typeof title === "string") {
-              if (title.length > 0) setResumeTitle(title);
+              if (title.length > 0) {
+                setResumeTitle(title);
+              }
+              console.log("title", resumeState);
+              saveResumeState(resumeState, session);
               router.push("create-resume/select-template");
             }
           }}
@@ -38,7 +45,11 @@ function CreateResumePage({}: Props) {
             className="w-full border-b-2 border-primary bg-transparent p-5 pb-2  text-2xl outline-none"
           />
           <Button size={"lg"} type="submit" className="text-lg">
-            Create Resume
+            {resumeState.uploadStatus == "loading" ? (
+              <LoadingSpinner className="h-6 w-6" />
+            ) : (
+              "Create Resume"
+            )}
           </Button>
         </form>
       </div>

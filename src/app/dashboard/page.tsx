@@ -1,22 +1,36 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
 import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
+import { getResumes } from "@/actions/resume";
 
 type Props = {};
 
 function Dashboard({}: Props) {
   const { data: session } = useSession();
   const router = useRouter();
+  const [resumes, setResumes] = useState<Resume[]>([]);
+
+  async function fetchResumes() {
+    const res = await getResumes(session);
+    if (res.success) {
+      setResumes(res.resumes as Resume[]);
+    }
+  }
+
+  useEffect(() => {
+    fetchResumes();
+  }, []);
 
   if (!session) {
     redirect("/register");
   }
 
+  console.log("resumes", resumes);
   return (
     <div className="flex flex-col items-center justify-center ">
       <div
@@ -29,7 +43,7 @@ function Dashboard({}: Props) {
       <h2 className="container w-full text-6xl font-bold">Dashboard</h2>
 
       <div className="container my-20  grid grid-cols-3 items-center justify-center gap-20">
-        {Array.from(Array(12).keys()).map((item, index) => (
+        {resumes.map((item, index) => (
           <div
             key={index}
             className=" grainy-black

@@ -1,20 +1,34 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { uploadResume } from "@/actions";
+import { PayloadAction, createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { Session } from "next-auth";
 
-const initalResumeState: Resume = {
+const initalResumeState: Resume & {
+  uploadStatus: "idle" | "loading" | "success" | "failed";
+} = {
   id: "",
   title: "Untitled",
   userId: "",
   template: null,
   personalInfo: null,
   social: null,
+  uploadStatus: "idle",
 };
+
+export const saveResume = createAsyncThunk(
+  "resume/saveResume",
+  async ({ resume, session }: { resume: Resume; session: Session | null }) => {
+    console.log("resume", resume);
+    const { res } = await uploadResume(resume, session);
+    return res as Resume;
+  },
+);
 
 const resumeSlice = createSlice({
   name: "resume",
   initialState: initalResumeState,
   reducers: {
     setResume(state, action: PayloadAction<Resume>) {
-      return action.payload;
+      return { ...action.payload, uploadStatus: "idle" };
     },
 
     selectTemplete(state, action: PayloadAction<ResumeTemplate | null>) {
@@ -35,6 +49,19 @@ const resumeSlice = createSlice({
     setSocialLink(state, action: PayloadAction<Social>) {
       state.social = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(saveResume.fulfilled, (state, action) => {
+      return { ...action.payload, uploadStatus: "success" };
+    });
+
+    builder.addCase(saveResume.pending, (state) => {
+      state.uploadStatus = "loading";
+    });
+
+    builder.addCase(saveResume.rejected, (state) => {
+      state.uploadStatus = "failed";
+    });
   },
 });
 

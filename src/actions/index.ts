@@ -10,4 +10,5 @@ export {
   deletePersonalInfo,
   getPersonalInfo,
   savePersonalInfo,
+  uploadResume,
 } from "./resume";

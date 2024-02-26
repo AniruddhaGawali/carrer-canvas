@@ -6,14 +6,20 @@ import {
   setPersonalInfo,
   updateResumeTitle,
   setSocialLink,
+  saveResume,
 } from "@/redux/features/resumeSlice";
 
-import { RootState } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
+import { Session } from "next-auth";
 import { useDispatch, useSelector } from "react-redux";
 
 const useResume = () => {
   const resumeState = useSelector((state: RootState) => state.resume);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const saveResumeState = (resume: Resume, session: Session | null) => {
+    dispatch(saveResume({ resume, session }));
+  };
 
   const setResumeState = (resume: Resume) => dispatch(setResume(resume));
 
@@ -35,6 +41,7 @@ const useResume = () => {
     setResumePersonalInfo,
     setResumeTitle,
     setResumeSocialLink,
+    saveResumeState,
   };
 };
 
