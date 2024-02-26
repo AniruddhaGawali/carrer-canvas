@@ -3,6 +3,7 @@ import "./globals.css";
 import NextAuthProvider from "@/provider/nextAuthProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
+import StoreProvider from "@/provider/storeProvider";
 
 export const metadata: Metadata = {
   title: "Carrier Canves",
@@ -32,7 +33,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <NextAuthProvider session={session}>
-        <body className="relative">{children}</body>
+        <StoreProvider>
+          <body className="relative">{children}</body>
+        </StoreProvider>
       </NextAuthProvider>
     </html>
   );

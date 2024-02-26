@@ -17,9 +17,10 @@ import { signOut } from "next-auth/react";
 
 type Props = {
   isDashboard?: boolean;
+  title?: string;
 };
 
-function Navbar({ isDashboard }: Props) {
+function Navbar({ isDashboard, title }: Props) {
   const [show, setShow] = useState(true);
   const router = useRouter();
   const { data: session } = useSession();
@@ -61,16 +62,22 @@ function Navbar({ isDashboard }: Props) {
         <h3 className=" flex items-center justify-center gap-2 text-xl font-medium">
           <span>{show && "|"}</span>
 
-          {isDashboard ? (
-            <Link href="/dashboard" className="-mb-0.5">
-              {" "}
-              Dashboard
-            </Link>
+          {!title ? (
+            <>
+              {isDashboard ? (
+                <Link href="/dashboard" className="-mb-0.5">
+                  {" "}
+                  Dashboard
+                </Link>
+              ) : (
+                <Link href="/" className="-mb-0.5">
+                  {" "}
+                  Home
+                </Link>
+              )}{" "}
+            </>
           ) : (
-            <Link href="/" className="-mb-0.5">
-              {" "}
-              Home
-            </Link>
+            title
           )}
         </h3>
       </div>

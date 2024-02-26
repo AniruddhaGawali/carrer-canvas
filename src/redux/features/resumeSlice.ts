@@ -2,6 +2,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const initalResumeState: Resume = {
   id: "",
+  title: "Untitled",
   userId: "",
   template: null,
   personalInfo: null,
@@ -16,13 +17,18 @@ const resumeSlice = createSlice({
       return action.payload;
     },
 
-    SelectTemplete(state, action: PayloadAction<ResumeTemplate | null>) {
+    selectTemplete(state, action: PayloadAction<ResumeTemplate | null>) {
       if (!action.payload) {
         state.template = null;
       } else {
         state.template = action.payload.id;
       }
     },
+
+    updateResumeTitle(state, action: PayloadAction<string>) {
+      state.title = action.payload;
+    },
+
     setPersonalInfo(state, action: PayloadAction<PersonalInfo>) {
       state.personalInfo = action.payload;
     },
@@ -33,5 +39,10 @@ const resumeSlice = createSlice({
 });
 
 export default resumeSlice.reducer;
-export const { setResume, SelectTemplete, setPersonalInfo, setSocialLink } =
-  resumeSlice.actions;
+export const {
+  setResume,
+  selectTemplete,
+  setPersonalInfo,
+  setSocialLink,
+  updateResumeTitle,
+} = resumeSlice.actions;

@@ -17,6 +17,7 @@ type ResumeTemplate = {
 
 type Resume = {
   id: string;
+  title: string;
   userId: string;
   template: number | null;
   personalInfo?: PersonalInfo | null;
@@ -52,7 +53,7 @@ type SocialLinks = {
 
 type Skill = {
   skills: string;
-  level: 'Newbie' | 'Intermediate' | 'Advanced' | 'Expert';
+  level: "Newbie" | "Intermediate" | "Advanced" | "Expert";
 };
 
 type Experience = {
