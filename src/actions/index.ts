@@ -5,3 +5,9 @@ export {
   signUp,
   logOut,
 } from "./auth";
+
+export {
+  deletePersonalInfo,
+  getPersonalInfo,
+  savePersonalInfo,
+} from "./resume";

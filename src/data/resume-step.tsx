@@ -1,4 +1,6 @@
-import SelectTemplete from "@/components/createResumeComponents/selectTemplateComponent";
+import SelectTempleteComponent from "@/components/createResumeComponents/selectTemplateComponent";
+import PersonalInformationComponent from "@/components/createResumeComponents/personalInformationComponent";
+import SocialLinksAndSkillsComponent from "@/components/createResumeComponents/socialLinksAndSkillsComponent";
 import { toast } from "sonner";
 
 export const StepsLinks: {
@@ -13,7 +15,7 @@ export const StepsLinks: {
     name: "Select Resume Templete",
     stepNo: 1,
     desc: "Select your design template from our collection of templates",
-    component: <SelectTemplete />,
+    component: <SelectTempleteComponent />,
     path: "select-template",
     validation: (resumeState: Resume) => {
       if (resumeState.template != null) {
@@ -27,7 +29,7 @@ export const StepsLinks: {
     name: "Personal Details",
     stepNo: 2,
     desc: "Enter your personal details",
-    component: <SelectTemplete />,
+    component: <PersonalInformationComponent />,
     path: "personal-details",
     validation: (resumeState: Resume) => {
       if (
@@ -49,7 +51,7 @@ export const StepsLinks: {
     name: "Social Links & Skills",
     stepNo: 3,
     desc: "Enter your social links and skills",
-    component: <SelectTemplete />,
+    component: <SocialLinksAndSkillsComponent />,
     path: "social-skills",
     validation: (resumeState: Resume) => {
       if (resumeState.social && resumeState.skills) {

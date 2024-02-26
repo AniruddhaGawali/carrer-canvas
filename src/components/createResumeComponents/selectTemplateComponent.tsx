@@ -24,7 +24,7 @@ type Props = {
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
 };
 
-function SelectTemplete() {
+function SelectTempleteComponent() {
   const { resumeState, setResumeTemplate } = useResume();
 
   console.log(resumeState);
@@ -123,4 +123,4 @@ function SelectTemplete() {
   );
 }
 
-export default SelectTemplete;
+export default SelectTempleteComponent;

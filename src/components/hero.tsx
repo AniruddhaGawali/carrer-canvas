@@ -1,14 +1,16 @@
-import React, { useRef, useState } from 'react';
-import useMousePosition from '@/hooks/useMousePosition';
+import React, { useRef, useState } from "react";
+import useMousePosition from "@/hooks/useMousePosition";
 
-import { Button } from './ui/button';
-import { ArrowRight, NotepadTextDashed } from 'lucide-react';
+import { Button } from "./ui/button";
+import { ArrowRight, NotepadTextDashed } from "lucide-react";
 
-import { useGSAP } from '@gsap/react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useGSAP } from "@gsap/react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
+import { BackgroundGradientAnimation } from "./ui/background-gradient-animation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -48,12 +50,24 @@ function HeroSection({ enterNoState }: Props) {
 
   return (
     <div
-      className="grainy-gradient relative flex
+      className="relative flex
  w-full snap-center flex-col items-start sm:h-screen lg:items-center"
-      onMouseEnter={() => enterNoState.setEnterOn(0)}>
+      onMouseEnter={() => enterNoState.setEnterOn(0)}
+    >
+      <BackgroundGradientAnimation
+        containerClassName="absolute inset-0 grainy-gradient"
+        gradientBackgroundStart="rgb(143, 211, 244, 0.5)"
+        gradientBackgroundEnd="rgb(132, 250, 176, 0.5)"
+        firstColor="32, 250, 176"
+        secondColor="255, 147, 130"
+        thirdColor="17, 178, 172"
+        fourthColor="107, 226, 244"
+        fifthColor="143, 211, 244"
+        pointerColor="95, 239, 225"
+      />
       <div
         className={`${
-          enterNoState.enterOn !== 0 || remove ? 'hidden' : 'hidden md:block'
+          enterNoState.enterOn !== 0 || remove ? "hidden" : "hidden md:block"
         } /*  opacity: 0; */ font-size:  2rem;     position: absolute; top: 66%;
         left: 12%;
         transform: translate(-50%,
@@ -64,20 +78,21 @@ function HeroSection({ enterNoState }: Props) {
     `}
         ref={cursorRef}
         style={{
-          width: isHover ? '100px' : '0px',
-          height: isHover ? '100px' : '0px',
-          mixBlendMode: isHover ? 'difference' : 'normal',
+          width: isHover ? "100px" : "0px",
+          height: isHover ? "100px" : "0px",
+          mixBlendMode: isHover ? "difference" : "normal",
           top: isHover
             ? cursor.clientY + window.scrollY
             : cursor.clientY + window.scrollY + 20,
           left: isHover ? cursor.clientX : cursor.clientX,
-          transform: 'translate(-50%,-50%)',
+          transform: "translate(-50%,-50%)",
         }}
       />
 
       <section
         className="left-[3%] top-[13%] mt-32 p-10 lg:absolute lg:mt-0"
-        ref={mainRef}>
+        ref={mainRef}
+      >
         <h3 className="subtitle text-xl font-medium sm:text-2xl md:pl-6 md:text-3xl">
           Craft. Create. Captivate.
           <br />
@@ -86,7 +101,8 @@ function HeroSection({ enterNoState }: Props) {
         <h1
           className="relative font-lobster text-6xl font-medium sm:text-7xl md:text-8xl lg:text-[8.5rem]"
           onMouseEnter={() => setIsHover(true)}
-          onMouseLeave={() => setIsHover(false)}>
+          onMouseLeave={() => setIsHover(false)}
+        >
           <span>Carrier Canves</span>
           <span className="ester-egg">🤫</span>
           <span className="ester-egg2">👻</span>
@@ -97,18 +113,20 @@ function HeroSection({ enterNoState }: Props) {
           onMouseLeave={() => setRemove(false)}
           onClick={() => {
             if (session) {
-              router.push('/dashboard');
+              router.push("/dashboard");
             } else {
-              router.push('/auth/register');
+              router.push("/auth/register");
             }
-          }}>
+          }}
+        >
           <span>Get Started</span> <ArrowRight className="animate-in-out" />
         </Button>
       </section>
 
       <section
         className="bottom-10 right-0  flex w-full flex-col items-start gap-8 p-10 px-10 lg:absolute  lg:w-3/5 lg:items-end lg:p-0 lg:pr-10 xl:w-1/3"
-        ref={aboutRef}>
+        ref={aboutRef}
+      >
         <p className="text-base !leading-relaxed sm:text-lg sm:!leading-[2rem] lg:text-right">
           Welcome to Carrier Canvas – Your Gateway to Professional Success!
           Unleash your potential with our user-friendly resume-making platform.
@@ -123,11 +141,12 @@ function HeroSection({ enterNoState }: Props) {
           onMouseLeave={() => setRemove(false)}
           onClick={() => {
             if (session) {
-              router.push('/dashboard');
+              router.push("/dashboard");
             } else {
-              router.push('/auth/register');
+              router.push("/auth/register");
             }
-          }}>
+          }}
+        >
           <span> Create Your Resume</span>
           <NotepadTextDashed />
         </Button>

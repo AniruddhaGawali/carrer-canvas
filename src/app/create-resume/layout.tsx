@@ -12,7 +12,7 @@ function CreateResumeLayout({ children }: Props) {
       <Navbar />
 
       <StoreProvider>
-        <div className="mt-24 min-h-screen">{children}</div>
+        <div className="min-h-screen">{children}</div>
       </StoreProvider>
       <Footer />
     </>
