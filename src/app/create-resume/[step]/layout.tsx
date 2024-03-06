@@ -11,7 +11,6 @@ export default function StepLayout({
   params: any;
 }) {
   const paths = StepsLinks.map((step) => step.path);
-  if (!paths.includes(params.step)) return notFound();
 
   const index = paths.indexOf(params.step);
   return (

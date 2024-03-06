@@ -5,8 +5,6 @@ import { Session } from "next-auth";
 export async function uploadResume(data: Resume, session: Session | null) {
   if (!session?.user) return { success: false, message: "User not found" };
 
-  console.log("data", data, session);
-
   if (data.id == "") {
     const res = await db.resume.create({
       data: {
@@ -47,6 +45,9 @@ export async function getResumes(session: Session | null) {
     where: {
       userId: session.user.id,
     },
+    include: {
+      personalInfo: true,
+    },
   });
 
   return { success: true, message: "Resumes found", resumes };
@@ -56,6 +57,9 @@ export async function getResumeById(id: string) {
   const resume = await db.resume.findFirst({
     where: {
       id: id,
+    },
+    include: {
+      personalInfo: true,
     },
   });
 
@@ -67,7 +71,7 @@ export async function getPersonalInfo(session: Session | null) {
 
   const user = await db.user.findFirst({
     where: {
-      email: session.user.id,
+      id: session.user.id,
     },
   });
 
@@ -88,7 +92,6 @@ export async function savePersonalInfo(
   session: Session | null,
 ) {
   if (!session?.user) return { success: false, message: "User not found" };
-  console.log("data", data, session);
 
   let alreadyExists;
   if (data.id != "") {

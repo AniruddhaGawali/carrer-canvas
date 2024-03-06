@@ -1,11 +1,12 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { StepsLinks as Steps } from "@/data/resume-step";
 import templetes from "@/data/resume-templete";
 import useResume from "@/redux/dispatch/useResume";
 import { Eye } from "lucide-react";
 import ReactImageMagnify from "react-image-magnify";
+import { useSearchParams } from "next/navigation";
 
 import {
   Drawer,
@@ -18,6 +19,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "../ui/button";
+import { useSession } from "next-auth/react";
 
 type Props = {
   currentStep: number;
@@ -25,9 +27,22 @@ type Props = {
 };
 
 function SelectTempleteComponent() {
-  const { resumeState, setResumeTemplate } = useResume();
+  const searchParams = useSearchParams();
+  const { data: session } = useSession();
+  const {
+    resumeState,
+    setResumeTemplate,
+    setResumeStateById,
+    setResumeToDefaultState,
+  } = useResume();
 
-  console.log(resumeState);
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (resumeState.id == "" && id != null) {
+      setResumeStateById(id, session);
+    }
+    if (resumeState.id == "" && session) setResumeToDefaultState();
+  }, [session]);
 
   return (
     <>

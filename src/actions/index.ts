@@ -11,4 +11,6 @@ export {
   getPersonalInfo,
   savePersonalInfo,
   uploadResume,
+  getResumes,
+  getResumeById,
 } from "./resume";

@@ -41,12 +41,13 @@ function CreateResumePage({}: Props) {
           action={(formData: FormData) => {
             const title = formData.get("title");
             if (typeof title === "string") {
-              console.log("title", title, title.length > 0);
               if (title.length > 0) {
                 setResumeTitle(title);
               }
-
-              router.push("create-resume/select-template");
+              if (resumeState.id != "")
+                router.push(
+                  "create-resume/select-template?id=" + resumeState.id,
+                );
             }
           }}
           className="flex w-full flex-col items-center "

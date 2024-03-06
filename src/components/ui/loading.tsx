@@ -4,6 +4,8 @@ import { twMerge } from "tailwind-merge";
 
 type Props = {
   className?: React.HTMLAttributes<HTMLDivElement>["className"];
+  spinnerBackground?: string;
+  spinnerColor?: string;
 };
 
 export const LoadingSpinner = (props: Props) => {

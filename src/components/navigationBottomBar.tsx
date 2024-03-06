@@ -14,13 +14,14 @@ type Props = {
 
 function BottonNavigationBar({ currentStep }: Props) {
   const router = useRouter();
+  const { resumeState } = useResume();
 
   function prevStep(currentStep: number): string {
-    return StepsLinks[currentStep - 1].path;
+    return StepsLinks[currentStep - 1].path + `?id=${resumeState.id}`;
   }
 
   function nextStep(currentStep: number): string {
-    return StepsLinks[currentStep + 1].path;
+    return StepsLinks[currentStep + 1].path + `?id=${resumeState.id}`;
   }
 
   return (

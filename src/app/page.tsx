@@ -20,6 +20,7 @@ import {
 import { type CarouselApi } from "@/components/ui/carousel";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import Loading from "./loading";
 
 export default function Home() {
   // this is the state for the carousel current step

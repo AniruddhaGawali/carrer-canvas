@@ -7,7 +7,7 @@ import useResume from "@/redux/dispatch/useResume";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import Chips from "../chips";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import templetes from "@/data/resume-templete";
 import { socialIcons } from "@/data/socialIcons";
 import LoadingButton from "../loadingButton";
@@ -16,11 +16,19 @@ import { CarouselItem } from "../ui/carousel";
 import { SelectSkillForm } from "../forms/selectSkillForm";
 import { SkillLevel } from "@/types/enum";
 import AddSocialLinksForm from "../forms/addSocialLinksFrom";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
 export default function SocialLinksAndSkills({}: Props) {
-  const { resumeState, setResumePersonalInfo } = useResume();
+  const searchParams = useSearchParams();
+  const {
+    resumeState,
+    setResumePersonalInfo,
+    setResumeStateById,
+    setResumeToDefaultState,
+  } = useResume();
+  const { data: session } = useSession();
 
   const [showResume, setShowResume] = useState<boolean>(false);
   const [skills, setSkills] = useState<Skill[]>([]);
@@ -94,6 +102,14 @@ export default function SocialLinksAndSkills({}: Props) {
       setDisabledSaveButton(true);
     }
   }, [skills, socialLinks]);
+
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (resumeState.id == "" && id != null) {
+      setResumeStateById(id, session);
+    }
+    if (resumeState.id == "" && session) setResumeToDefaultState();
+  }, [session]);
 
   if (!resumeState.template == null) {
     return redirect("/create-resume/step/1");

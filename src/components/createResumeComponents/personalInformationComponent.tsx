@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -6,7 +7,7 @@ import useResume from "@/redux/dispatch/useResume";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import templetes from "@/data/resume-templete";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
 import PdfDoc from "@/components/pdfDoc";
 
@@ -24,7 +25,12 @@ import { useSession } from "next-auth/react";
 type Props = {};
 
 export default function PersonalInformationComponent({}: Props) {
-  const { resumeState, setResumePersonalInfo } = useResume();
+  const {
+    resumeState,
+    setResumePersonalInfo,
+    setResumeStateById,
+    setResumeToDefaultState,
+  } = useResume();
 
   const defautPersonalInfo: PersonalInfo = {
     id: "",
@@ -37,6 +43,7 @@ export default function PersonalInformationComponent({}: Props) {
     address2: "",
   };
 
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const [showResume, setShowResume] = useState<boolean>(false);
   const [suggestions, setSuggestions] = useState<PersonalInfo[]>([]);
@@ -53,7 +60,6 @@ export default function PersonalInformationComponent({}: Props) {
     setResumePersonalInfo(personalInfo);
     toast.promise(
       savePersonalInfo(personalInfo, resumeState, session).then((e) => {
-        console.log("e", e);
         if (!e || !e.newResume) return;
         setResumePersonalInfo(e.newResume.personalInfo as PersonalInfo);
       }),
@@ -98,14 +104,22 @@ export default function PersonalInformationComponent({}: Props) {
   }, []);
 
   useEffect(() => {
-    getSuggestions();
-  }, []);
+    const id = searchParams.get("id");
+    if (resumeState.id == "" && id != null) {
+      setResumeStateById(id, session);
+    }
+    if (resumeState.id == "" && session) setResumeToDefaultState();
+  }, [session]);
+
+  useEffect(() => {
+    if (session) {
+      getSuggestions();
+    }
+  }, [session]);
 
   if (!resumeState.template == null) {
     return redirect("/create-resume");
   }
-
-  console.log(resumeState);
 
   return (
     <div className=" my-[9rem] min-h-screen w-full">
@@ -233,7 +247,7 @@ export default function PersonalInformationComponent({}: Props) {
             className="relative flex h-full w-full items-center justify-center bg-white"
             id="pdf"
           >
-            <PdfDoc personalInfo={personalInfo} />
+            {/* <PdfDoc personalInfo={personalInfo} /> */}
           </div>
         </section>
       </div>
