@@ -1,10 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { WavyBackground } from "@/components/ui/wavy-background";
-import { useRouter } from "next/navigation";
 import useResume from "@/redux/dispatch/useResume";
 import { useSession } from "next-auth/react";
 import { LoadingSpinner } from "@/components/ui/loading";
+import { useEffect, useRef } from "react";
+import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
@@ -12,6 +14,17 @@ function CreateResumePage({}: Props) {
   const router = useRouter();
   const { setResumeTitle, saveResumeState, resumeState } = useResume();
   const { data: session } = useSession();
+  const firstUpdate = useRef(true);
+
+  useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    if (!firstUpdate.current) {
+      saveResumeState(resumeState, session);
+    }
+  }, [resumeState.title]);
 
   return (
     <div className="relative h-screen">
@@ -28,27 +41,34 @@ function CreateResumePage({}: Props) {
           action={(formData: FormData) => {
             const title = formData.get("title");
             if (typeof title === "string") {
+              console.log("title", title, title.length > 0);
               if (title.length > 0) {
                 setResumeTitle(title);
               }
-              console.log("title", resumeState);
-              saveResumeState(resumeState, session);
+
               router.push("create-resume/select-template");
             }
           }}
-          className="flex w-full flex-col items-center gap-5"
+          className="flex w-full flex-col items-center "
         >
           <input
             type="text"
             name="title"
             placeholder="Enter Your Title of Resume"
             className="w-full border-b-2 border-primary bg-transparent p-5 pb-2  text-2xl outline-none"
+            defaultValue={resumeState.title}
           />
-          <Button size={"lg"} type="submit" className="text-lg">
+          <p className="mt-2 w-full text-left text-lg text-gray-500">
+            Enter the title of your resume
+          </p>
+
+          <Button size={"lg"} type="submit" className="mt-8 text-lg">
             {resumeState.uploadStatus == "loading" ? (
               <LoadingSpinner className="h-6 w-6" />
             ) : (
-              "Create Resume"
+              <div className="flex items-center gap-3">
+                Next <ArrowRight size={24} />
+              </div>
             )}
           </Button>
         </form>

@@ -19,6 +19,7 @@ export const saveResume = createAsyncThunk(
   async ({ resume, session }: { resume: Resume; session: Session | null }) => {
     console.log("resume", resume);
     const { res } = await uploadResume(resume, session);
+    console.log("res", res);
     return res as Resume;
   },
 );
@@ -31,6 +32,10 @@ const resumeSlice = createSlice({
       return { ...action.payload, uploadStatus: "idle" };
     },
 
+    setResumeToDefault(state) {
+      return initalResumeState;
+    },
+
     selectTemplete(state, action: PayloadAction<ResumeTemplate | null>) {
       if (!action.payload) {
         state.template = null;
@@ -41,6 +46,7 @@ const resumeSlice = createSlice({
 
     updateResumeTitle(state, action: PayloadAction<string>) {
       state.title = action.payload;
+      console.log("state", state, action);
     },
 
     setPersonalInfo(state, action: PayloadAction<PersonalInfo>) {
@@ -52,6 +58,7 @@ const resumeSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(saveResume.fulfilled, (state, action) => {
+      console.log("action", action);
       return { ...action.payload, uploadStatus: "success" };
     });
 
@@ -68,6 +75,7 @@ const resumeSlice = createSlice({
 export default resumeSlice.reducer;
 export const {
   setResume,
+  setResumeToDefault,
   selectTemplete,
   setPersonalInfo,
   setSocialLink,

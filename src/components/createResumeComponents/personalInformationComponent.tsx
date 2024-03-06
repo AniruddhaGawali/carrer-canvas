@@ -51,11 +51,18 @@ export default function PersonalInformationComponent({}: Props) {
 
   async function saveData() {
     setResumePersonalInfo(personalInfo);
-    toast.promise(savePersonalInfo(personalInfo, session), {
-      loading: "Saving...",
-      success: "Saved Successfully",
-      error: "Error Saving",
-    });
+    toast.promise(
+      savePersonalInfo(personalInfo, resumeState, session).then((e) => {
+        console.log("e", e);
+        if (!e || !e.newResume) return;
+        setResumePersonalInfo(e.newResume.personalInfo as PersonalInfo);
+      }),
+      {
+        loading: "Saving...",
+        success: "Saved Successfully",
+        error: "Error Saving",
+      },
+    );
   }
 
   async function getSuggestions() {
@@ -97,6 +104,8 @@ export default function PersonalInformationComponent({}: Props) {
   if (!resumeState.template == null) {
     return redirect("/create-resume");
   }
+
+  console.log(resumeState);
 
   return (
     <div className=" my-[9rem] min-h-screen w-full">

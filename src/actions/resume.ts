@@ -5,11 +5,16 @@ import { Session } from "next-auth";
 export async function uploadResume(data: Resume, session: Session | null) {
   if (!session?.user) return { success: false, message: "User not found" };
 
+  console.log("data", data, session);
+
   if (data.id == "") {
     const res = await db.resume.create({
       data: {
         title: data.title,
         userId: session.user.id,
+      },
+      include: {
+        personalInfo: true,
       },
     });
 
@@ -25,6 +30,9 @@ export async function uploadResume(data: Resume, session: Session | null) {
         template: data.template,
         socialLink: data.social,
         personalInfoId: data.personalInfo?.id,
+      },
+      include: {
+        personalInfo: true,
       },
     });
 
@@ -76,15 +84,20 @@ export async function getPersonalInfo(session: Session | null) {
 
 export async function savePersonalInfo(
   data: PersonalInfo,
+  resume: Resume,
   session: Session | null,
 ) {
   if (!session?.user) return { success: false, message: "User not found" };
+  console.log("data", data, session);
 
-  const alreadyExists = await db.personalInfo.findFirst({
-    where: {
-      id: data.id,
-    },
-  });
+  let alreadyExists;
+  if (data.id != "") {
+    alreadyExists = await db.personalInfo.findFirst({
+      where: {
+        id: data.id,
+      },
+    });
+  }
 
   if (
     alreadyExists &&
@@ -96,7 +109,19 @@ export async function savePersonalInfo(
     alreadyExists.name == data.name &&
     alreadyExists.website == data.website
   ) {
-    return { success: true, message: "Personal info saved", alreadyExists };
+    const newResume = await db.resume.update({
+      where: {
+        id: resume.id,
+      },
+      data: {
+        personalInfoId: data.id,
+      },
+      include: {
+        personalInfo: true,
+      },
+    });
+
+    return { success: true, message: "Personal info saved", newResume };
   }
 
   const res = await db.personalInfo.create({
@@ -112,7 +137,19 @@ export async function savePersonalInfo(
     },
   });
 
-  return { success: true, message: "Personal info saved", res };
+  const newResume = await db.resume.update({
+    where: {
+      id: resume.id,
+    },
+    data: {
+      personalInfoId: res.id,
+    },
+    include: {
+      personalInfo: true,
+    },
+  });
+
+  return { success: true, message: "Personal info saved", newResume };
 }
 
 export async function deletePersonalInfo(id: string) {

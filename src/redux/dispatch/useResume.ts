@@ -7,6 +7,7 @@ import {
   updateResumeTitle,
   setSocialLink,
   saveResume,
+  setResumeToDefault,
 } from "@/redux/features/resumeSlice";
 
 import { AppDispatch, RootState } from "@/redux/store";
@@ -22,6 +23,7 @@ const useResume = () => {
   };
 
   const setResumeState = (resume: Resume) => dispatch(setResume(resume));
+  const setResumeToDefaultState = () => dispatch(setResumeToDefault());
 
   const setResumeTemplate = (template: ResumeTemplate | null) =>
     dispatch(selectTemplete(template));
@@ -37,6 +39,7 @@ const useResume = () => {
   return {
     resumeState,
     setResumeState,
+    setResumeToDefaultState,
     setResumeTemplate,
     setResumePersonalInfo,
     setResumeTitle,

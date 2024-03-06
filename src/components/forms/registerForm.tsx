@@ -26,14 +26,14 @@ function RegisterForm({}: Props) {
       </div>
 
       <div className="grid w-full max-w-sm items-center gap-1.5">
-        <Label htmlFor="username" className="text-md font-medium">
-          Username
+        <Label htmlFor="name" className="text-md font-medium">
+          Name
         </Label>
         <Input
           type="text"
-          id="username"
-          placeholder="Username"
-          name="username"
+          id="name"
+          placeholder="Name"
+          name="name"
           className=" text-md"
         />
       </div>

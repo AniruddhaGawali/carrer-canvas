@@ -75,7 +75,7 @@ export async function signUp(
 
   formData: FormData,
 ) {
-  const name = formData.get("username") as string;
+  const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const passwordConfirm = formData.get("confirm-password") as string;
@@ -86,8 +86,6 @@ export async function signUp(
     };
   }
 
-  console.log({ name, email, password, passwordConfirm });
-
   const res = await fetch("/api/register", {
     method: "POST",
     headers: {
@@ -95,8 +93,6 @@ export async function signUp(
     },
     body: JSON.stringify({ name, email, password }),
   });
-
-  console.log(res);
 
   if (!res.ok) {
     const error = await res.json();

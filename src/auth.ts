@@ -99,6 +99,3 @@ export const authOptions: AuthOptions = {
 
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
-function CredentialsProvider(arg0: {}): import("next-auth/providers/index").Provider {
-  throw new Error("Function not implemented.");
-}

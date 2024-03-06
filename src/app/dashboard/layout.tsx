@@ -10,7 +10,7 @@ function DashboardLayout({ children }: Props) {
   return (
     <>
       <Navbar isDashboard />
-      <main className="">{children}</main>
+      <main className="min-h-screen">{children}</main>
       <Footer />
     </>
   );
