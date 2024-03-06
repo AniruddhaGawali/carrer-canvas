@@ -70,20 +70,23 @@ function Dashboard({}: Props) {
               </h2>
             </div>
           ) : (
-            <div className="container my-20  grid grid-cols-3 items-center justify-center gap-20">
+            <div className="juc container my-20 grid grid-cols-1 items-center justify-center gap-20 md:grid-cols-2 lg:grid-cols-3">
               <>
                 {resumes.map((item, index) => (
                   <div
                     key={index}
-                    className=" grainy-black
-            group flex h-96 w-full cursor-pointer items-end justify-center overflow-hidden rounded-lg transition-all hover:scale-110 hover:shadow-2xl
-          "
                     onClick={() => {
                       setResumeState(item);
                       router.push("/create-resume");
                     }}
+                    className="grainy-gradient-hover group m-auto h-96 w-full min-w-min max-w-sm cursor-pointer rounded-lg border-[3px] bg-gray-200 p-5 shadow-md transition-all duration-500 hover:border-black"
                   >
-                    <div className=" h-3/4 w-2/3 rounded-xl rounded-b-none bg-white transition-all group-hover:scale-110 group-hover:shadow-2xl"></div>
+                    <div className="h-2/3 min-h-[300px] w-full rounded-md bg-white shadow-inner transition-all duration-300"></div>
+                    <div className="mt-5 h-1/3 w-full">
+                      <h1 className="text-center text-2xl font-bold group-hover:underline">
+                        {item.title}
+                      </h1>
+                    </div>
                   </div>
                 ))}
               </>
