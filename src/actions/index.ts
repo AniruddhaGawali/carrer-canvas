@@ -13,4 +13,6 @@ export {
   uploadResume,
   getResumes,
   getResumeById,
+  deleteResume,
+  setResumeTemplete,
 } from "./resume";

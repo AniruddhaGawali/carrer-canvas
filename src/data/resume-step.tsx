@@ -2,6 +2,7 @@ import SelectTempleteComponent from "@/components/createResumeComponents/selectT
 import PersonalInformationComponent from "@/components/createResumeComponents/personalInformationComponent";
 import SocialLinksAndSkillsComponent from "@/components/createResumeComponents/socialLinksAndSkillsComponent";
 import { toast } from "sonner";
+import * as action from "@/actions";
 
 export const StepsLinks: {
   name: string;
@@ -9,7 +10,7 @@ export const StepsLinks: {
   desc: string;
   component: React.ReactNode;
   path: string;
-  validation: (resumeState: Resume) => boolean;
+  validation: (resumeState: Resume) => Promise<boolean> | boolean;
 }[] = [
   {
     name: "Select Resume Templete",
@@ -17,12 +18,16 @@ export const StepsLinks: {
     desc: "Select your design template from our collection of templates",
     component: <SelectTempleteComponent />,
     path: "select-template",
-    validation: (resumeState: Resume) => {
+    validation: async (resumeState: Resume) => {
       if (resumeState.template != null) {
+        console.log("resumeState", resumeState);
+        await action.setResumeTemplete(resumeState.id, resumeState.template);
         return true;
+      } else {
+        console.log("Please select a template");
+        toast.error("Please select a template");
+        return false;
       }
-      toast.error("Please select a template");
-      return false;
     },
   },
   {

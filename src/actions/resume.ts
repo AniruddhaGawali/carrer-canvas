@@ -66,6 +66,31 @@ export async function getResumeById(id: string) {
   return { success: true, message: "Resume found", resume };
 }
 
+export async function deleteResume(id: string, session: Session | null) {
+  if (!session?.user) return { success: false, message: "User not found" };
+
+  const res = await db.resume.delete({
+    where: {
+      id: id,
+    },
+  });
+
+  return { success: true, message: "Resume deleted", res };
+}
+
+export async function setResumeTemplete(id: string, template: number) {
+  const res = await db.resume.update({
+    where: {
+      id: id,
+    },
+    data: {
+      template: template,
+    },
+  });
+
+  return { success: true, message: "Resume template updated", res };
+}
+
 export async function getPersonalInfo(session: Session | null) {
   if (!session?.user) return { success: false, message: "User not found" };
 

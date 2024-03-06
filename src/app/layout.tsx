@@ -4,6 +4,7 @@ import NextAuthProvider from "@/provider/nextAuthProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import StoreProvider from "@/provider/storeProvider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Carrier Canves",
@@ -35,6 +36,7 @@ export default async function RootLayout({
       <NextAuthProvider session={session}>
         <StoreProvider>
           <body className="relative">{children}</body>
+          <Toaster richColors position="top-right" />
         </StoreProvider>
       </NextAuthProvider>
     </html>

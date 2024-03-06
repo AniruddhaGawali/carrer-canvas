@@ -16,12 +16,15 @@ function BottonNavigationBar({ currentStep }: Props) {
   const router = useRouter();
   const { resumeState } = useResume();
 
-  function prevStep(currentStep: number): string {
+  function prevStep(currentStep: number) {
     return StepsLinks[currentStep - 1].path + `?id=${resumeState.id}`;
   }
 
-  function nextStep(currentStep: number): string {
-    return StepsLinks[currentStep + 1].path + `?id=${resumeState.id}`;
+  async function nextStep(currentStep: number) {
+    if (await StepsLinks[currentStep].validation(resumeState)) {
+      return StepsLinks[currentStep + 1].path + `?id=${resumeState.id}`;
+    }
+    return "";
   }
 
   return (
@@ -44,7 +47,7 @@ function BottonNavigationBar({ currentStep }: Props) {
       <Button
         className="flex gap-3"
         disabled={currentStep == StepsLinks.length - 1}
-        onClick={() => router.push(nextStep(currentStep))}
+        onClick={async () => router.push(await nextStep(currentStep))}
       >
         Next
         <ChevronRight />
