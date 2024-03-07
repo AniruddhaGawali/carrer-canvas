@@ -278,7 +278,7 @@ export default function PersonalInformationForm({
                 <FormItem>
                   <FormControl>
                     <Input
-                      placeholder="Address 2"
+                      placeholder="Address 2 (City, State, Country)"
                       {...field}
                       onChange={(e) => {
                         changePersonalInformation({

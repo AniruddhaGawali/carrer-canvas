@@ -6,13 +6,14 @@ import {
   StyleSheet,
   Rect,
   Svg,
+  Circle,
   PDFViewer,
   Font,
+  Link,
 } from "@react-pdf/renderer";
 
 Font.register({
   family: "Jost",
-
   fonts: [
     {
       src: "/assets/font/Jost-Regular.ttf",
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     height: "100%",
     color: "#000",
     padding: 20,
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: "Jost",
   },
 
@@ -60,17 +61,19 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flexDirection: "column",
-    marginTop: 20,
+    marginTop: 0,
+    textAlign: "center",
   },
 });
 
 type Classic1Prop = {
   personalInfo?: PersonalInfo;
   skills?: Skill[];
+  social: Social;
 };
 
 // Create Document Component
-const Classic1 = ({ personalInfo, skills }: Classic1Prop) => (
+const Classic1 = ({ personalInfo, skills, social }: Classic1Prop) => (
   <PDFViewer
     style={{
       width: "100%",
@@ -88,7 +91,6 @@ const Classic1 = ({ personalInfo, skills }: Classic1Prop) => (
             style={{
               fontSize: 20,
               fontWeight: "bold",
-              textAlign: "center",
             }}
           >
             {personalInfo ? personalInfo.name : ""}
@@ -96,8 +98,7 @@ const Classic1 = ({ personalInfo, skills }: Classic1Prop) => (
 
           <Text
             style={{
-              fontSize: 15,
-              fontWeight: "medium",
+              fontSize: 14,
             }}
           >
             {personalInfo ? personalInfo.jobTitle : ""}
@@ -106,16 +107,28 @@ const Classic1 = ({ personalInfo, skills }: Classic1Prop) => (
           <View
             style={{
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
             }}
           >
             {personalInfo && (
               <>
-                <Text>{personalInfo.address1}</Text>
-                <Text>{personalInfo.address2}</Text>
-                <Text>{personalInfo.phone}</Text>
-                <Text>{personalInfo.email}</Text>
-                <Text>{personalInfo.website}</Text>
+                <Text>-{personalInfo.phone}</Text>
+                <Text>- {personalInfo.email}</Text>
+                <Text>
+                  -{" "}
+                  <Link
+                    src={personalInfo.website}
+                    style={{
+                      color: "black",
+                    }}
+                  >
+                    {social.linkedin}
+                  </Link>
+                </Text>
+                <Text>- {personalInfo.address2}</Text>
               </>
             )}
           </View>
@@ -128,16 +141,27 @@ const Classic1 = ({ personalInfo, skills }: Classic1Prop) => (
             flexDirection: "row",
             gap: 2,
             alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <Text
-            style={{
-              fontSize: 13,
-              fontWeight: "semibold",
-            }}
-          >
-            Skills :
-          </Text>
+          <View>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "semibold",
+                textAlign: "center",
+                width: "100%",
+                marginTop: 10,
+                marginBottom: 5,
+              }}
+            >
+              Skills
+            </Text>
+
+            <Svg>
+              <Rect x="0" y="0" width="1000" height="2" fill="black" />
+            </Svg>
+          </View>
 
           {skills && (
             <>

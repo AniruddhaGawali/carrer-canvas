@@ -407,6 +407,7 @@ export default function SocialLinksAndSkills({}: Props) {
                 website: "www.abc.com",
               }}
               skills={skills}
+              social={socialLinks}
             />
           </div>
         </section>
