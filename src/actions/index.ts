@@ -21,4 +21,9 @@ export {
   getSocial,
   setSocial,
   setSocialInResume,
+  getExperiences,
+  setExperiencesInResume,
+  deleteExperience,
+  setExperiences,
+  updateExperience,
 } from "./resume";

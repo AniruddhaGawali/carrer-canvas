@@ -14,3 +14,10 @@ export {
   setSocial,
   setSocialInResume,
 } from "./step3";
+export {
+  getExperiences,
+  setExperiencesInResume,
+  deleteExperience,
+  setExperiences,
+  updateExperience,
+} from "./step4";

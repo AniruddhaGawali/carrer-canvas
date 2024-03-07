@@ -32,7 +32,7 @@ type Props = {
   setExperience: React.Dispatch<React.SetStateAction<Experience[]>>;
 };
 
-function ExperienceForm({ setExperience }: Props) {
+export default function ExperienceForm({ setExperience }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const experienceFormSchema = z.object({
@@ -72,11 +72,12 @@ function ExperienceForm({ setExperience }: Props) {
           console.log("endDate", endDate);
 
           const newExperience: Experience = {
+            id: "",
             company: data.company,
             position: data.jobTitle,
             startDate: startDate?.toISOString() ?? "",
             endDate: endDate?.toISOString() ?? "",
-            description: [data.description],
+            description: data.description,
             location: data.location,
           };
 
@@ -259,5 +260,3 @@ function ExperienceForm({ setExperience }: Props) {
     </Form>
   );
 }
-
-export default ExperienceForm;

@@ -141,28 +141,30 @@ export default function PersonalInformationComponent({}: Props) {
                   className={`relative cursor-pointer p-[3px] text-start ${
                     selectedSuggestions === index && "grainy-gradient2 "
                   }`}
-                  onClick={() => {
-                    if (selectedSuggestions === index) {
-                      setPersonalInfo(defautPersonalInfo);
-                      setSelectedSuggestions(-1);
-                      return;
-                    }
-
-                    setPersonalInfo({
-                      id: item.id,
-                      name: item.name,
-                      email: item.email,
-                      phone: item.phone,
-                      website: item.website,
-                      jobTitle: item.jobTitle,
-                      address1: item.address1,
-                      address2: item.address2,
-                    });
-
-                    setSelectedSuggestions(index);
-                  }}
                 >
-                  <div className="flex h-full w-full flex-col gap-1 rounded-md bg-white text-xs">
+                  <div
+                    className="flex h-full w-full flex-col gap-1 rounded-md bg-white text-xs"
+                    onClick={() => {
+                      if (selectedSuggestions === index) {
+                        setPersonalInfo(defautPersonalInfo);
+                        setSelectedSuggestions(-1);
+                        return;
+                      }
+
+                      setPersonalInfo({
+                        id: item.id,
+                        name: item.name,
+                        email: item.email,
+                        phone: item.phone,
+                        website: item.website,
+                        jobTitle: item.jobTitle,
+                        address1: item.address1,
+                        address2: item.address2,
+                      });
+
+                      setSelectedSuggestions(index);
+                    }}
+                  >
                     <CardHeader className="pb-2">
                       <h3 className="text-base font-semibold">{item.name}</h3>
                       <p className="font-medium">
