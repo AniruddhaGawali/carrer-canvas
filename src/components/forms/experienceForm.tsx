@@ -27,9 +27,12 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
 
-type Props = {};
+type Props = {
+  experiences: Experience[];
+  setExperience: React.Dispatch<React.SetStateAction<Experience[]>>;
+};
 
-function ExperienceForm({}: Props) {
+function ExperienceForm({ setExperience }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const experienceFormSchema = z.object({
@@ -65,6 +68,19 @@ function ExperienceForm({}: Props) {
         className="flex flex-col gap-5"
         onSubmit={form.handleSubmit((data) => {
           console.log(data);
+          console.log("startDate", startDate);
+          console.log("endDate", endDate);
+
+          const newExperience: Experience = {
+            company: data.company,
+            position: data.jobTitle,
+            startDate: startDate?.toISOString() ?? "",
+            endDate: endDate?.toISOString() ?? "",
+            description: [data.description],
+            location: data.location,
+          };
+
+          setExperience((prev) => [...prev, newExperience]);
         })}
       >
         <FormField
@@ -107,7 +123,7 @@ function ExperienceForm({}: Props) {
           )}
         />
 
-        <div className="flex gap-5">
+        <div className="flex flex-col gap-5 xl:flex-row">
           <FormField
             name="startDate"
             render={() => (
@@ -238,7 +254,7 @@ function ExperienceForm({}: Props) {
           )}
         />
 
-        <Button type="submit">Save</Button>
+        <Button type="submit">Add</Button>
       </form>
     </Form>
   );

@@ -13,6 +13,7 @@ type ResumeTemplate = {
   };
   social: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
   skills: 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15;
+  experience_project: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 };
 
 type Resume = {
@@ -62,7 +63,7 @@ type Experience = {
   startDate: string;
   endDate: string;
   description: string[];
-  skills: string[];
+  location: string;
 };
 
 type Projects = {

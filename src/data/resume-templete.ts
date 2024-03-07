@@ -14,6 +14,7 @@ const templetes: ResumeTemplate[] = [
     },
     social: 1,
     skills: 10,
+    experience_project: 3,
   },
 ];
 
