@@ -1,33 +1,24 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command";
+
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "../ui/input";
 import { SkillLevel } from "@/types/enum";
+import Chips from "../chips";
 
 const FormSchema = z.object({
   skill: z
@@ -37,8 +28,9 @@ const FormSchema = z.object({
     .min(2, {
       message: "Skill must be at least 2 characters.",
     }),
-  level: z.string({
-    required_error: "Please select a level of skill.",
+
+  level: z.enum(["Newbie", "Intermediate", "Advanced", "Expert"], {
+    required_error: "Please select a skill level.",
   }),
 });
 
@@ -56,6 +48,7 @@ export function SelectSkillForm({
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log(data);
     addSkill(data.skill, data.level as SkillLevel);
     form.reset({
       level: undefined,
@@ -73,59 +66,91 @@ export function SelectSkillForm({
           control={form.control}
           name="level"
           render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        "w-[200px] justify-between",
-                        !field.value && "text-muted-foreground",
-                      )}
-                    >
-                      {field.value
-                        ? Object.values(SkillLevel)
-                            .find((item) => SkillLevel[item] === field.value)
-                            ?.toString()
-                        : "Select Level"}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
-                  <Command>
-                    <CommandInput placeholder="Search Level..." />
-                    <CommandEmpty>No Level Found</CommandEmpty>
-                    <CommandGroup>
-                      {Object.values(SkillLevel).map((item) => (
-                        <CommandItem
-                          value={item}
-                          key={item}
-                          onSelect={() => {
-                            form.setValue("level", item);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              item === field.value
-                                ? "opacity-100"
-                                : "opacity-0",
-                            )}
-                          />
-                          {item}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+            <FormItem className="space-y-3">
+              <FormLabel>
+                <span>Skill Level</span>
+              </FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex flex-wrap space-x-1"
+                >
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="Newbie" className="hidden" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      <Chips
+                        variant={
+                          field.value === "Newbie" ? "default" : "outline"
+                        }
+                        onClick={() => {
+                          field.onChange("Newbie");
+                        }}
+                      >
+                        Newbie
+                      </Chips>
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="Intermediate" className="hidden" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      <Chips
+                        variant={
+                          field.value === "Intermediate" ? "default" : "outline"
+                        }
+                        onClick={() => {
+                          field.onChange("Intermediate");
+                        }}
+                      >
+                        Intermediate
+                      </Chips>
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="Advanced" className="hidden" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      <Chips
+                        variant={
+                          field.value === "Advanced" ? "default" : "outline"
+                        }
+                        onClick={() => {
+                          field.onChange("Advanced");
+                        }}
+                      >
+                        Advanced
+                      </Chips>
+                    </FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="Expert" className="hidden" />
+                    </FormControl>
+                    <FormLabel className="font-normal">
+                      <Chips
+                        variant={
+                          field.value === "Expert" ? "default" : "outline"
+                        }
+                        onClick={() => {
+                          field.onChange("Expert");
+                        }}
+                      >
+                        Expert
+                      </Chips>
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="skill"
@@ -134,7 +159,6 @@ export function SelectSkillForm({
               <FormControl>
                 <Input placeholder="Skill" className="w-full" {...field} />
               </FormControl>
-
               <FormMessage />
             </FormItem>
           )}

@@ -10,11 +10,13 @@ import { Plus } from "lucide-react";
 import { getResumes } from "@/actions/resume";
 import useResume from "@/redux/dispatch/useResume";
 import GridLoading from "@/components/loadingComponents/gridLoading";
+import { FaTrash } from "react-icons/fa";
+import * as action from "@/actions";
 
 type Props = {};
 
 function Dashboard({}: Props) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [isResumeLoading, setIsResumeLoading] = useState<boolean>(true);
@@ -24,7 +26,7 @@ function Dashboard({}: Props) {
     setIsResumeLoading(true);
     const res = await getResumes(session);
     if (res.success) {
-      setResumes(res.resumes as Resume[]);
+      setResumes(res.resumes as unknown as Resume[]);
     }
     setIsResumeLoading(false);
   }
@@ -32,10 +34,10 @@ function Dashboard({}: Props) {
   useEffect(() => {
     fetchResumes();
     setResumeToDefaultState();
-  }, []);
+  }, [session]);
 
   if (!session) {
-    redirect("/register");
+    if (status == "unauthenticated") redirect("/register");
   }
 
   return (
@@ -73,19 +75,29 @@ function Dashboard({}: Props) {
             <div className="juc container my-20 grid grid-cols-1 items-center justify-center gap-20 md:grid-cols-2 lg:grid-cols-3">
               <>
                 {resumes.map((item, index) => (
-                  <div
-                    key={index}
-                    onClick={() => {
-                      setResumeState(item);
-                      router.push("/create-resume");
-                    }}
-                    className="grainy-gradient-hover group m-auto h-96 w-full min-w-min max-w-sm cursor-pointer rounded-lg border-[3px] bg-gray-200 p-5 shadow-md transition-all duration-500 hover:border-black"
-                  >
-                    <div className="h-2/3 min-h-[300px] w-full rounded-md bg-white shadow-inner transition-all duration-300"></div>
-                    <div className="mt-5 h-1/3 w-full">
-                      <h1 className="text-center text-2xl font-bold group-hover:underline">
-                        {item.title}
-                      </h1>
+                  <div className="group relative" key={index}>
+                    <FaTrash
+                      className="absolute -right-2 -top-2 z-20 hidden h-10 w-10 cursor-pointer rounded-md bg-destructive p-2 text-2xl text-destructive-foreground transition-all duration-300 group-hover:block"
+                      onClick={async () => {
+                        if (session) {
+                          await action.deleteResume(item.id, session);
+                          fetchResumes();
+                        }
+                      }}
+                    />
+                    <div
+                      onClick={() => {
+                        setResumeState(item);
+                        router.push("/create-resume");
+                      }}
+                      className="grainy-gradient-hover group relative m-auto h-96 w-full min-w-min max-w-sm cursor-pointer rounded-lg border-[3px] bg-gray-200 p-5 shadow-md transition-all duration-500 hover:border-black"
+                    >
+                      <div className="h-2/3 min-h-[300px] w-full rounded-md bg-white shadow-inner transition-all duration-300"></div>
+                      <div className="mt-5 h-1/3 w-full">
+                        <h1 className="text-center text-2xl font-bold group-hover:underline">
+                          {item.title}
+                        </h1>
+                      </div>
                     </div>
                   </div>
                 ))}

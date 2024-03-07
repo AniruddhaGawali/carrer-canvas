@@ -18,7 +18,7 @@ export const saveResume = createAsyncThunk(
   "resume/saveResume",
   async ({ resume, session }: { resume: Resume; session: Session | null }) => {
     const { res } = await uploadResume(resume, session);
-    return res as Resume;
+    return res as unknown as Resume;
   },
 );
 export const saveResumeById = createAsyncThunk(
@@ -28,7 +28,7 @@ export const saveResumeById = createAsyncThunk(
       throw new Error("User not found");
     }
     const { resume } = await getResumeById(id);
-    return resume as Resume;
+    return resume as unknown as Resume;
   },
 );
 

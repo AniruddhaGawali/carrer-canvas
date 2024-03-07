@@ -2,7 +2,7 @@
 
 import { StepsLinks as Steps } from "@/data/resume-step";
 import React, { useEffect, useRef, useState } from "react";
-import PdfDoc from "../pdfDoc";
+
 import useResume from "@/redux/dispatch/useResume";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
@@ -17,6 +17,8 @@ import { SelectSkillForm } from "../forms/selectSkillForm";
 import { SkillLevel } from "@/types/enum";
 import AddSocialLinksForm from "../forms/addSocialLinksFrom";
 import { useSession } from "next-auth/react";
+import * as action from "@/actions";
+import PdfDoc from "../pdfView";
 
 type Props = {};
 
@@ -24,9 +26,9 @@ export default function SocialLinksAndSkills({}: Props) {
   const searchParams = useSearchParams();
   const {
     resumeState,
-    setResumePersonalInfo,
     setResumeStateById,
     setResumeToDefaultState,
+    saveResumeState,
   } = useResume();
   const { data: session } = useSession();
 
@@ -36,6 +38,9 @@ export default function SocialLinksAndSkills({}: Props) {
   const [disabledSaveButton, setDisabledSaveButton] = useState<boolean>(true);
   const [isSocialAndSkillSaving, setIsSocialAndSkillSaving] =
     useState<boolean>(false);
+
+  const [skillssuggestions, setSkillSuggestions] = useState<Skill[]>([]);
+  const [socialsuggestions, setSocialSuggestions] = useState<Social>({});
 
   const selectedTemplete =
     resumeState.template != null
@@ -93,7 +98,48 @@ export default function SocialLinksAndSkills({}: Props) {
     }
   };
 
-  const handleSave = async () => {};
+  const fetchSkillsAndSocials = async () => {
+    if (session) {
+      const skills = await action.getSkills(session);
+      if (skills) {
+        setSkillSuggestions(skills.skills as unknown as Skill[]);
+      }
+      let socials = await action.getSocial(session);
+      if (socials) {
+        const newSocials = Object.keys(socials).reduce((result, key) => {
+          if (
+            socials[key as keyof Social] != null &&
+            key !== "id" &&
+            key !== "userId"
+          ) {
+            result[key as keyof Partial<Social>] = socials[
+              key as keyof Social
+            ] as string;
+          }
+          return result;
+        }, {} as Partial<Social>);
+        setSocialSuggestions(newSocials as unknown as Social);
+      }
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSocialAndSkillSaving(true);
+    console.log("skills", skills);
+    console.log("socialLinks", socialLinks);
+    if (session && skills.length > 0) {
+      await action.setSkills([...skills], session);
+      var newResume = await action.setSkillsInResume(skills, resumeState);
+      if (newResume) {
+        await action.setSocial(socialLinks, session);
+        newResume = await action.setSocialInResume(socialLinks, resumeState);
+      }
+      if (newResume) {
+        saveResumeState(newResume as unknown as Resume, session);
+      }
+    }
+    setIsSocialAndSkillSaving(false);
+  };
 
   useEffect(() => {
     if (skills.length > 0 || Object.keys(socialLinks).length > 0) {
@@ -109,7 +155,12 @@ export default function SocialLinksAndSkills({}: Props) {
       setResumeStateById(id, session);
     }
     if (resumeState.id == "" && session) setResumeToDefaultState();
+    fetchSkillsAndSocials();
   }, [session]);
+
+  useEffect(() => {
+    console.log("resumeState", resumeState);
+  }, [resumeState]);
 
   if (!resumeState.template == null) {
     return redirect("/create-resume/step/1");
@@ -186,50 +237,50 @@ export default function SocialLinksAndSkills({}: Props) {
                   ))}
                 </div>
 
-                <SuggestionBox className="border-none">
-                  {skillssuggestions.map((skill, index) => (
-                    <CarouselItem
-                      key={index}
-                      className="md:basis-1/3 lg:basis-1/3"
-                    >
-                      <Chips
-                        className={`group m-1 border-2 border-primary transition-all hover:border-0 ${
-                          skills.includes(skill) &&
-                          "grainy-gradient2 border-0 p-[2px] hover:p-0 "
-                        }`}
+                {skillssuggestions.length > 0 && (
+                  <SuggestionBox className="border-none">
+                    {skillssuggestions.map((skill, index) => (
+                      <CarouselItem
                         key={index}
-                        onClick={() => {
-                          if (skills.length < totalSkills) {
-                            if (
-                              skills.find((item) => item.skills == skill.skills)
-                            ) {
-                              setSkills((prevSkills) =>
-                                prevSkills.filter(
-                                  (s) => s.skills != skill.skills,
-                                ),
-                              );
-                              return;
-                            }
-                            setSkills((prevSkills) => [...prevSkills, skill]);
-                          }
-                        }}
+                        className="md:basis-1/3 lg:basis-1/3"
                       >
-                        <div
-                          className={`flex h-full w-full items-center justify-center gap-1 rounded-sm bg-primary text-start transition-all group-hover:bg-transparent group-hover:text-white ${
-                            skills.includes(skill) && "bg-white text-black"
+                        <Chips
+                          className={`group m-1 cursor-pointer border-2 border-primary transition-all hover:border-0 ${
+                            skills.includes(skill) &&
+                            "grainy-gradient2 border-0 text-black"
                           }`}
+                          key={index}
+                          onClick={() => {
+                            if (skills.length < totalSkills) {
+                              if (
+                                skills.find(
+                                  (item) => item.skills == skill.skills,
+                                )
+                              ) {
+                                setSkills((prevSkills) =>
+                                  prevSkills.filter(
+                                    (s) => s.skills != skill.skills,
+                                  ),
+                                );
+                                return;
+                              }
+                              setSkills((prevSkills) => [...prevSkills, skill]);
+                            }
+                          }}
                         >
-                          <span className="space-x-0.5">
-                            <span>{skill.skills}</span>
-                            <span className="text-[.65rem]">
-                              ({skill.level.slice(0, 3)})
+                          <div>
+                            <span className="space-x-0.5">
+                              <span>{skill.skills}</span>
+                              <span className="text-[.65rem]">
+                                ({skill.level.slice(0, 3)})
+                              </span>
                             </span>
-                          </span>
-                        </div>
-                      </Chips>
-                    </CarouselItem>
-                  ))}
-                </SuggestionBox>
+                          </div>
+                        </Chips>
+                      </CarouselItem>
+                    ))}
+                  </SuggestionBox>
+                )}
               </div>
             </section>
 
@@ -284,45 +335,41 @@ export default function SocialLinksAndSkills({}: Props) {
                   ))}
                 </div>
 
-                <SuggestionBox className="border-none">
-                  {Object.keys(socialsuggestions).map((social, index) => (
-                    <CarouselItem
-                      key={index}
-                      className="md:basis-1/3 lg:basis-1/3"
-                    >
-                      <Chips
-                        className={`group m-1 border-2 border-primary transition-all hover:border-0 ${
-                          socialLinks[social as keyof Social] &&
-                          "grainy-gradient2 border-0 p-[2px] hover:p-0 "
-                        }`}
+                {Object.keys(socialsuggestions).length > 0 && (
+                  <SuggestionBox className="border-none">
+                    {Object.keys(socialsuggestions).map((social, index) => (
+                      <CarouselItem
                         key={index}
-                        onClick={() => {
-                          if (
-                            Object.keys(socialLinks).length <= totalSocialLinks
-                          ) {
-                            if (socialLinks[social as keyof Social]) return;
-                            setSocialLinks((prevSkills) => {
-                              return {
-                                ...prevSkills,
-                                [social as keyof Social]:
-                                  socialsuggestions[social as keyof Social],
-                              };
-                            });
-                          }
-                        }}
+                        className="md:basis-1/3 lg:basis-1/3"
                       >
-                        <div
-                          className={`flex h-full w-full items-center justify-center text-wrap rounded-sm bg-primary transition-all group-hover:bg-transparent group-hover:text-white ${
+                        <Chips
+                          className={`group m-1 cursor-pointer border-2 border-primary transition-all hover:border-0 ${
                             socialLinks[social as keyof Social] &&
-                            "bg-white text-black"
+                            "grainy-gradient2 border-0 text-black"
                           }`}
+                          key={index}
+                          onClick={() => {
+                            if (
+                              Object.keys(socialLinks).length <=
+                              totalSocialLinks
+                            ) {
+                              if (socialLinks[social as keyof Social]) return;
+                              setSocialLinks((prevSkills) => {
+                                return {
+                                  ...prevSkills,
+                                  [social as keyof Social]:
+                                    socialsuggestions[social as keyof Social],
+                                };
+                              });
+                            }
+                          }}
                         >
-                          {social}
-                        </div>
-                      </Chips>
-                    </CarouselItem>
-                  ))}
-                </SuggestionBox>
+                          <div>{social}</div>
+                        </Chips>
+                      </CarouselItem>
+                    ))}
+                  </SuggestionBox>
+                )}
               </div>
             </section>
 
@@ -346,7 +393,7 @@ export default function SocialLinksAndSkills({}: Props) {
         >
           <div
             className="relative flex h-full w-full items-center justify-center bg-white"
-            id="pdf"
+            // id="pdf"
           >
             <PdfDoc
               personalInfo={{
@@ -359,6 +406,7 @@ export default function SocialLinksAndSkills({}: Props) {
                 jobTitle: "Software Developer",
                 website: "www.abc.com",
               }}
+              skills={skills}
             />
           </div>
         </section>
@@ -366,48 +414,3 @@ export default function SocialLinksAndSkills({}: Props) {
     </div>
   );
 }
-
-const skillssuggestions: Skill[] = [
-  { skills: "React", level: SkillLevel.Expert },
-  { skills: "Node", level: SkillLevel.Expert },
-  { skills: "Express", level: SkillLevel.Expert },
-  { skills: "MongoDB", level: SkillLevel.Expert },
-  { skills: "TypeScript", level: SkillLevel.Expert },
-  { skills: "JavaScript", level: SkillLevel.Expert },
-  { skills: "HTML", level: SkillLevel.Expert },
-  { skills: "CSS", level: SkillLevel.Expert },
-  { skills: "SASS", level: SkillLevel.Expert },
-  { skills: "Tailwind CSS", level: SkillLevel.Expert },
-  { skills: "Bootstrap", level: SkillLevel.Expert },
-  { skills: "Material UI", level: SkillLevel.Expert },
-  { skills: "Chakra UI", level: SkillLevel.Expert },
-  { skills: "React Native", level: SkillLevel.Expert },
-  { skills: "Next.js", level: SkillLevel.Expert },
-  { skills: "Gatsby", level: SkillLevel.Expert },
-  { skills: "GraphQL", level: SkillLevel.Expert },
-  { skills: "Apollo", level: SkillLevel.Expert },
-  { skills: "REST API", level: SkillLevel.Expert },
-  { skills: "Firebase", level: SkillLevel.Expert },
-  { skills: "AWS", level: SkillLevel.Expert },
-  { skills: "Azure", level: SkillLevel.Expert },
-  { skills: "Google Cloud", level: SkillLevel.Expert },
-  { skills: "Heroku", level: SkillLevel.Expert },
-  { skills: "Netlify", level: SkillLevel.Expert },
-  { skills: "Vercel", level: SkillLevel.Expert },
-  { skills: "Jest", level: SkillLevel.Expert },
-  { skills: "Mocha", level: SkillLevel.Expert },
-  { skills: "Chai", level: SkillLevel.Expert },
-  { skills: "Cypress", level: SkillLevel.Expert },
-  { skills: "Puppeteer", level: SkillLevel.Expert },
-  { skills: "Selenium", level: SkillLevel.Expert },
-  { skills: "Jasmine", level: SkillLevel.Expert },
-  { skills: "Karma", level: SkillLevel.Expert },
-  { skills: "React Testing Library", level: SkillLevel.Expert },
-];
-
-const socialsuggestions = {
-  linkedin: "https://www.linkedin.com/in/username",
-  github: "https://www.github.com/username",
-  twitter: "https://www.twitter.com/username",
-  instagram: "https://www.instagram.com/username",
-};

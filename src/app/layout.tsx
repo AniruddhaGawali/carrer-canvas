@@ -35,8 +35,10 @@ export default async function RootLayout({
     <html lang="en">
       <NextAuthProvider session={session}>
         <StoreProvider>
-          <body className="relative">{children}</body>
-          <Toaster richColors position="top-right" />
+          <body className="relative">
+            <Toaster richColors position="top-right" />
+            {children}
+          </body>
         </StoreProvider>
       </NextAuthProvider>
     </html>

@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import templetes from "@/data/resume-templete";
 import { redirect, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
-import PdfDoc from "@/components/pdfDoc";
 
 import { CarouselItem } from "@/components/ui/carousel";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -21,6 +20,7 @@ import {
 } from "@/actions";
 import PersonalInformationForm from "../forms/personalInfoForm";
 import { useSession } from "next-auth/react";
+import PdfDoc from "../pdfView";
 
 type Props = {};
 
@@ -247,7 +247,7 @@ export default function PersonalInformationComponent({}: Props) {
             className="relative flex h-full w-full items-center justify-center bg-white"
             id="pdf"
           >
-            {/* <PdfDoc personalInfo={personalInfo} /> */}
+            <PdfDoc personalInfo={personalInfo} />
           </div>
         </section>
       </div>

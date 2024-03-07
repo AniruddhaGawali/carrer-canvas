@@ -115,7 +115,7 @@ function HeroSection({ enterNoState }: Props) {
             if (session) {
               router.push("/dashboard");
             } else {
-              router.push("/auth/register");
+              router.push("/register");
             }
           }}
         >
@@ -143,7 +143,7 @@ function HeroSection({ enterNoState }: Props) {
             if (session) {
               router.push("/dashboard");
             } else {
-              router.push("/auth/register");
+              router.push("/register");
             }
           }}
         >

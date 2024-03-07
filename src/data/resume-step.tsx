@@ -37,6 +37,12 @@ export const StepsLinks: {
     component: <PersonalInformationComponent />,
     path: "personal-details",
     validation: (resumeState: Resume) => {
+      console.log(
+        "resumeState",
+        resumeState,
+        resumeState.personalInfo,
+        resumeState.personalInfo != null,
+      );
       if (
         resumeState.personalInfo &&
         resumeState.personalInfo.name &&

@@ -15,4 +15,10 @@ export {
   getResumeById,
   deleteResume,
   setResumeTemplete,
+  setSkills,
+  setSkillsInResume,
+  getSkills,
+  getSocial,
+  setSocial,
+  setSocialInResume,
 } from "./resume";
