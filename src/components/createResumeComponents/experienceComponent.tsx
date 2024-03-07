@@ -158,17 +158,18 @@ export default function Experience({}: Props) {
 
           <div className="mt-10 flex w-full items-center justify-center">
             {experiences.length > 0 ? (
-              <div>
+              <div className="w-full max-w-sm">
                 <h3 className="text-2xl font-medium">Preview</h3>
 
                 {experiences.map((item, index) => (
-                  <div className="p-1" key={index}>
-                    <Card>
+                  <div className="relative w-full p-1" key={index}>
+                    <Card className="relative w-full cursor-pointer  text-start">
                       <CardHeader>
-                        <CardTitle>
-                          {item.position} at {item.company}
-                        </CardTitle>
+                        <CardTitle>{item.company}</CardTitle>
                         <CardDescription>
+                          <h2 className="text-base font-medium">
+                            {item.position}{" "}
+                          </h2>
                           <p>at {item.location}</p>
                           <p>
                             {new Date(item.startDate).toLocaleDateString()} -{" "}
@@ -179,25 +180,24 @@ export default function Experience({}: Props) {
                       <CardContent>
                         <p>{item.description}</p>
                       </CardContent>
-                      <CardFooter>
-                        <Button
-                          className="bg-destructive text-destructive-foreground"
-                          onClick={() => {
-                            const newExperiences = experiences.filter(
-                              (exp, i) => i !== index,
+
+                      <span
+                        className="absolute right-2 top-2"
+                        onClick={() => {
+                          const newExperiences = experiences.filter(
+                            (exp, i) => i !== index,
+                          );
+                          setExperiences(newExperiences);
+                          if (suggestions.includes(item)) {
+                            const newSuggestions = suggestions.filter(
+                              (exp) => exp.id !== item.id,
                             );
-                            setExperiences(newExperiences);
-                            if (suggestions.includes(item)) {
-                              const newSuggestions = suggestions.filter(
-                                (exp) => exp.id !== item.id,
-                              );
-                              setSuggestions(newSuggestions);
-                            }
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </CardFooter>
+                            setSuggestions(newSuggestions);
+                          }
+                        }}
+                      >
+                        <Trash2 size={20} />
+                      </span>
                     </Card>
                   </div>
                 ))}
@@ -215,10 +215,11 @@ export default function Experience({}: Props) {
               );
 
               if (experiencesRes) {
+                console.log("experiencesRes", experiencesRes);
+                setExperiences(experiencesRes as unknown as Experience[]);
                 const res = await action.setExperiencesInResume(
                   experiencesRes as unknown as Experience[],
                   resumeState.id,
-                  session!,
                 );
 
                 if (!res) return;
@@ -244,6 +245,7 @@ export default function Experience({}: Props) {
                   template: res.template,
                   exprerience: res.experience as Experience[],
                 };
+                console.log(res);
 
                 setResumeState(newResume);
               }
