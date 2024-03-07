@@ -48,6 +48,7 @@ model User {
   PersonalInfo   PersonalInfo[]
   Social         Social[]
   Skills         Skills[]
+  Experience     Experience[]
 }
 
 model VerificationToken {
@@ -68,6 +69,7 @@ model Resume {
   skills         Json[]
   User           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   personalInfo   PersonalInfo? @relation(fields: [personalInfoId], references: [id])
+  Experience     Experience[]
 }
 
 model PersonalInfo {
@@ -102,4 +104,17 @@ model Social {
   instagram String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Experience {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @map("user_id") @db.ObjectId
+  company     String
+  jobTitle    String   @map("job_title")
+  location    String
+  startDate   DateTime
+  endDate     DateTime
+  description String
+  Resume      Resume?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

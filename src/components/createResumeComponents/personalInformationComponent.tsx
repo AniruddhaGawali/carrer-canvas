@@ -247,7 +247,7 @@ export default function PersonalInformationComponent({}: Props) {
             className="relative flex h-full w-full items-center justify-center bg-white"
             id="pdf"
           >
-            <PdfDoc personalInfo={personalInfo} />
+            <PdfDoc personalInfo={personalInfo} social={resumeState.social} />
           </div>
         </section>
       </div>

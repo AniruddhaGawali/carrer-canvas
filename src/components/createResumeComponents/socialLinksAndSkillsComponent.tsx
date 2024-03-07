@@ -15,7 +15,7 @@ import SuggestionBox from "../suggestionBox";
 import { CarouselItem } from "../ui/carousel";
 import { SelectSkillForm } from "../forms/selectSkillForm";
 import { SkillLevel } from "@/types/enum";
-import AddSocialLinksForm from "../forms/addSocialLinksFrom";
+import AddSocialLinksForm from "../forms/addSocialLinksForm";
 import { useSession } from "next-auth/react";
 import * as action from "@/actions";
 import PdfDoc from "../pdfView";

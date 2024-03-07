@@ -67,9 +67,9 @@ const styles = StyleSheet.create({
 });
 
 type Classic1Prop = {
-  personalInfo?: PersonalInfo;
-  skills?: Skill[];
-  social: Social;
+  personalInfo?: PersonalInfo | null;
+  skills?: Skill[] | null;
+  social?: Social | null;
 };
 
 // Create Document Component
@@ -115,20 +115,20 @@ const Classic1 = ({ personalInfo, skills, social }: Classic1Prop) => (
           >
             {personalInfo && (
               <>
-                <Text>-{personalInfo.phone}</Text>
-                <Text>- {personalInfo.email}</Text>
+                <Text>-{personalInfo.phone ?? ""}</Text>
+                <Text>- {personalInfo.email ?? ""}</Text>
                 <Text>
                   -{" "}
                   <Link
-                    src={personalInfo.website}
+                    src={personalInfo.website ?? ""}
                     style={{
                       color: "black",
                     }}
                   >
-                    {social.linkedin}
+                    {social ? social.linkedin ?? "" : ""}
                   </Link>
                 </Text>
-                <Text>- {personalInfo.address2}</Text>
+                <Text>- {personalInfo.address2 ?? ""}</Text>
               </>
             )}
           </View>
@@ -173,7 +173,7 @@ const Classic1 = ({ personalInfo, skills, social }: Classic1Prop) => (
                     fontWeight: "semibold",
                   }}
                 >
-                  {skill.skills}
+                  {skill.skills ?? ""}
                 </Text>
               ))}
             </>
