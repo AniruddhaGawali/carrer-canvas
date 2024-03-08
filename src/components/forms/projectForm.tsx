@@ -40,7 +40,7 @@ type Props = {
 export default function ProjectForm({ projects, setProjects }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [tech, setTech] = useState<string[]>(["asrgda"]);
+  const [tech, setTech] = useState<string[]>([]);
   const [fetching, setFetching] = useState<boolean>(false);
 
   async function fetchGithubRepoData(user: string, repo: string) {
@@ -157,7 +157,9 @@ export default function ProjectForm({ projects, setProjects }: Props) {
             control={githubLinkForm.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Project Name</FormLabel>
+                <FormLabel>
+                  GitHub Project Link <span className="text-red-500">*</span>
+                </FormLabel>
                 <FormControl>
                   <div className="flex items-center gap-3">
                     {fetching && <Loader2 className="animate-spin" />}{" "}

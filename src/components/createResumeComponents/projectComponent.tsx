@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StepsLinks as Steps } from "@/data/resume-step";
 import { Button } from "../ui/button";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
@@ -17,6 +17,8 @@ import {
 import { Separator } from "@radix-ui/react-separator";
 import { useSession } from "next-auth/react";
 import useResume from "@/redux/dispatch/useResume";
+import SuggestionBox from "../suggestionBox";
+import { CarouselItem } from "../ui/carousel";
 
 type Props = {};
 
@@ -25,6 +27,8 @@ export default function ProjectComponent({}: Props) {
   const { resumeState, setResumeState } = useResume();
   const [showResume, setShowResume] = useState<boolean>(false);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [suggestions, setSuggestions] = useState<Project[]>([]);
+  const [selectedSuggestions, setSelectedSuggestions] = useState<Project[]>([]);
 
   async function addProjects() {
     console.log("projects", projects);
@@ -45,12 +49,87 @@ export default function ProjectComponent({}: Props) {
     }
   }
 
+  async function fetchSuggestions() {
+    if (session) {
+      const res = await action.getProjects(session);
+      if (res) {
+        setSuggestions(res as unknown as Project[]);
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchSuggestions();
+  }, [session]);
+
   return (
     <div className=" my-[9rem] min-h-screen w-full">
       <div className="mb-20 flex flex-col items-center justify-center">
-        <h2 className="mb-3 text-center text-3xl font-bold">{Steps[3].name}</h2>
-        <p>{Steps[3].desc}</p>
+        <h2 className="mb-3 text-center text-3xl font-bold">{Steps[4].name}</h2>
+        <p>{Steps[4].desc}</p>
       </div>
+
+      {suggestions.length > 0 && (
+        <SuggestionBox>
+          {suggestions.map((item, index) => (
+            <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+              <div className="relative w-full p-1" key={index}>
+                <Card
+                  className={`relative cursor-pointer p-[3px] text-start ${
+                    selectedSuggestions.includes(item) && "grainy-gradient2 "
+                  }`}
+                >
+                  <div
+                    className="flex h-full w-full flex-col gap-1 rounded-md bg-white text-xs"
+                    onClick={() => {
+                      if (!selectedSuggestions.includes(item)) {
+                        const newSuggestions = [...selectedSuggestions, item];
+                        setSelectedSuggestions(newSuggestions);
+                        setProjects((prev) => [...prev, item]);
+                      }
+                    }}
+                  >
+                    <CardHeader>
+                      <CardTitle>{item.name}</CardTitle>
+                      <CardDescription>
+                        <p className="text-base font-medium">
+                          {item.projectType}{" "}
+                        </p>
+                        <p>link: {item.link}</p>
+                        <p>
+                          {new Date(item.startDate).toLocaleDateString()} -{" "}
+                          {new Date(item.endDate).toLocaleDateString()}
+                        </p>
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p>{item.description}</p>
+                    </CardContent>
+                  </div>
+
+                  <span
+                    className="absolute right-2 top-2"
+                    onClick={() => {
+                      // const newExperiences = projects.filter(
+                      //   (exp, i) => i !== index,
+                      // );
+                      // setProjects(newExperiences);
+                      // // if (suggestions.includes(item)) {
+                      // //   const newSuggestions = suggestions.filter(
+                      // //     (exp) => exp.id !== item.id,
+                      // //   );
+                      // //   setSuggestions(newSuggestions);
+                      // // }
+                    }}
+                  >
+                    <Trash2 size={20} />
+                  </span>
+                </Card>
+              </div>
+            </CarouselItem>
+          ))}
+        </SuggestionBox>
+      )}
 
       <div className="container flex min-h-screen w-full flex-col-reverse items-center justify-center gap-5 lg:flex-row lg:items-stretch">
         <section className="relative flex w-full max-w-xl flex-col items-center justify-start rounded-lg border-2 border-primary bg-white p-5 pt-10 lg:w-1/2 lg:max-w-none ">
@@ -78,7 +157,7 @@ export default function ProjectComponent({}: Props) {
           <div className="flex w-full flex-col items-center justify-evenly gap-5">
             <section className="container mt-10 flex w-5/6 flex-col gap-5">
               <h4 className="flex items-center justify-between text-lg font-medium">
-                Experience
+                Projects
               </h4>
               <ProjectForm projects={projects} setProjects={setProjects} />
             </section>
@@ -121,12 +200,13 @@ export default function ProjectComponent({}: Props) {
                             (exp, i) => i !== index,
                           );
                           setProjects(newExperiences);
-                          // if (suggestions.includes(item)) {
-                          //   const newSuggestions = suggestions.filter(
-                          //     (exp) => exp.id !== item.id,
-                          //   );
-                          //   setSuggestions(newSuggestions);
-                          // }
+                          if (selectedSuggestions.includes(item)) {
+                            const newSelectedSuggestions =
+                              selectedSuggestions.filter(
+                                (exp) => exp.id !== item.id,
+                              );
+                            setSelectedSuggestions(newSelectedSuggestions);
+                          }
                         }}
                       >
                         <Trash2 size={20} />

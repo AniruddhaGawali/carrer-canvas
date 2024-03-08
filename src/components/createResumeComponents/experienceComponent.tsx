@@ -213,10 +213,11 @@ export default function Experience({}: Props) {
                           );
                           setExperiences(newExperiences);
                           if (suggestions.includes(item)) {
-                            const newSuggestions = suggestions.filter(
-                              (exp) => exp.id !== item.id,
-                            );
-                            setSuggestions(newSuggestions);
+                            const newSelectedSuggestions =
+                              selectedSuggestions.filter(
+                                (exp) => exp.id !== item.id,
+                              );
+                            setSelectedSuggestions(newSelectedSuggestions);
                           }
                         }}
                       >
