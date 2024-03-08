@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -12,8 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { Input } from "@/components/ui/input";
-
 import {
   Popover,
   PopoverContent,
@@ -25,72 +25,51 @@ import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
+import { Input } from "../ui/input";
 
-type Props = {
-  experiences: Experience[];
-  setExperience: React.Dispatch<React.SetStateAction<Experience[]>>;
-};
+type Props = {};
 
-export default function ExperienceForm({ setExperience }: Props) {
+function EducationForm({}: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const experienceFormSchema = z.object({
-    company: z.string().min(2, {
-      message: "Company name must be at least 2 characters.",
+
+  const educationFormSchema = z.object({
+    college: z.string().min(2, {
+      message: "College name must be at least 2 characters.",
     }),
-    jobTitle: z.string().min(2, {
-      message: "Job title must be at least 2 characters.",
+    degree: z.string().min(2, {
+      message: "Degree must be at least 2 characters.",
     }),
-    location: z.string(),
     description: z
       .string()
       .min(10, {
-        message: "Bio must be at least 10 characters.",
+        message: "Description must be at least 10 characters.",
       })
       .max(160, {
-        message: "Bio must not be longer than 30 characters.",
+        message: "Description must not be longer than 160 characters.",
       }),
   });
 
-  const form = useForm<z.infer<typeof experienceFormSchema>>({
-    resolver: zodResolver(experienceFormSchema),
+  const form = useForm<z.infer<typeof educationFormSchema>>({
+    resolver: zodResolver(educationFormSchema),
     values: {
-      company: "",
-      jobTitle: "",
+      college: "",
+      degree: "",
       description: "",
-      location: "",
     },
   });
+
   return (
     <Form {...form}>
-      <form
-        className="flex flex-col gap-5"
-        onSubmit={form.handleSubmit((data) => {
-          console.log(data);
-          console.log("startDate", startDate);
-          console.log("endDate", endDate);
-
-          const newExperience: Experience = {
-            id: "",
-            company: data.company,
-            position: data.jobTitle,
-            startDate: startDate?.toISOString() ?? "",
-            endDate: endDate?.toISOString() ?? "",
-            description: data.description,
-            location: data.location,
-          };
-
-          setExperience((prev) => [...prev, newExperience]);
-        })}
-      >
+      <form className="flex flex-col gap-5">
         <FormField
           control={form.control}
-          name="company"
+          name="college"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Company Name</FormLabel>
+              <FormLabel>College Name</FormLabel>
               <FormControl>
-                <Input placeholder="Company Name" {...field} />
+                <Input placeholder="College Name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -99,12 +78,30 @@ export default function ExperienceForm({ setExperience }: Props) {
 
         <FormField
           control={form.control}
-          name="jobTitle"
+          name="degree"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Job Title</FormLabel>
+              <FormLabel>Degree</FormLabel>
               <FormControl>
-                <Input placeholder="Job Title" {...field} />
+                <Input placeholder="Degree" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Tell us a little bit about yourself"
+                  // className="resize-none"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -201,43 +198,10 @@ export default function ExperienceForm({ setExperience }: Props) {
             )}
           />
         </div>
-
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Location</FormLabel>
-              <FormControl>
-                <Input placeholder="Location" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Description <span className="text-red-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  // className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <Button type="submit">Add</Button>
       </form>
     </Form>
   );
 }
+
+export default EducationForm;

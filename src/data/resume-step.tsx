@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import * as action from "@/actions";
 import ExperienceComponent from "@/components/createResumeComponents/experienceComponent";
 import ProjectComponent from "@/components/createResumeComponents/projectComponent";
+import EducationAndCertificationComponents from "@/components/createResumeComponents/educationAndCertificationComponents";
 
 export const StepsLinks: {
   name: string;
@@ -93,17 +94,14 @@ export const StepsLinks: {
       return true;
     },
   },
-  // {
-  //   name: "Education",
-  //   stepNo: 3,
-  //   desc: "Enter your educational details",
-  //   component: <></>,
-  //   path: "education",
-  //   validation: (resumeState: Resume) => {
-  //     if (resumeState.experience) {
-  //       return true;
-  //     }
-  //     return false;
-  //   },
-  // },
+  {
+    name: "Education & Certifications",
+    stepNo: 6,
+    desc: "Enter your education and certifications",
+    component: <EducationAndCertificationComponents />,
+    path: "education-certifications",
+    validation: (resumeState: Resume) => {
+      return true;
+    },
+  },
 ];
