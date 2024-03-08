@@ -1,9 +1,16 @@
 import React from "react";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import type { Metadata } from "next";
 
 type Props = {
   children: React.ReactNode;
+};
+
+export const metadata: Metadata = {
+  title: "Dashboard | Career Canves",
+  description:
+    "Craft. Create. Captivate. Elevate Your Career with Careers Canves",
 };
 
 function DashboardLayout({ children }: Props) {

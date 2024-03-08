@@ -25,6 +25,7 @@ type Resume = {
   social?: Social | null;
   skills?: Skill[] | null;
   exprerience?: Experience[] | null;
+  project?: Project[] | null;
 };
 
 type PersonalInfo = {
@@ -68,13 +69,14 @@ type Experience = {
   location: string;
 };
 
-type Projects = {
+type Project = {
+  id: string;
   name: string;
   projectType: string;
   link: string;
   startDate: string;
   endDate: string;
-  description: string[];
+  description: string;
   tech: string[];
 };
 

@@ -26,4 +26,9 @@ export {
   deleteExperience,
   setExperiences,
   updateExperience,
+  deleteProject,
+  getProjects,
+  setProjects,
+  setProjectsInResume,
+  updateProject,
 } from "./resume";

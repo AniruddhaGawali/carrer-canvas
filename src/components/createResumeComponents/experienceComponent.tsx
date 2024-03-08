@@ -11,7 +11,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -44,6 +43,31 @@ export default function Experience({}: Props) {
         setSuggestions(res as unknown as Experience[]);
       }
     }
+  }
+
+  async function addExperiences() {
+    setDisabledSaveButton(true);
+    const experiencesRes = await action.setExperiences(experiences, session!);
+
+    if (experiencesRes) {
+      console.log("experiencesRes", experiencesRes);
+      setExperiences(experiencesRes);
+      const res = await action.setExperiencesInResume(
+        experiencesRes,
+        resumeState.id,
+      );
+
+      if (!res) return;
+
+      const newResume: Resume = {
+        ...resumeState,
+        exprerience: res.experience as Experience[],
+      };
+      console.log(res);
+
+      setResumeState(newResume);
+    }
+    setDisabledSaveButton(false);
   }
 
   useEffect(() => {
@@ -207,50 +231,7 @@ export default function Experience({}: Props) {
 
           <LoadingButton
             className="mt-5 w-full max-w-md"
-            onClick={async () => {
-              setDisabledSaveButton(true);
-              const experiencesRes = await action.setExperiences(
-                experiences,
-                session!,
-              );
-
-              if (experiencesRes) {
-                console.log("experiencesRes", experiencesRes);
-                setExperiences(experiencesRes as unknown as Experience[]);
-                const res = await action.setExperiencesInResume(
-                  experiencesRes as unknown as Experience[],
-                  resumeState.id,
-                );
-
-                if (!res) return;
-
-                const newResume: Resume = {
-                  id: res.id,
-                  title: res.title,
-                  userId: res.userId,
-                  personalInfo: res.personalInfo
-                    ? {
-                        address1: res.personalInfo.address1,
-                        address2: res.personalInfo.address2,
-                        email: res.personalInfo.email,
-                        id: res.personalInfo.id,
-                        jobTitle: res.personalInfo.jobTitle,
-                        name: res.personalInfo.name,
-                        phone: res.personalInfo.phone,
-                        website: res.personalInfo.website ?? undefined,
-                      }
-                    : null,
-                  skills: res.skills as Skill[],
-                  social: res.social as Social,
-                  template: res.template,
-                  exprerience: res.experience as Experience[],
-                };
-                console.log(res);
-
-                setResumeState(newResume);
-              }
-              setDisabledSaveButton(false);
-            }}
+            onClick={addExperiences}
             disabled={disabledSaveButton}
             loading={disabledSaveButton}
           >

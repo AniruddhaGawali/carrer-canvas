@@ -4,6 +4,7 @@ import SocialLinksAndSkillsComponent from "@/components/createResumeComponents/s
 import { toast } from "sonner";
 import * as action from "@/actions";
 import ExperienceComponent from "@/components/createResumeComponents/experienceComponent";
+import ProjectComponent from "@/components/createResumeComponents/projectComponent";
 
 export const StepsLinks: {
   name: string;
@@ -78,6 +79,16 @@ export const StepsLinks: {
     desc: "Enter your work experience",
     component: <ExperienceComponent />,
     path: "experience",
+    validation: (_resumeState: Resume) => {
+      return true;
+    },
+  },
+  {
+    name: "Projects",
+    stepNo: 5,
+    desc: "Enter your projects",
+    component: <ProjectComponent />,
+    path: "projects",
     validation: (_resumeState: Resume) => {
       return true;
     },

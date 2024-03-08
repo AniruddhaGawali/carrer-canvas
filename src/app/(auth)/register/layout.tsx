@@ -2,8 +2,8 @@ import React from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Create New Account | Carrier Canves",
-  description: "Start your new carrier canves",
+  title: "Create New Account | Career Canves",
+  description: "Start your new Career canves",
 };
 
 function LoginLayout({ children }: { children: React.ReactNode }) {

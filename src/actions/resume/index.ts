@@ -21,3 +21,10 @@ export {
   setExperiences,
   updateExperience,
 } from "./step4";
+export {
+  deleteProject,
+  getProjects,
+  setProjects,
+  setProjectsInResume,
+  updateProject,
+} from "./step5";

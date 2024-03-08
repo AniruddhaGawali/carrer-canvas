@@ -109,7 +109,6 @@ export async function setExperiencesInResume(
   resumeId: string,
 ) {
   try {
-    console.log("experiences", experiences);
     const res = await db.resume.update({
       where: {
         id: resumeId,

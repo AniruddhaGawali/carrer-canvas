@@ -7,9 +7,9 @@ import StoreProvider from "@/provider/storeProvider";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "Carrier Canves",
+  title: "Career Canves",
   description:
-    "Craft. Create. Captivate. Elevate Your Career with Carrier Canves",
+    "Craft. Create. Captivate. Elevate Your Career with Career Canves",
   icons: {
     icon: [
       { url: "/icons/favicon.ico" },

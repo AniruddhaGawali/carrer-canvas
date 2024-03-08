@@ -6,7 +6,6 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -246,7 +245,7 @@ export default function ExperienceForm({ setExperience }: Props) {
               <FormControl>
                 <Textarea
                   placeholder="Tell us a little bit about yourself"
-                  className="resize-none"
+                  // className="resize-none"
                   {...field}
                 />
               </FormControl>
