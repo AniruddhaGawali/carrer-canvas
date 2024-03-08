@@ -105,14 +105,14 @@ export default function SocialLinksAndSkills({}: Props) {
         setSkillSuggestions(skills.skills as unknown as Skill[]);
       }
       let socials = await action.getSocial(session);
-      if (socials) {
+      if (socials != null) {
         const newSocials = Object.keys(socials).reduce((result, key) => {
           if (
-            socials[key as keyof Social] != null &&
+            socials![key as keyof Social] != null &&
             key !== "id" &&
             key !== "userId"
           ) {
-            result[key as keyof Partial<Social>] = socials[
+            result[key as keyof Partial<Social>] = socials![
               key as keyof Social
             ] as string;
           }

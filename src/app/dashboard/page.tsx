@@ -6,12 +6,12 @@ import { useSession } from "next-auth/react";
 
 import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Edit, Plus, Trash2 } from "lucide-react";
 import { getResumes } from "@/actions/resume";
 import useResume from "@/redux/dispatch/useResume";
 import GridLoading from "@/components/loadingComponents/gridLoading";
-import { FaTrash } from "react-icons/fa";
 import * as action from "@/actions";
+import { Button } from "@/components/ui/button";
 
 type Props = {};
 
@@ -76,24 +76,32 @@ function Dashboard({}: Props) {
               <>
                 {resumes.map((item, index) => (
                   <div className="group relative" key={index}>
-                    <FaTrash
-                      className="absolute -right-2 -top-2 z-20 hidden h-10 w-10 cursor-pointer rounded-md bg-destructive p-2 text-2xl text-destructive-foreground transition-all duration-300 group-hover:block"
-                      onClick={async () => {
-                        if (session) {
-                          await action.deleteResume(item.id, session);
-                          fetchResumes();
-                        }
-                      }}
-                    />
-                    <div
-                      onClick={() => {
-                        setResumeState(item);
-                        router.push("/create-resume");
-                      }}
-                      className="grainy-gradient-hover group relative m-auto h-96 w-full min-w-min max-w-sm cursor-pointer rounded-lg border-[3px] bg-gray-200 p-5 shadow-md transition-all duration-500 hover:border-black"
-                    >
+                    <div className="grainy-gradient-hover group relative m-auto h-96 w-full min-w-min max-w-sm cursor-pointer rounded-lg border-[3px] bg-secondary p-5 shadow-md transition-all duration-500 hover:border-black">
+                      <div className="absolute -bottom-10 -right-0 z-20  hidden h-10 w-full items-center justify-between border-black px-3 pt-5 group-hover:flex">
+                        <Button
+                          variant={"destructive"}
+                          onClick={() => {
+                            action.deleteResume(item.id, session);
+                            fetchResumes();
+                          }}
+                          className="flex  items-center justify-center gap-3"
+                        >
+                          <Trash2 /> Delete
+                        </Button>
+                        <Button
+                          variant={"secondary"}
+                          onClick={() => {
+                            setResumeState(item);
+                            router.push("/create-resume");
+                          }}
+                          className="flexitems-center justify-center gap-3 hover:bg-primary/20"
+                        >
+                          <Edit size={20} /> Edit
+                        </Button>
+                      </div>
+
                       <div className="h-2/3 min-h-[300px] w-full rounded-md bg-white shadow-inner transition-all duration-300"></div>
-                      <div className="mt-5 h-1/3 w-full">
+                      <div className="mt-5  w-full">
                         <h1 className="text-center text-2xl font-bold group-hover:underline">
                           {item.title}
                         </h1>

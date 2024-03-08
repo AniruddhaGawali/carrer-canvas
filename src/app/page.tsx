@@ -20,9 +20,10 @@ import {
 import { type CarouselApi } from "@/components/ui/carousel";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import Loading from "./loading";
+import { set } from "date-fns";
 
 export default function Home() {
+  const [loadPage, setLoadPage] = useState<boolean>(false);
   // this is the state for the carousel current step
   const [selectStep, setSelectStep] = useState<number>(0);
 
@@ -32,8 +33,8 @@ export default function Home() {
   // this is the state for the steps animation
   const stepParentRef = useRef<HTMLUListElement>(null);
 
-  //this is the state for the hiding mouse while on button and links
   const [enterOn, setEnterOn] = useState<number>(0);
+  //this is the state for the hiding mouse while on button and links
 
   //* this is the state for the scroll snap of thenavbar this make navbar show its background on scroll only
   useEffect(() => {
@@ -64,13 +65,21 @@ export default function Home() {
     );
   });
 
+  useEffect(() => {
+    if (!loadPage && typeof window !== "undefined") {
+      return setLoadPage(true);
+    }
+  });
+
+  if (!loadPage) return null;
+
   return (
     <>
       <main className="relative  w-full">
         <Navbar />
         <HeroSection enterNoState={{ enterOn, setEnterOn }} />
 
-        <div className="lg:h-screen">
+        <div className="relative lg:h-screen">
           <h2 className="mt-20 text-center text-3xl font-semibold  lg:text-7xl">
             Get your{" "}
             <div className="from-5%% inline-block bg-gradient-to-r  from-[#84fab0] via-[#8fd3f4] to-[#ff9382] bg-clip-text text-transparent">
@@ -78,6 +87,7 @@ export default function Home() {
             </div>{" "}
             in 3 steps
           </h2>
+
           <div
             className="container flex snap-center flex-col-reverse items-center justify-between lg:flex-row"
             onMouseEnter={() => setEnterOn(1)}

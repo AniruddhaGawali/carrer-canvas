@@ -96,14 +96,14 @@ function HeroSection({ enterNoState }: Props) {
         <h3 className="subtitle text-xl font-medium sm:text-2xl md:pl-6 md:text-3xl">
           Craft. Create. Captivate.
           <br />
-          Elevate Your Career with
+          Elevate Yourself with
         </h3>
         <h1
           className="relative font-lobster text-6xl font-medium sm:text-7xl md:text-8xl lg:text-[8.5rem]"
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
         >
-          <span>Carrier Canves</span>
+          <span>Career Canves</span>
           <span className="ester-egg">🤫</span>
           <span className="ester-egg2">👻</span>
         </h1>
