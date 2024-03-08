@@ -19,6 +19,7 @@ import AddSocialLinksForm from "../forms/addSocialLinksForm";
 import { useSession } from "next-auth/react";
 import * as action from "@/actions";
 import PdfDoc from "../pdfView";
+import { Separator } from "../ui/separator";
 
 type Props = {};
 
@@ -284,7 +285,12 @@ export default function SocialLinksAndSkills({}: Props) {
               </div>
             </section>
 
-            <section className="container mt-10 flex flex-col gap-5 md:w-5/6">
+            <Separator
+              orientation="horizontal"
+              className="mb-5 w-full border-t border-primary"
+            />
+
+            <section className="container mt-5 flex flex-col gap-5 md:w-5/6">
               <h4 className="flex items-center justify-between text-wrap text-lg font-medium">
                 Add Social Media Links
                 <span
@@ -372,6 +378,11 @@ export default function SocialLinksAndSkills({}: Props) {
                 )}
               </div>
             </section>
+
+            <Separator
+              orientation="horizontal"
+              className="mb-5 w-full border-t border-primary"
+            />
 
             <LoadingButton
               className="w-full max-w-sm items-center gap-5"

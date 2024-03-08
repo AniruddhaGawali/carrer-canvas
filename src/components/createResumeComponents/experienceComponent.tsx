@@ -21,6 +21,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import SuggestionBox from "../suggestionBox";
 import LoadingButton from "../loadingButton";
+import { Separator } from "../ui/separator";
 
 type Props = {};
 
@@ -229,6 +230,11 @@ export default function Experience({}: Props) {
               </div>
             ) : null}
           </div>
+
+          <Separator
+            orientation="horizontal"
+            className="my-5 w-full border-t border-primary"
+          />
 
           <LoadingButton
             className="mt-5 w-full max-w-md"
