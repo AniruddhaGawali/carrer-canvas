@@ -295,6 +295,7 @@ export default function SocialLinksAndSkills({}: Props) {
                                   );
                                   return;
                                 }
+
                                 setSkills((prevSkills) => [
                                   ...prevSkills,
                                   skill,
@@ -352,13 +353,10 @@ export default function SocialLinksAndSkills({}: Props) {
               </h4>
 
               <div>
-                <AddSocialLinksForm addSocial={handleSocialLinks} />
-
-                <div className="p-2 pl-0 text-sm text-muted-foreground">
-                  {Object.keys(socialLinks).length > 0
-                    ? "Click on link to delete"
-                    : "Enter to add the links"}
-                </div>
+                <AddSocialLinksForm
+                  addSocial={handleSocialLinks}
+                  socialLinks={socialLinks}
+                />
               </div>
 
               <div>
@@ -412,7 +410,7 @@ export default function SocialLinksAndSkills({}: Props) {
                           <div
                             onClick={() => {
                               if (
-                                Object.keys(socialLinks).length <=
+                                Object.keys(socialLinks).length <
                                 totalSocialLinks
                               ) {
                                 if (socialLinks[social as keyof Social]) return;

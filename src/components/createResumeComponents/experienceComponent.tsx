@@ -170,7 +170,7 @@ export default function Experience({}: Props) {
           </h3>
 
           <div className="flex w-full flex-col items-center justify-evenly gap-5">
-            <section className="container mt-10 flex w-5/6 flex-col gap-5">
+            <section className="container mt-10 flex w-11/12  flex-col gap-5 rounded-md bg-secondary/60 p-10">
               <h4 className="flex items-center justify-between text-lg font-medium">
                 Experience
               </h4>

@@ -17,9 +17,14 @@ import { Button } from "../ui/button";
 type AddSocialLinksFormProps = {
   className?: React.HTMLAttributes<HTMLFormElement>[`className`];
   addSocial: (url: string) => void;
+  socialLinks: Social;
 };
 
-function AddSocialLinksForm({ className, addSocial }: AddSocialLinksFormProps) {
+function AddSocialLinksForm({
+  className,
+  addSocial,
+  socialLinks,
+}: AddSocialLinksFormProps) {
   const AddSocialLinksFormSchema = z.object({
     socialLinks: z.string().url({ message: "Invalid URL." }),
   });
@@ -36,7 +41,7 @@ function AddSocialLinksForm({ className, addSocial }: AddSocialLinksFormProps) {
     <>
       <Form {...form}>
         <form
-          className={twMerge("w-full space-y-8", className)}
+          className={twMerge("w-full space-y-1", className)}
           onSubmit={form.handleSubmit(onSubmit)}
         >
           <FormField
@@ -51,6 +56,11 @@ function AddSocialLinksForm({ className, addSocial }: AddSocialLinksFormProps) {
               </FormItem>
             )}
           />
+          <div className="p-2 pl-0 text-sm text-muted-foreground">
+            {Object.keys(socialLinks).length > 0
+              ? "Click on link to delete"
+              : "Enter to add the links"}
+          </div>
           <Button type="submit" className="w-full">
             Add
           </Button>
