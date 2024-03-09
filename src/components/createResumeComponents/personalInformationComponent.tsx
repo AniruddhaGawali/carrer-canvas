@@ -21,6 +21,7 @@ import {
 import PersonalInformationForm from "../forms/personalInfoForm";
 import { useSession } from "next-auth/react";
 import PdfDoc from "../pdfView";
+import compareObjects from "@/utils/compare-objects";
 
 type Props = {};
 
@@ -50,6 +51,7 @@ export default function PersonalInformationComponent({}: Props) {
   const [selectedSuggestions, setSelectedSuggestions] = useState<number>(-1);
   const [personalInfo, setPersonalInfo] =
     useState<PersonalInfo>(defautPersonalInfo);
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false);
 
   const selectedTemplete =
     resumeState.template != null
@@ -101,7 +103,15 @@ export default function PersonalInformationComponent({}: Props) {
     if (resumeState.personalInfo) {
       setPersonalInfo(resumeState.personalInfo);
     }
-  }, []);
+  }, [resumeState]);
+
+  useEffect(() => {
+    if (compareObjects(resumeState.personalInfo, personalInfo)) {
+      setIsSaveButtonDisabled(true);
+    } else {
+      setIsSaveButtonDisabled(false);
+    }
+  }, [personalInfo]);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -222,19 +232,22 @@ export default function PersonalInformationComponent({}: Props) {
             </Button>
           </div>
 
-          <h3 className="flex items-center justify-center text-center text-2xl font-medium">
-            Edit Your Personal Information
-          </h3>
+          <div className="container mt-10 flex w-11/12 flex-col gap-5 rounded-md bg-secondary/60 p-10">
+            <h3 className="flex items-center justify-center text-center text-2xl font-medium">
+              Edit Your Personal Information
+            </h3>
 
-          {/* // This is the form for the user to input their personal information */}
-          <PersonalInformationForm
-            personalInformation={personalInfo}
-            changePersonalInformation={setPersonalInfo}
-            saveData={saveData}
-            setSelectedSuggestions={setSelectedSuggestions}
-            selectedTempletePersonInfo={selectedTemplete.personalInfo}
-            className="container mt-10 flex w-full flex-col md:w-3/4"
-          />
+            {/* // This is the form for the user to input their personal information */}
+            <PersonalInformationForm
+              personalInformation={personalInfo}
+              changePersonalInformation={setPersonalInfo}
+              saveData={saveData}
+              setSelectedSuggestions={setSelectedSuggestions}
+              selectedTempletePersonInfo={selectedTemplete.personalInfo}
+              className="container mt-10 flex w-full flex-col "
+              isSaveButtonDisabled={isSaveButtonDisabled}
+            />
+          </div>
         </section>
 
         {/* // This is the pdf for the user to input their personal information */}

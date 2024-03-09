@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import useResume from "@/redux/dispatch/useResume";
 import { Button } from "../ui/button";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, X } from "lucide-react";
 import Chips from "../chips";
 import { redirect, useSearchParams } from "next/navigation";
 import templetes from "@/data/resume-templete";
@@ -36,12 +36,13 @@ export default function SocialLinksAndSkills({}: Props) {
   const [showResume, setShowResume] = useState<boolean>(false);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [socialLinks, setSocialLinks] = useState<Social>({});
-  const [disabledSaveButton, setDisabledSaveButton] = useState<boolean>(true);
   const [isSocialAndSkillSaving, setIsSocialAndSkillSaving] =
     useState<boolean>(false);
+  const [disabledSaveButton, setDisabledSaveButton] = useState<boolean>(true);
 
-  const [skillssuggestions, setSkillSuggestions] = useState<Skill[]>([]);
-  const [socialsuggestions, setSocialSuggestions] = useState<Social>({});
+  const [skillsSuggestions, setSkillSuggestions] = useState<Skill[]>([]);
+  const [socialSuggestions, setSocialSuggestions] = useState<Social>({});
+  const [firstRender, setFirstRender] = useState<boolean>(true);
 
   const selectedTemplete =
     resumeState.template != null
@@ -56,7 +57,14 @@ export default function SocialLinksAndSkills({}: Props) {
       if (skills.find((s) => s.skills === skill)) return;
       setSkills((prevSkills) => [
         ...prevSkills,
-        { skills: skill, level: level as SkillLevel },
+        {
+          skills: skill,
+          level: level as SkillLevel,
+        },
+      ]);
+      setSkillSuggestions((prevSkills) => [
+        ...prevSkills,
+        { skills: skill, level: level },
       ]);
     }
   }
@@ -96,6 +104,10 @@ export default function SocialLinksAndSkills({}: Props) {
       setSocialLinks((prevSkills) => {
         return { ...prevSkills, ...socialObjects };
       });
+
+      setSocialSuggestions((prevSkills) => {
+        return { ...prevSkills, ...socialObjects };
+      });
     }
   };
 
@@ -126,24 +138,24 @@ export default function SocialLinksAndSkills({}: Props) {
 
   const handleSave = async () => {
     setIsSocialAndSkillSaving(true);
-    console.log("skills", skills);
-    console.log("socialLinks", socialLinks);
-    if (session && skills.length > 0) {
-      await action.setSkills([...skills], session);
+
+    if (session) {
+      await action.setSkills(skillsSuggestions, session);
       var newResume = await action.setSkillsInResume(skills, resumeState);
       if (newResume) {
-        await action.setSocial(socialLinks, session);
+        await action.setSocial(socialSuggestions, session);
         newResume = await action.setSocialInResume(socialLinks, resumeState);
       }
       if (newResume) {
         saveResumeState(newResume as unknown as Resume, session);
       }
     }
+    setDisabledSaveButton(true);
     setIsSocialAndSkillSaving(false);
   };
 
   useEffect(() => {
-    if (skills.length > 0 || Object.keys(socialLinks).length > 0) {
+    if (resumeState.skills != skills || resumeState.social != socialLinks) {
       setDisabledSaveButton(false);
     } else {
       setDisabledSaveButton(true);
@@ -160,7 +172,14 @@ export default function SocialLinksAndSkills({}: Props) {
   }, [session]);
 
   useEffect(() => {
-    console.log("resumeState", resumeState);
+    if (resumeState.skills) {
+      setSkills(resumeState.skills);
+      setDisabledSaveButton(true);
+    }
+    if (resumeState.social) {
+      setSocialLinks(resumeState.social);
+      setDisabledSaveButton(true);
+    }
   }, [resumeState]);
 
   if (!resumeState.template == null) {
@@ -197,8 +216,8 @@ export default function SocialLinksAndSkills({}: Props) {
             Add Skills & Social Links
           </h3>
 
-          <div className="flex w-full flex-col items-center justify-evenly gap-5">
-            <section className="container mt-10 flex w-5/6 flex-col gap-5">
+          <div className="flex w-full flex-col items-center justify-evenly gap-5 ">
+            <section className="container mt-10 flex w-11/12 flex-col gap-5 rounded-md  bg-secondary/60 p-10">
               <h4 className="flex items-center justify-between text-lg font-medium">
                 Add Skills{" "}
                 <span
@@ -218,64 +237,92 @@ export default function SocialLinksAndSkills({}: Props) {
               </div>
 
               <div>
-                <div className="flex w-full flex-wrap gap-3">
-                  {skills.map((skill, index) => (
-                    <Chips
-                      key={index}
-                      onClick={() => {
-                        setSkills((prevSkills) =>
-                          prevSkills.filter((s) => s !== skill),
-                        );
-                      }}
-                    >
-                      <span className="space-x-0.5">
-                        <span>{skill.skills}</span>
-                        <span className="text-[.65rem]">
-                          ({skill.level.slice(0, 3)})
-                        </span>
-                      </span>
-                    </Chips>
-                  ))}
-                </div>
+                {skills.length > 0 && (
+                  <>
+                    <h4 className="mt-5 text-wrap text-lg font-medium text-primary">
+                      Your Skills
+                    </h4>
+                    <div className="flex w-full flex-wrap gap-3 rounded-md border p-3 ">
+                      {skills.map((skill, index) => (
+                        <Chips
+                          key={index}
+                          onClick={() => {
+                            setSkills((prevSkills) =>
+                              prevSkills.filter((s) => s !== skill),
+                            );
+                          }}
+                          className="cursor-pointer"
+                        >
+                          <span className="space-x-0.5">
+                            <span>{skill.skills}</span>
+                            <span className="text-[.65rem]">
+                              ({skill.level.slice(0, 3)})
+                            </span>
+                          </span>
+                        </Chips>
+                      ))}
+                    </div>
+                  </>
+                )}
 
-                {skillssuggestions.length > 0 && (
-                  <SuggestionBox className="border-none">
-                    {skillssuggestions.map((skill, index) => (
+                {skillsSuggestions.length > 0 && (
+                  <SuggestionBox className="mt-10 border-none">
+                    {skillsSuggestions.map((skill, index) => (
                       <CarouselItem
                         key={index}
-                        className="md:basis-1/3 lg:basis-1/3"
+                        className="flex items-center justify-center md:basis-1/3 lg:basis-1/3"
                       >
                         <Chips
-                          className={`group m-1 cursor-pointer border-2 border-primary transition-all hover:border-0 ${
+                          className={`group m-1 flex items-center gap-2 border-2 border-primary transition-all hover:border-0 ${
                             skills.includes(skill) &&
                             "grainy-gradient2 border-0 text-black"
                           }`}
                           key={index}
-                          onClick={() => {
-                            if (skills.length < totalSkills) {
-                              if (
-                                skills.find(
-                                  (item) => item.skills == skill.skills,
-                                )
-                              ) {
-                                setSkills((prevSkills) =>
-                                  prevSkills.filter(
-                                    (s) => s.skills != skill.skills,
-                                  ),
-                                );
-                                return;
-                              }
-                              setSkills((prevSkills) => [...prevSkills, skill]);
-                            }
-                          }}
                         >
-                          <div>
+                          <div
+                            className="flex cursor-pointer items-center justify-center gap-2"
+                            onClick={() => {
+                              if (skills.length < totalSkills) {
+                                if (
+                                  skills.find(
+                                    (item) => item.skills == skill.skills,
+                                  )
+                                ) {
+                                  setSkills((prevSkills) =>
+                                    prevSkills.filter(
+                                      (s) => s.skills != skill.skills,
+                                    ),
+                                  );
+                                  return;
+                                }
+                                setSkills((prevSkills) => [
+                                  ...prevSkills,
+                                  skill,
+                                ]);
+                              }
+                            }}
+                          >
                             <span className="space-x-0.5">
                               <span>{skill.skills}</span>
                               <span className="text-[.65rem]">
                                 ({skill.level.slice(0, 3)})
                               </span>
                             </span>
+                          </div>
+
+                          <div
+                            onClick={() => {
+                              setSkillSuggestions((prevSkills) =>
+                                prevSkills.filter((s) => s !== skill),
+                              );
+                              setDisabledSaveButton(false);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <X
+                              size={18}
+                              className={`rounded-full border p-[1px] ${skills.includes(skill) && "border-primary text-black"}`}
+                            />
                           </div>
                         </Chips>
                       </CarouselItem>
@@ -287,10 +334,10 @@ export default function SocialLinksAndSkills({}: Props) {
 
             <Separator
               orientation="horizontal"
-              className="mb-5 w-full border-t border-primary"
+              className="mb-5 w-full border-separate border-t-2"
             />
 
-            <section className="container mt-5 flex flex-col gap-5 md:w-5/6">
+            <section className="container mt-10 flex w-11/12 flex-col gap-5 rounded-md  bg-secondary/60 p-10">
               <h4 className="flex items-center justify-between text-wrap text-lg font-medium">
                 Add Social Media Links
                 <span
@@ -315,62 +362,93 @@ export default function SocialLinksAndSkills({}: Props) {
               </div>
 
               <div>
-                <div className="flex w-full flex-col flex-wrap gap-3">
-                  {Object.keys(socialLinks).map((social, index) => (
-                    <div
-                      key={index}
-                      onClick={() => {
-                        setSocialLinks((prevSkills) =>
-                          Object.keys(prevSkills).reduce((acc, key) => {
-                            if (key !== social) {
-                              acc[key as keyof Social] =
-                                prevSkills[key as keyof Social];
-                            }
-                            return acc;
-                          }, {} as Social),
-                        );
-                      }}
-                      className="flex w-fit cursor-pointer items-center justify-start gap-1 rounded-lg border-2 border-primary pr-2 text-primary hover:bg-gray-200"
-                    >
-                      <span className="flex items-center justify-center rounded-l-md bg-primary p-1.5 text-white">
-                        {socialIcons[social as keyof Social]}
-                      </span>
+                {Object.keys(socialLinks).length > 0 && (
+                  <>
+                    <h4 className="mt-5 text-wrap text-lg font-medium text-primary">
+                      Your Skills
+                    </h4>
+                    <div className="flex w-full flex-wrap gap-3 rounded-md border-2  p-3">
+                      {Object.keys(socialLinks).map((social, index) => (
+                        <div
+                          key={index}
+                          onClick={() => {
+                            setSocialLinks((prevSkills) =>
+                              Object.keys(prevSkills).reduce((acc, key) => {
+                                if (key !== social) {
+                                  acc[key as keyof Social] =
+                                    prevSkills[key as keyof Social];
+                                }
+                                return acc;
+                              }, {} as Social),
+                            );
+                          }}
+                          className="flex w-fit cursor-pointer items-center justify-start gap-1 rounded-lg border-2 border-primary pr-2 text-primary hover:bg-gray-200"
+                        >
+                          <span className="flex items-center justify-center rounded-l-md bg-primary p-1.5 text-white">
+                            {socialIcons[social as keyof Social]}
+                          </span>
 
-                      <span>{socialLinks[social as keyof Social]}</span>
+                          <span>{socialLinks[social as keyof Social]}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </>
+                )}
 
-                {Object.keys(socialsuggestions).length > 0 && (
-                  <SuggestionBox className="border-none">
-                    {Object.keys(socialsuggestions).map((social, index) => (
+                {Object.keys(socialSuggestions).length > 0 && (
+                  <SuggestionBox className="mt-10 border-none">
+                    {Object.keys(socialSuggestions).map((social, index) => (
                       <CarouselItem
                         key={index}
                         className="md:basis-1/3 lg:basis-1/3"
                       >
                         <Chips
-                          className={`group m-1 cursor-pointer border-2 border-primary transition-all hover:border-0 ${
+                          className={`group m-1 flex cursor-pointer items-center justify-center gap-2 border-2 border-primary transition-all hover:border-0 ${
                             socialLinks[social as keyof Social] &&
                             "grainy-gradient2 border-0 text-black"
                           }`}
                           key={index}
-                          onClick={() => {
-                            if (
-                              Object.keys(socialLinks).length <=
-                              totalSocialLinks
-                            ) {
-                              if (socialLinks[social as keyof Social]) return;
-                              setSocialLinks((prevSkills) => {
-                                return {
-                                  ...prevSkills,
-                                  [social as keyof Social]:
-                                    socialsuggestions[social as keyof Social],
-                                };
-                              });
-                            }
-                          }}
                         >
-                          <div>{social}</div>
+                          <div
+                            onClick={() => {
+                              if (
+                                Object.keys(socialLinks).length <=
+                                totalSocialLinks
+                              ) {
+                                if (socialLinks[social as keyof Social]) return;
+                                setSocialLinks((prevSkills) => {
+                                  return {
+                                    ...prevSkills,
+                                    [social as keyof Social]:
+                                      socialSuggestions[social as keyof Social],
+                                  };
+                                });
+                              }
+                            }}
+                          >
+                            {social}
+                          </div>
+                          <div
+                            onClick={() => {
+                              setSocialSuggestions((prevSkills) =>
+                                Object.keys(prevSkills).reduce((acc, key) => {
+                                  if (key !== social) {
+                                    acc[key as keyof Social] =
+                                      prevSkills[key as keyof Social];
+                                  }
+                                  return acc;
+                                }, {} as Social),
+                              );
+
+                              setDisabledSaveButton(false);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <X
+                              size={18}
+                              className={`rounded-full border p-[1px] ${socialLinks[social as keyof Social] && "border-primary text-black"}`}
+                            />
+                          </div>
                         </Chips>
                       </CarouselItem>
                     ))}
@@ -381,7 +459,7 @@ export default function SocialLinksAndSkills({}: Props) {
 
             <Separator
               orientation="horizontal"
-              className="mb-5 w-full border-t border-primary"
+              className="mb-5 w-full border-t-2 border-primary"
             />
 
             <LoadingButton

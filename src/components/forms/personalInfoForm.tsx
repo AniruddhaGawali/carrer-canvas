@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { twMerge } from "tailwind-merge";
 import { Button } from "../ui/button";
+import LoadingButton from "../loadingButton";
 
 const phoneRegex = new RegExp(
   /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
@@ -28,6 +29,7 @@ type PersonalInformationFormProps = {
   className?: React.HTMLAttributes<HTMLFormElement>[`className`];
   saveData: () => void;
   selectedTempletePersonInfo: ResumeTemplate["personalInfo"];
+  isSaveButtonDisabled: boolean;
 };
 
 export default function PersonalInformationForm({
@@ -37,12 +39,16 @@ export default function PersonalInformationForm({
   saveData,
   setSelectedSuggestions,
   selectedTempletePersonInfo,
+  isSaveButtonDisabled,
 }: PersonalInformationFormProps) {
   const personalInformationFormSchema = z.object({
     fullName: selectedTempletePersonInfo.name
-      ? z.string().min(2, {
-          message: "Username must be at least 2 characters.",
-        })
+      ? z
+          .string()
+          .min(2, {
+            message: "Username must be at least 2 characters.",
+          })
+          .optional()
       : z.string().optional(),
 
     jobTitle: selectedTempletePersonInfo.jobTitle
@@ -296,14 +302,16 @@ export default function PersonalInformationForm({
             />
           )}
         </div>
-        <Button
+        <LoadingButton
           type="submit"
           className="w-full"
-          disabled={form.formState.isSubmitSuccessful}
+          loading={form.formState.isSubmitSuccessful}
+          disabled={isSaveButtonDisabled}
         >
           Save
-        </Button>
+        </LoadingButton>
       </form>
+      {/* {console.log(isSaveButtonDisabled)} */}
     </Form>
   );
 }

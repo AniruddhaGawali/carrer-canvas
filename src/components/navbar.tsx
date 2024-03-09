@@ -16,6 +16,9 @@ import {
 import { signOut } from "next-auth/react";
 import useResume from "@/redux/dispatch/useResume";
 
+import { useTheme } from "next-themes";
+import { Switch } from "./ui/switch";
+
 type Props = {
   isDashboard?: boolean;
   title?: string;
@@ -23,6 +26,7 @@ type Props = {
 
 function Navbar({ isDashboard, title }: Props) {
   const router = useRouter();
+  const { setTheme, themes } = useTheme();
   const { data: session } = useSession();
   const { setResumeTitle } = useResume();
   const [show, setShow] = useState(true);
@@ -116,6 +120,13 @@ function Navbar({ isDashboard, title }: Props) {
             </h3>
           </div>
           <nav className=" flex items-center justify-between space-x-14">
+            {/* <Switch
+              onCheckedChange={(checked) => {
+                setTheme(checked ? "dark" : "light");
+              }}
+              defaultChecked={themes[0] === "dark"}
+            /> */}
+
             {isDashboard ? (
               <Link
                 href="/"

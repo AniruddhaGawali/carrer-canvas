@@ -73,7 +73,9 @@ function SelectTempleteComponent() {
                 }
                 onDoubleClick={() => setResumeTemplate(null)}
               >
-                <div className="flex h-full w-full flex-col items-center justify-center gap-2 rounded-md bg-white py-5">
+                <div
+                  className={`flex h-full w-full flex-col items-center justify-center gap-2 rounded-md py-5 ${resumeState.template == item.id && "bg-secondary"}`}
+                >
                   <div className="w-[40%] ">
                     <Image
                       src={item.image}
@@ -90,7 +92,11 @@ function SelectTempleteComponent() {
                   </h2>
                 </div>
 
-                <DrawerTrigger className="absolute right-3 top-3">
+                <DrawerTrigger
+                  className={`absolute right-3 top-3 rounded-md  p-2
+                ${resumeState.template == item.id ? "bg-primary/80 text-primary-foreground" : "bg-secondary"}
+                `}
+                >
                   <Eye size={20} />
                 </DrawerTrigger>
               </div>

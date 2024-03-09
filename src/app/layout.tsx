@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/auth";
 import StoreProvider from "@/provider/storeProvider";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/provider/theme-provider";
 
 export const metadata: Metadata = {
   title: "Career Canves",
@@ -36,8 +37,15 @@ export default async function RootLayout({
       <NextAuthProvider session={session}>
         <StoreProvider>
           <body className="relative">
-            <Toaster richColors position="top-right" />
-            {children}
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Toaster richColors position="top-right" />
+              {children}
+            </ThemeProvider>
           </body>
         </StoreProvider>
       </NextAuthProvider>
