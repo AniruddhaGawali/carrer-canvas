@@ -27,9 +27,12 @@ import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 
-type Props = {};
+type Props = {
+  education: Education[];
+  setEducation: React.Dispatch<React.SetStateAction<Education[]>>;
+};
 
-function EducationForm({}: Props) {
+function EducationForm({ education, setEducation }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
@@ -61,7 +64,25 @@ function EducationForm({}: Props) {
 
   return (
     <Form {...form}>
-      <form className="flex flex-col gap-5">
+      <form
+        className="flex flex-col gap-5"
+        onSubmit={form.handleSubmit((data) => {
+          const newEducation: Education = {
+            id: education.length.toString(),
+
+            college: data.college,
+            degree: data.degree,
+            description: data.description,
+            startDate: startDate?.toISOString() ?? "",
+            endDate: endDate?.toISOString() ?? "",
+          };
+
+          setEducation([...education, newEducation]);
+
+          form.reset();
+          setStartDate(null);
+        })}
+      >
         <FormField
           control={form.control}
           name="college"

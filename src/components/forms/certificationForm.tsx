@@ -27,9 +27,14 @@ import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 
-type Props = {};
+type Props = {
+  certification: AwardsAndCertifications[];
+  setCertification: React.Dispatch<
+    React.SetStateAction<AwardsAndCertifications[]>
+  >;
+};
 
-function CertificationForm({}: Props) {
+function CertificationForm({ certification, setCertification }: Props) {
   const [date, setDate] = useState<Date | null>(null);
 
   const certificationFormSchema = z.object({
@@ -56,7 +61,19 @@ function CertificationForm({}: Props) {
 
   return (
     <Form {...form}>
-      <form className="flex flex-col gap-5">
+      <form
+        className="flex flex-col gap-5"
+        onSubmit={form.handleSubmit((data) => {
+          const newCertification: AwardsAndCertifications = {
+            id: `${certification.length + 1}`,
+            date: date?.toISOString() ?? "",
+            ...data,
+          };
+          setCertification([...certification, newCertification]);
+          form.reset();
+          setDate(null);
+        })}
+      >
         <FormField
           control={form.control}
           name="name"

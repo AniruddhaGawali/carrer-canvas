@@ -26,6 +26,8 @@ type Resume = {
   skills?: Skill[] | null;
   exprerience?: Experience[] | null;
   project?: Project[] | null;
+  education?: Education[] | null;
+  awardsAndCertifications?: AwardsAndCertifications[] | null;
 };
 
 type PersonalInfo = {
@@ -81,15 +83,17 @@ type Project = {
 };
 
 type Education = {
+  id: string;
   college: string;
   degree: string;
   startDate: string;
   endDate: string;
-  description: string[];
+  description: string;
 };
 
 type AwardsAndCertifications = {
+  id: string;
   name: string;
   date: string;
-  description: string[];
+  description: string;
 };

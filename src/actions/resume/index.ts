@@ -4,8 +4,11 @@ export {
   getResumes,
   uploadResume,
 } from "./initalSetup";
+
 export { setResumeTemplete } from "./step1";
+
 export { deletePersonalInfo, getPersonalInfo, savePersonalInfo } from "./step2";
+
 export {
   setSkills,
   setSkillsInResume,
@@ -14,6 +17,7 @@ export {
   setSocial,
   setSocialInResume,
 } from "./step3";
+
 export {
   getExperiences,
   setExperiencesInResume,
@@ -21,6 +25,7 @@ export {
   setExperiences,
   updateExperience,
 } from "./step4";
+
 export {
   deleteProject,
   getProjects,
@@ -28,3 +33,16 @@ export {
   setProjectsInResume,
   updateProject,
 } from "./step5";
+
+export {
+  deleteEducation,
+  deleteAwardsAndCertifications,
+  getEducation,
+  getAwardsAndCertifications,
+  setAwardsAndCertifications,
+  updateAwardsAndCertifications,
+  setEducation,
+  updateEducation,
+  setEducationInResume,
+  setAwardsAndCertificationsInResume,
+} from "./step6";

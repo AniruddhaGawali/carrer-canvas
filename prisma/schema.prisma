@@ -36,20 +36,22 @@ model Session {
 }
 
 model User {
-  id             String         @id @default(auto()) @map("_id") @db.ObjectId
-  name           String?
-  email          String?        @unique
-  emailVerified  DateTime?
-  image          String?
-  hashedPassword String?
-  accounts       Account[]
-  sessions       Session[]
-  Resume         Resume[]
-  PersonalInfo   PersonalInfo[]
-  Social         Social[]
-  Skills         Skills[]
-  Experience     Experience[]
-  Project        Project[]
+  id                      String                    @id @default(auto()) @map("_id") @db.ObjectId
+  name                    String?
+  email                   String?                   @unique
+  emailVerified           DateTime?
+  image                   String?
+  hashedPassword          String?
+  accounts                Account[]
+  sessions                Session[]
+  Resume                  Resume[]
+  PersonalInfo            PersonalInfo[]
+  Social                  Social[]
+  Skills                  Skills[]
+  Experience              Experience[]
+  Project                 Project[]
+  Education               Education[]
+  AwardsAndCertifications AwardsAndCertifications[]
 }
 
 model VerificationToken {
@@ -61,17 +63,19 @@ model VerificationToken {
 }
 
 model Resume {
-  id             String        @id @default(auto()) @map("_id") @db.ObjectId
-  userId         String        @map("user_id") @db.ObjectId
-  template       Int?
-  title          String
-  personalInfoId String?       @map("personal_info_id") @db.ObjectId
-  social         Json?         @map("social_link")
-  skills         Json[]
-  experience     Json[]
-  project        Json[]
-  User           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  personalInfo   PersonalInfo? @relation(fields: [personalInfoId], references: [id])
+  id                      String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId                  String        @map("user_id") @db.ObjectId
+  template                Int?
+  title                   String
+  personalInfoId          String?       @map("personal_info_id") @db.ObjectId
+  social                  Json?         @map("social_link")
+  skills                  Json[]
+  experience              Json[]
+  project                 Json[]
+  education               Json[]
+  awardsAndCertifications Json[]        @map("awards_and_certifications")
+  User                    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  personalInfo            PersonalInfo? @relation(fields: [personalInfoId], references: [id])
 }
 
 model PersonalInfo {
@@ -130,5 +134,25 @@ model Project {
   startDate   DateTime
   endDate     DateTime
   tech        String[]
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Education {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @map("user_id") @db.ObjectId
+  college     String
+  degree      String
+  startDate   DateTime
+  endDate     DateTime
+  description String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AwardsAndCertifications {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @map("user_id") @db.ObjectId
+  name        String
+  date        DateTime
+  description String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

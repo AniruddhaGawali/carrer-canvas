@@ -1,17 +1,52 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StepsLinks as Steps } from "@/data/resume-step";
 import { Button } from "../ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import EducationForm from "../forms/educationForm";
 import { Separator } from "../ui/separator";
 import CertificationForm from "../forms/certificationForm";
+import * as action from "@/actions";
+import { useSession } from "next-auth/react";
+import useResume from "@/redux/dispatch/useResume";
+import LoadingButton from "../loadingButton";
 
 type Props = {};
 
 export default function EducationAndCertificationComponents({}: Props) {
+  const { data: session } = useSession();
+  const { resumeState, saveResumeState, setResumeState } = useResume();
   const [showResume, setShowResume] = useState<boolean>(false);
+  const [education, setEducation] = useState<Education[]>([]);
+  const [certification, setCertification] = useState<AwardsAndCertifications[]>(
+    [],
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const educationAndCertification = [...education, ...certification];
+
+  async function addEducationAndCertification() {
+    if (session) {
+      const resEducation = await action.setEducation(education, session);
+      const resCertification = await action.setAwardsAndCertifications(
+        certification,
+        session,
+      );
+
+      if (resEducation && resCertification) {
+        setCertification(resCertification);
+        setEducation(resEducation);
+        await action.setEducationInResume(resEducation, resumeState);
+        const res = await action.setAwardsAndCertificationsInResume(
+          resCertification,
+          resumeState,
+        );
+        console.log(res);
+        if (res) setResumeState(res);
+      }
+    }
+  }
 
   return (
     <div className=" my-[9rem] min-h-screen w-full">
@@ -48,7 +83,10 @@ export default function EducationAndCertificationComponents({}: Props) {
               <h4 className="flex items-center justify-between text-lg font-medium">
                 Education
               </h4>
-              <EducationForm />
+              <EducationForm
+                education={education}
+                setEducation={setEducation}
+              />
             </section>
 
             <Separator
@@ -60,7 +98,10 @@ export default function EducationAndCertificationComponents({}: Props) {
               <h4 className="flex items-center justify-between text-lg font-medium">
                 Certification
               </h4>
-              <CertificationForm />
+              <CertificationForm
+                certification={certification}
+                setCertification={setCertification}
+              />
             </section>
           </div>
 
@@ -69,7 +110,19 @@ export default function EducationAndCertificationComponents({}: Props) {
             className="my-5 w-full border-t border-primary"
           />
 
-          <Button className="w-full max-w-md">Save</Button>
+          <LoadingButton
+            className="w-full max-w-md"
+            onClick={async () => {
+              setIsLoading(true);
+              console.log(educationAndCertification);
+              await addEducationAndCertification();
+              setIsLoading(false);
+            }}
+            loading={isLoading}
+            disabled={isLoading}
+          >
+            Save
+          </LoadingButton>
         </section>
 
         <section
