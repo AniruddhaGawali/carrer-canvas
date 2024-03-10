@@ -4,7 +4,7 @@ import db from "@/db";
 import { Session } from "next-auth";
 
 export async function uploadResume(data: Resume, session: Session | null) {
-  if (!session?.user) return { success: false, message: "User not found" };
+  if (!session?.user) return null;
 
   if (data.id == "") {
     const res = await db.resume.create({
@@ -12,10 +12,9 @@ export async function uploadResume(data: Resume, session: Session | null) {
         title: data.title,
         userId: session.user.id,
       },
-      include: {},
     });
 
-    return { success: true, message: "Resume saved", res };
+    return res;
   } else {
     const res = await db.resume.update({
       where: {
@@ -25,31 +24,30 @@ export async function uploadResume(data: Resume, session: Session | null) {
         title: data.title,
         userId: session.user.id,
         template: data.template,
+        personalInfo: data.personalInfo ?? null,
+        skills: data.skills ?? [],
         social: data.social,
-        personalInfoId: data.personalInfo?.id,
-      },
-      include: {
-        personalInfo: true,
+        awardsAndCertifications: data.awardsAndCertifications ?? [],
+        education: data.education ?? [],
+        experience: data.exprerience ?? [],
+        project: data.project ?? [],
       },
     });
 
-    return { success: true, message: "Resume saved", res };
+    return res;
   }
 }
 
 export async function getResumes(session: Session | null) {
-  if (!session?.user) return { success: false, message: "User not found" };
+  if (!session?.user) return null;
 
   const resumes = await db.resume.findMany({
     where: {
       userId: session.user.id,
     },
-    include: {
-      personalInfo: true,
-    },
   });
 
-  return { success: true, message: "Resumes found", resumes };
+  return resumes;
 }
 
 export async function getResumeById(id: string) {
@@ -57,12 +55,9 @@ export async function getResumeById(id: string) {
     where: {
       id: id,
     },
-    include: {
-      personalInfo: true,
-    },
   });
 
-  return { success: true, message: "Resume found", resume };
+  return resume;
 }
 
 export async function deleteResume(id: string, session: Session | null) {
@@ -74,5 +69,5 @@ export async function deleteResume(id: string, session: Session | null) {
     },
   });
 
-  return { success: true, message: "Resume deleted", res };
+  return res;
 }

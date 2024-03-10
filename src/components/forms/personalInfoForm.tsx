@@ -1,8 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -14,110 +11,71 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { twMerge } from "tailwind-merge";
-import { Button } from "../ui/button";
 import LoadingButton from "../loadingButton";
-
-const phoneRegex = new RegExp(
-  /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
-);
+import { UseFormReturn } from "react-hook-form";
 
 type PersonalInformationFormProps = {
-  // Add your props here.
-  personalInformation: PersonalInfo;
-  changePersonalInformation: React.Dispatch<React.SetStateAction<PersonalInfo>>;
-  setSelectedSuggestions: React.Dispatch<React.SetStateAction<number>>;
   className?: React.HTMLAttributes<HTMLFormElement>[`className`];
-  saveData: () => void;
-  selectedTempletePersonInfo: ResumeTemplate["personalInfo"];
-  isSaveButtonDisabled: boolean;
+  form: UseFormReturn<
+    {
+      name?: string | undefined;
+      jobTitle?: string | undefined;
+      email?: string | undefined;
+      phone?: string | undefined;
+      website?: string | undefined;
+      address1?: string | undefined;
+      address2?: string | undefined;
+    },
+    any,
+    {
+      name?: string | undefined;
+      jobTitle?: string | undefined;
+      email?: string | undefined;
+      phone?: string | undefined;
+      website?: string | undefined;
+      address1?: string | undefined;
+      address2?: string | undefined;
+    }
+  >;
+  selectedTempletePersonInfo: {
+    name: boolean;
+    email: boolean;
+    phone: boolean;
+    address: boolean;
+    website: boolean;
+    jobTitle: boolean;
+  };
+  setSelectedSuggestionId: React.Dispatch<React.SetStateAction<string | null>>;
+  submit: (data: {
+    name?: string | undefined;
+    jobTitle?: string | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    website?: string | undefined;
+    address1?: string | undefined;
+    address2?: string | undefined;
+  }) => Promise<void>;
+  isDisabled: boolean;
 };
 
 export default function PersonalInformationForm({
-  personalInformation,
-  changePersonalInformation,
   className,
-  saveData,
-  setSelectedSuggestions,
+  form,
   selectedTempletePersonInfo,
-  isSaveButtonDisabled,
+  setSelectedSuggestionId,
+  submit,
+  isDisabled,
 }: PersonalInformationFormProps) {
-  const personalInformationFormSchema = z.object({
-    fullName: selectedTempletePersonInfo.name
-      ? z
-          .string()
-          .min(2, {
-            message: "Username must be at least 2 characters.",
-          })
-          .optional()
-      : z.string().optional(),
-
-    jobTitle: selectedTempletePersonInfo.jobTitle
-      ? z.string().min(2, {
-          message: "Job title must be at least 2 characters.",
-        })
-      : z.string().optional(),
-
-    email: selectedTempletePersonInfo.email
-      ? z.string().email({ message: "Invalid email address." })
-      : z.string().optional(),
-
-    phoneNo: selectedTempletePersonInfo.phone
-      ? z
-          .string()
-          .min(10, {
-            message: "Phone number must be at least 10 characters.",
-          })
-          .max(10, {
-            message: "Phone number must be at most 15 characters.",
-          })
-          .max(15, {
-            message: "Phone number must be at most 15 characters.",
-          })
-          .regex(phoneRegex, {
-            message: "Phone number is invalid.",
-          })
-      : z.string().optional(),
-
-    website: selectedTempletePersonInfo.website
-      ? z.string().url({ message: "Invalid URL." })
-      : z.string().optional(),
-
-    address1: selectedTempletePersonInfo.address
-      ? z.string().min(5, {
-          message: "Address must be at least 5 characters.",
-        })
-      : z.string().optional(),
-
-    address2: selectedTempletePersonInfo.address
-      ? z.string().min(5, {
-          message: "Address must be at least 5 characters.",
-        })
-      : z.string().optional(),
-  });
-
-  const form = useForm<z.infer<typeof personalInformationFormSchema>>({
-    resolver: zodResolver(personalInformationFormSchema),
-    values: {
-      fullName: personalInformation.name,
-      jobTitle: personalInformation.jobTitle,
-      email: personalInformation.email,
-      phoneNo: personalInformation.phone,
-      website: personalInformation.website || "",
-      address1: personalInformation.address1,
-      address2: personalInformation.address2,
-    },
-  });
-
   return (
     <Form {...form}>
       <form
         className={twMerge("space-y-8", className)}
-        onSubmit={form.handleSubmit(saveData)}
+        onSubmit={form.handleSubmit(submit)}
       >
         {selectedTempletePersonInfo.name && (
           <FormField
             control={form.control}
-            name="fullName"
+            name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Fullname</FormLabel>
@@ -126,12 +84,8 @@ export default function PersonalInformationForm({
                     placeholder="FullName"
                     {...field}
                     onChange={(e) => {
-                      changePersonalInformation({
-                        ...personalInformation,
-                        name: e.target.value,
-                      });
-                      setSelectedSuggestions(-1);
                       field.onChange(e);
+                      setSelectedSuggestionId(null);
                     }}
                   />
                 </FormControl>
@@ -152,12 +106,8 @@ export default function PersonalInformationForm({
                     placeholder="Job Title"
                     {...field}
                     onChange={(e) => {
-                      changePersonalInformation({
-                        ...personalInformation,
-                        jobTitle: e.target.value,
-                      });
-                      setSelectedSuggestions(-1);
                       field.onChange(e);
+                      setSelectedSuggestionId(null);
                     }}
                   />
                 </FormControl>
@@ -178,12 +128,8 @@ export default function PersonalInformationForm({
                     placeholder="Email"
                     {...field}
                     onChange={(e) => {
-                      changePersonalInformation({
-                        ...personalInformation,
-                        email: e.target.value,
-                      });
-                      setSelectedSuggestions(-1);
                       field.onChange(e);
+                      setSelectedSuggestionId(null);
                     }}
                   />
                 </FormControl>
@@ -195,7 +141,7 @@ export default function PersonalInformationForm({
         {selectedTempletePersonInfo.phone && (
           <FormField
             control={form.control}
-            name="phoneNo"
+            name="phone"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Phone Number</FormLabel>
@@ -204,12 +150,8 @@ export default function PersonalInformationForm({
                     placeholder="Phone Number"
                     {...field}
                     onChange={(e) => {
-                      changePersonalInformation({
-                        ...personalInformation,
-                        phone: e.target.value,
-                      });
-                      setSelectedSuggestions(-1);
                       field.onChange(e);
+                      setSelectedSuggestionId(null);
                     }}
                   />
                 </FormControl>
@@ -231,12 +173,8 @@ export default function PersonalInformationForm({
                     placeholder="Website"
                     {...field}
                     onChange={(e) => {
-                      changePersonalInformation({
-                        ...personalInformation,
-                        website: e.target.value,
-                      });
-                      setSelectedSuggestions(-1);
                       field.onChange(e);
+                      setSelectedSuggestionId(null);
                     }}
                   />
                 </FormControl>
@@ -261,12 +199,8 @@ export default function PersonalInformationForm({
                       placeholder="Address"
                       {...field}
                       onChange={(e) => {
-                        changePersonalInformation({
-                          ...personalInformation,
-                          address1: e.target.value,
-                        });
-                        setSelectedSuggestions(-1);
                         field.onChange(e);
+                        setSelectedSuggestionId(null);
                       }}
                     />
                   </FormControl>
@@ -287,12 +221,8 @@ export default function PersonalInformationForm({
                       placeholder="Address 2 (City, State, Country)"
                       {...field}
                       onChange={(e) => {
-                        changePersonalInformation({
-                          ...personalInformation,
-                          address2: e.target.value,
-                        });
-                        setSelectedSuggestions(-1);
                         field.onChange(e);
+                        setSelectedSuggestionId(null);
                       }}
                     />
                   </FormControl>
@@ -305,8 +235,8 @@ export default function PersonalInformationForm({
         <LoadingButton
           type="submit"
           className="w-full"
-          loading={form.formState.isSubmitSuccessful}
-          disabled={isSaveButtonDisabled}
+          loading={form.formState.isSubmitting}
+          disabled={isDisabled || form.formState.isSubmitting}
         >
           Save
         </LoadingButton>

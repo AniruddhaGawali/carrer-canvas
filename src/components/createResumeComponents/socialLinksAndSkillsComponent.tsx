@@ -42,7 +42,6 @@ export default function SocialLinksAndSkills({}: Props) {
 
   const [skillsSuggestions, setSkillSuggestions] = useState<Skill[]>([]);
   const [socialSuggestions, setSocialSuggestions] = useState<Social>({});
-  const [firstRender, setFirstRender] = useState<boolean>(true);
 
   const selectedTemplete =
     resumeState.template != null
@@ -462,7 +461,7 @@ export default function SocialLinksAndSkills({}: Props) {
 
             <LoadingButton
               className="w-full max-w-sm items-center gap-5"
-              disabled={disabledSaveButton}
+              disabled={disabledSaveButton || isSocialAndSkillSaving}
               loading={isSocialAndSkillSaving}
               onClick={handleSave}
             >
@@ -483,16 +482,7 @@ export default function SocialLinksAndSkills({}: Props) {
             // id="pdf"
           >
             <PdfDoc
-              personalInfo={{
-                id: "1",
-                name: "John Doe",
-                email: "abc@gmail.com",
-                address1: "123, abc street",
-                address2: "xyz city",
-                phone: "1234567890",
-                jobTitle: "Software Developer",
-                website: "www.abc.com",
-              }}
+              personalInfo={resumeState.personalInfo}
               skills={skills}
               social={socialLinks}
             />

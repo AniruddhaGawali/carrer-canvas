@@ -13,7 +13,7 @@ type Props = {};
 
 function CreateResumePage({}: Props) {
   const router = useRouter();
-  const { setResumeTitle, saveResumeState, resumeState } = useResume();
+  const { setResumeTitle, pushResume, resumeState } = useResume();
   const { data: session } = useSession();
   const firstUpdate = useRef(true);
 
@@ -23,7 +23,7 @@ function CreateResumePage({}: Props) {
       return;
     }
     if (!firstUpdate.current) {
-      saveResumeState(resumeState, session);
+      pushResume(resumeState, session);
     }
   }, [resumeState.title]);
 

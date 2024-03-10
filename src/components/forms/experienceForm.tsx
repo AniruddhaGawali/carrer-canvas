@@ -1,8 +1,3 @@
-import React, { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-
 import {
   Form,
   FormControl,
@@ -25,63 +20,49 @@ import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
+import { UseFormReturn } from "react-hook-form";
 
 type Props = {
-  experiences: Experience[];
-  setExperience: React.Dispatch<React.SetStateAction<Experience[]>>;
+  form: UseFormReturn<
+    {
+      jobTitle: string;
+      company: string;
+      description: string;
+      location: string;
+    },
+    any,
+    {
+      jobTitle: string;
+      company: string;
+      description: string;
+      location: string;
+    }
+  >;
+  startDate: Date | null;
+  setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  endDate: Date | null;
+  setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  handleSubmitForm: (data: {
+    jobTitle: string;
+    company: string;
+    description: string;
+    location: string;
+  }) => void;
 };
 
-export default function ExperienceForm({ setExperience }: Props) {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const experienceFormSchema = z.object({
-    company: z.string().min(2, {
-      message: "Company name must be at least 2 characters.",
-    }),
-    jobTitle: z.string().min(2, {
-      message: "Job title must be at least 2 characters.",
-    }),
-    location: z.string(),
-    description: z
-      .string()
-      .min(10, {
-        message: "Bio must be at least 10 characters.",
-      })
-      .max(160, {
-        message: "Bio must not be longer than 30 characters.",
-      }),
-  });
-
-  const form = useForm<z.infer<typeof experienceFormSchema>>({
-    resolver: zodResolver(experienceFormSchema),
-    values: {
-      company: "",
-      jobTitle: "",
-      description: "",
-      location: "",
-    },
-  });
+export default function ExperienceForm({
+  form,
+  endDate,
+  setEndDate,
+  setStartDate,
+  startDate,
+  handleSubmitForm,
+}: Props) {
   return (
     <Form {...form}>
       <form
         className="flex flex-col gap-5"
-        onSubmit={form.handleSubmit((data) => {
-          console.log(data);
-          console.log("startDate", startDate);
-          console.log("endDate", endDate);
-
-          const newExperience: Experience = {
-            id: "",
-            company: data.company,
-            position: data.jobTitle,
-            startDate: startDate?.toISOString() ?? "",
-            endDate: endDate?.toISOString() ?? "",
-            description: data.description,
-            location: data.location,
-          };
-
-          setExperience((prev) => [...prev, newExperience]);
-        })}
+        onSubmit={form.handleSubmit(handleSubmitForm)}
       >
         <FormField
           control={form.control}
@@ -237,6 +218,17 @@ export default function ExperienceForm({ setExperience }: Props) {
         />
 
         <Button type="submit">Add</Button>
+        <Button
+          type="reset"
+          variant="outline"
+          onClick={() => {
+            form.reset();
+            setStartDate(null);
+            setEndDate(null);
+          }}
+        >
+          Reset
+        </Button>
       </form>
     </Form>
   );

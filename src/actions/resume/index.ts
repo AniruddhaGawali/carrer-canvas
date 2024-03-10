@@ -7,7 +7,7 @@ export {
 
 export { setResumeTemplete } from "./step1";
 
-export { deletePersonalInfo, getPersonalInfo, savePersonalInfo } from "./step2";
+export { deletePersonalInfo, getPersonalInfo, setPersonalInfo } from "./step2";
 
 export {
   setSkills,

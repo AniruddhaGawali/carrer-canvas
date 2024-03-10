@@ -12,6 +12,7 @@ import useResume from "@/redux/dispatch/useResume";
 import GridLoading from "@/components/loadingComponents/gridLoading";
 import * as action from "@/actions";
 import { Button } from "@/components/ui/button";
+import DashboardLoading from "@/components/loadingComponents/dashboardLoading";
 
 type Props = {};
 
@@ -25,8 +26,9 @@ function Dashboard({}: Props) {
   async function fetchResumes() {
     setIsResumeLoading(true);
     const res = await getResumes(session);
-    if (res.success) {
-      setResumes(res.resumes as unknown as Resume[]);
+    if (res) {
+      console.log(res);
+      setResumes(res as unknown as Resume[]);
     }
     setIsResumeLoading(false);
   }
@@ -36,8 +38,8 @@ function Dashboard({}: Props) {
     setResumeToDefaultState();
   }, [session]);
 
-  if (!session) {
-    if (status == "unauthenticated") redirect("/register");
+  if (status == "loading") {
+    return <DashboardLoading />;
   }
 
   return (

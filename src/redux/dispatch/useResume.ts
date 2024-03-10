@@ -6,7 +6,7 @@ import {
   setPersonalInfo,
   updateResumeTitle,
   setSocialLink,
-  saveResume,
+  setResumeToDB,
   saveResumeById,
   setResumeToDefault,
 } from "@/redux/features/resumeSlice";
@@ -19,8 +19,8 @@ const useResume = () => {
   const resumeState = useSelector((state: RootState) => state.resume);
   const dispatch = useDispatch<AppDispatch>();
 
-  const saveResumeState = (resume: Resume, session: Session | null) => {
-    dispatch(saveResume({ resume, session }));
+  const pushResume = (resume: Resume, session: Session | null) => {
+    dispatch(setResumeToDB({ resume, session }));
   };
 
   const setResumeStateById = (id: string, session: Session | null) => {
@@ -49,7 +49,7 @@ const useResume = () => {
     setResumePersonalInfo,
     setResumeTitle,
     setResumeSocialLink,
-    saveResumeState,
+    pushResume,
     setResumeStateById,
   };
 };

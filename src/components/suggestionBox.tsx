@@ -29,9 +29,12 @@ function SuggestionBox({ children, className, carouselClassName }: Props) {
         opts={{
           align: "start",
         }}
-        className={twMerge("m-auto w-[90%] xl:w-[95%] ", carouselClassName)}
+        className={twMerge(
+          "m-auto w-[90%] items-stretch  xl:w-[95%]",
+          carouselClassName,
+        )}
       >
-        <CarouselContent>{children}</CarouselContent>
+        <CarouselContent className="">{children}</CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>

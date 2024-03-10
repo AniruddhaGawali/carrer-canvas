@@ -105,9 +105,6 @@ export async function setProjectsInResume(
           set: projects,
         },
       },
-      include: {
-        personalInfo: true,
-      },
     });
     return res;
   } catch (error) {

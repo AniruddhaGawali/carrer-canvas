@@ -26,9 +26,6 @@ export async function setSkillsInResume(skills: Skill[], resume: Resume) {
           set: skills,
         },
       },
-      include: {
-        personalInfo: true,
-      },
     });
     return newResume;
   } catch (error) {
@@ -138,9 +135,6 @@ export async function setSocialInResume(social: Social, resume: Resume) {
         social: {
           ...social,
         },
-      },
-      include: {
-        personalInfo: true,
       },
     });
     return newResume;

@@ -22,45 +22,14 @@ export async function getPersonalInfo(session: Session | null) {
   return { success: true, message: "Personal info found", personalInfoData };
 }
 
-export async function savePersonalInfo(
+export async function setPersonalInfo(
   data: PersonalInfo,
-  resume: Resume,
   session: Session | null,
 ) {
-  if (!session?.user) return { success: false, message: "User not found" };
+  if (!session?.user) return null;
 
-  let alreadyExists;
   if (data.id != "") {
-    alreadyExists = await db.personalInfo.findFirst({
-      where: {
-        id: data.id,
-      },
-    });
-  }
-
-  if (
-    alreadyExists &&
-    alreadyExists.address1 == data.address1 &&
-    alreadyExists.address2 == data.address2 &&
-    alreadyExists.email == data.email &&
-    alreadyExists.phone == data.phone &&
-    alreadyExists.jobTitle == data.jobTitle &&
-    alreadyExists.name == data.name &&
-    alreadyExists.website == data.website
-  ) {
-    const newResume = await db.resume.update({
-      where: {
-        id: resume.id,
-      },
-      data: {
-        personalInfoId: data.id,
-      },
-      include: {
-        personalInfo: true,
-      },
-    });
-
-    return { success: true, message: "Personal info saved", newResume };
+    return true;
   }
 
   const res = await db.personalInfo.create({
@@ -76,19 +45,7 @@ export async function savePersonalInfo(
     },
   });
 
-  const newResume = await db.resume.update({
-    where: {
-      id: resume.id,
-    },
-    data: {
-      personalInfoId: res.id,
-    },
-    include: {
-      personalInfo: true,
-    },
-  });
-
-  return { success: true, message: "Personal info saved", newResume };
+  return res;
 }
 
 export async function deletePersonalInfo(id: string) {

@@ -5,6 +5,9 @@ import { StepsLinks as Steps } from "@/data/resume-step";
 import { Button } from "../ui/button";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
 import ExperienceForm from "@/components/forms/experienceForm";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import * as action from "@/actions";
 
 import {
@@ -18,24 +21,62 @@ import {
 import { CarouselItem } from "@/components/ui/carousel";
 import useResume from "@/redux/dispatch/useResume";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SuggestionBox from "../suggestionBox";
 import LoadingButton from "../loadingButton";
 import { Separator } from "../ui/separator";
+import PdfDoc from "../pdfView";
 
 type Props = {};
 
 export default function Experience({}: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const experienceFormSchema = z.object({
+    company: z.string().min(2, {
+      message: "Company name must be at least 2 characters.",
+    }),
+    jobTitle: z.string().min(2, {
+      message: "Job title must be at least 2 characters.",
+    }),
+    location: z.string(),
+    description: z
+      .string()
+      .min(10, {
+        message: "Bio must be at least 10 characters.",
+      })
+      .max(160, {
+        message: "Bio must not be longer than 30 characters.",
+      }),
+  });
+
+  const form = useForm<z.infer<typeof experienceFormSchema>>({
+    resolver: zodResolver(experienceFormSchema),
+    values: {
+      company: "",
+      jobTitle: "",
+      description: "",
+      location: "",
+    },
+  });
+
+  const { data: session, status } = useSession();
+  const {
+    resumeState,
+    setResumeState,
+    setResumeStateById,
+    setResumeToDefaultState,
+  } = useResume();
   const [showResume, setShowResume] = useState<boolean>(false);
   const [experiences, setExperiences] = useState<Experience[]>([]);
-  const { resumeState, setResumeState } = useResume();
-  const { data: session } = useSession();
   const [suggestions, setSuggestions] = useState<Experience[]>([]);
-  const [selectedSuggestions, setSelectedSuggestions] = useState<Experience[]>(
-    [],
-  );
+  const [selectedSuggestionId, setSelectedSuggestionId] = useState<
+    string | null
+  >(null);
   const [disabledSaveButton, setDisabledSaveButton] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   async function fetchSuggestions() {
     if (session) {
@@ -46,12 +87,30 @@ export default function Experience({}: Props) {
     }
   }
 
+  function handleSubmitForm(data: {
+    jobTitle: string;
+    company: string;
+    description: string;
+    location: string;
+  }) {
+    const newExperience: Experience = {
+      id: selectedSuggestionId ?? experiences.length.toString(),
+      company: data.company,
+      position: data.jobTitle,
+      startDate: startDate?.toISOString() ?? "",
+      endDate: endDate?.toISOString() ?? "",
+      description: data.description,
+      location: data.location,
+    };
+
+    setExperiences((prev) => [...prev, newExperience]);
+  }
+
   async function addExperiences() {
     setDisabledSaveButton(true);
     const experiencesRes = await action.setExperiences(experiences, session!);
 
     if (experiencesRes) {
-      console.log("experiencesRes", experiencesRes);
       setExperiences(experiencesRes);
       const res = await action.setExperiencesInResume(
         experiencesRes,
@@ -76,10 +135,15 @@ export default function Experience({}: Props) {
   }, [resumeState]);
 
   useEffect(() => {
+    const id = searchParams.get("id");
+    if (resumeState.id == "" && id != null) {
+      setResumeStateById(id, session);
+    }
+    if (resumeState.id == "" && session) setResumeToDefaultState();
     fetchSuggestions();
   }, [session]);
 
-  if (!session) {
+  if (status == "unauthenticated") {
     router.push("/register");
   }
 
@@ -97,25 +161,30 @@ export default function Experience({}: Props) {
               <div className="p-1">
                 <Card
                   className={`relative cursor-pointer p-[3px] text-start ${
-                    selectedSuggestions.includes(item) && "grainy-gradient2 "
+                    experiences.find((exp) => item.id == exp.id) &&
+                    "grainy-gradient2 "
                   }`}
                 >
                   <div
                     className="flex h-full w-full flex-col gap-1 rounded-md bg-white text-xs"
                     onClick={() => {
-                      if (!selectedSuggestions.includes(item)) {
-                        const newSuggestions = [...selectedSuggestions, item];
-                        setSelectedSuggestions(newSuggestions);
-                        setExperiences((prev) => [...prev, item]);
+                      if (!experiences.includes(item)) {
+                        form.setValue("company", item.company);
+                        form.setValue("jobTitle", item.position);
+                        form.setValue("location", item.location);
+                        form.setValue("description", item.description);
+                        setSelectedSuggestionId(item.id);
+                        setStartDate(new Date(item.startDate));
+                        setEndDate(new Date(item.endDate));
                       }
                     }}
                   >
                     <CardHeader>
                       <CardTitle>{item.company}</CardTitle>
                       <CardDescription>
-                        <h2 className="text-base font-medium">
+                        <p className="text-base font-medium">
                           {item.position}{" "}
-                        </h2>
+                        </p>
                         <p>at {item.location}</p>
                         <p>
                           {new Date(item.startDate).toLocaleDateString()} -{" "}
@@ -175,8 +244,12 @@ export default function Experience({}: Props) {
                 Experience
               </h4>
               <ExperienceForm
-                experiences={experiences}
-                setExperience={setExperiences}
+                form={form}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
+                startDate={startDate}
+                endDate={endDate}
+                handleSubmitForm={handleSubmitForm}
               />
             </section>
           </div>
@@ -192,9 +265,9 @@ export default function Experience({}: Props) {
                       <CardHeader>
                         <CardTitle>{item.company}</CardTitle>
                         <CardDescription>
-                          <h2 className="text-base font-medium">
+                          <p className="text-base font-medium">
                             {item.position}{" "}
-                          </h2>
+                          </p>
                           <p>at {item.location}</p>
                           <p>
                             {new Date(item.startDate).toLocaleDateString()} -{" "}
@@ -213,13 +286,6 @@ export default function Experience({}: Props) {
                             (exp, i) => i !== index,
                           );
                           setExperiences(newExperiences);
-                          if (suggestions.includes(item)) {
-                            const newSelectedSuggestions =
-                              selectedSuggestions.filter(
-                                (exp) => exp.id !== item.id,
-                              );
-                            setSelectedSuggestions(newSelectedSuggestions);
-                          }
                         }}
                       >
                         <Trash2 size={20} />
@@ -233,7 +299,7 @@ export default function Experience({}: Props) {
 
           <Separator
             orientation="horizontal"
-            className="my-5 w-full border-t border-primary"
+            className="my-5 w-full border-t-2 border-primary"
           />
 
           <LoadingButton
@@ -251,7 +317,18 @@ export default function Experience({}: Props) {
               ? "h-screen w-full max-w-xl border-2 p-1 lg:h-auto lg:w-1/2"
               : "h-0 max-w-xl lg:h-auto lg:w-0"
           }`}
-        ></section>
+        >
+          <div
+            className="relative flex h-full w-full items-center justify-center bg-white"
+            // id="pdf"
+          >
+            <PdfDoc
+              personalInfo={resumeState.personalInfo}
+              skills={resumeState.skills}
+              social={resumeState.social}
+            />
+          </div>
+        </section>
       </div>
     </div>
   );

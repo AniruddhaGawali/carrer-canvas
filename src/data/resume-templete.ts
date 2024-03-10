@@ -13,7 +13,7 @@ const templetes: ResumeTemplate[] = [
       address: true,
     },
     social: 1,
-    skills: 10,
+    skills: 15,
     experience_project: 3,
   },
 ];

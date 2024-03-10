@@ -9,7 +9,7 @@ export {
 export {
   deletePersonalInfo,
   getPersonalInfo,
-  savePersonalInfo,
+  setPersonalInfo,
   uploadResume,
   getResumes,
   getResumeById,

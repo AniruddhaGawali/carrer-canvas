@@ -25,7 +25,7 @@ export async function setExperiences(
     let resArray: Experience[] = [];
 
     for (const experience of experiences) {
-      if (experience.id.length <= 0) {
+      if (experience.id.length < 12) {
         const res = await db.experience.create({
           data: {
             userId: userId,
@@ -50,8 +50,6 @@ export async function setExperiences(
         resArray.push(experience);
       }
     }
-
-    console.log("resArray", resArray);
 
     return resArray;
   } catch (error) {
@@ -117,9 +115,6 @@ export async function setExperiencesInResume(
         experience: {
           set: experiences,
         },
-      },
-      include: {
-        personalInfo: true,
       },
     });
 

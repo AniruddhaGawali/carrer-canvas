@@ -1,6 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
 import React, { useEffect, useState } from "react";
 import { StepsLinks as Steps } from "@/data/resume-step";
 import useResume from "@/redux/dispatch/useResume";
@@ -13,15 +17,10 @@ import { Eye, EyeOff, Trash2 } from "lucide-react";
 import { CarouselItem } from "@/components/ui/carousel";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import SuggestionBox from "../suggestionBox";
-import {
-  deletePersonalInfo,
-  getPersonalInfo,
-  savePersonalInfo,
-} from "@/actions";
+import * as action from "@/actions";
 import PersonalInformationForm from "../forms/personalInfoForm";
 import { useSession } from "next-auth/react";
 import PdfDoc from "../pdfView";
-import compareObjects from "@/utils/compare-objects";
 
 type Props = {};
 
@@ -31,50 +30,123 @@ export default function PersonalInformationComponent({}: Props) {
     setResumePersonalInfo,
     setResumeStateById,
     setResumeToDefaultState,
+    pushResume,
   } = useResume();
-
-  const defautPersonalInfo: PersonalInfo = {
-    id: "",
-    name: "",
-    email: "",
-    phone: "",
-    website: "",
-    jobTitle: "",
-    address1: "",
-    address2: "",
-  };
-
-  const searchParams = useSearchParams();
-  const { data: session } = useSession();
-  const [showResume, setShowResume] = useState<boolean>(false);
-  const [suggestions, setSuggestions] = useState<PersonalInfo[]>([]);
-  const [selectedSuggestions, setSelectedSuggestions] = useState<number>(-1);
-  const [personalInfo, setPersonalInfo] =
-    useState<PersonalInfo>(defautPersonalInfo);
-  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(false);
 
   const selectedTemplete =
     resumeState.template != null
       ? templetes[resumeState.template]
       : templetes[0];
 
-  async function saveData() {
-    setResumePersonalInfo(personalInfo);
-    toast.promise(
-      savePersonalInfo(personalInfo, resumeState, session).then((e) => {
-        if (!e || !e.newResume) return;
-        setResumePersonalInfo(e.newResume.personalInfo as PersonalInfo);
-      }),
-      {
-        loading: "Saving...",
-        success: "Saved Successfully",
-        error: "Error Saving",
-      },
-    );
+  const phoneRegex = new RegExp(
+    /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
+  );
+
+  const personalInformationFormSchema = z.object({
+    name: selectedTemplete.personalInfo.name
+      ? z
+          .string()
+          .min(2, {
+            message: "Username must be at least 2 characters.",
+          })
+          .optional()
+      : z.string().optional(),
+
+    jobTitle: selectedTemplete.personalInfo.jobTitle
+      ? z.string().min(2, {
+          message: "Job title must be at least 2 characters.",
+        })
+      : z.string().optional(),
+
+    email: selectedTemplete.personalInfo.email
+      ? z.string().email({ message: "Invalid email address." })
+      : z.string().optional(),
+
+    phone: selectedTemplete.personalInfo.phone
+      ? z
+          .string()
+          .min(10, {
+            message: "Phone number must be at least 10 characters.",
+          })
+          .max(10, {
+            message: "Phone number must be at most 15 characters.",
+          })
+          .max(15, {
+            message: "Phone number must be at most 15 characters.",
+          })
+          .regex(phoneRegex, {
+            message: "Phone number is invalid.",
+          })
+      : z.string().optional(),
+
+    website: selectedTemplete.personalInfo.website
+      ? z.string().url({ message: "Invalid URL." })
+      : z.string().optional(),
+
+    address1: selectedTemplete.personalInfo.address
+      ? z.string().min(5, {
+          message: "Address must be at least 5 characters.",
+        })
+      : z.string().optional(),
+
+    address2: selectedTemplete.personalInfo.address
+      ? z.string().min(5, {
+          message: "Address must be at least 5 characters.",
+        })
+      : z.string().optional(),
+  });
+
+  const form = useForm<z.infer<typeof personalInformationFormSchema>>({
+    resolver: zodResolver(personalInformationFormSchema),
+    values: {
+      name: "",
+      jobTitle: "",
+      email: "",
+      phone: "",
+      website: "",
+      address1: "",
+      address2: "",
+    },
+  });
+
+  const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
+  const [showResume, setShowResume] = useState<boolean>(false);
+  const [suggestions, setSuggestions] = useState<PersonalInfo[]>([]);
+  const [selectedSuggestionId, setSelectedSuggestionId] = useState<
+    string | null
+  >(null);
+  const [isButtonDisable, setIsButtonDisable] = useState(false);
+
+  async function saveData(data: {
+    name?: string | undefined;
+    jobTitle?: string | undefined;
+    email?: string | undefined;
+    phone?: string | undefined;
+    website?: string | undefined;
+    address1?: string | undefined;
+    address2?: string | undefined;
+  }) {
+    const personalInfo: PersonalInfo = {
+      id: selectedSuggestionId || "",
+      name: data.name || "",
+      jobTitle: data.jobTitle || "",
+      email: data.email || "",
+      phone: data.phone || "",
+      website: data.website || "",
+      address1: data.address1 || "",
+      address2: data.address2 || "",
+    };
+
+    const res = await action.setPersonalInfo(personalInfo, session);
+    if (res != null) {
+      const newResume = { ...resumeState, personalInfo: personalInfo };
+      pushResume(newResume, session);
+    }
   }
 
   async function getSuggestions() {
-    const res = await getPersonalInfo(session);
+    const res = await action.getPersonalInfo(session);
 
     if (
       !res.success ||
@@ -99,19 +171,6 @@ export default function PersonalInformationComponent({}: Props) {
     });
     setSuggestions(suggestionsList);
   }
-  useEffect(() => {
-    if (resumeState.personalInfo) {
-      setPersonalInfo(resumeState.personalInfo);
-    }
-  }, [resumeState]);
-
-  useEffect(() => {
-    if (compareObjects(resumeState.personalInfo, personalInfo)) {
-      setIsSaveButtonDisabled(true);
-    } else {
-      setIsSaveButtonDisabled(false);
-    }
-  }, [personalInfo]);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -127,7 +186,25 @@ export default function PersonalInformationComponent({}: Props) {
     }
   }, [session]);
 
-  if (!resumeState.template == null) {
+  useEffect(() => {
+    console.log("resumeState", resumeState);
+    if (resumeState.personalInfo) {
+      form.setValue("name", resumeState.personalInfo.name);
+      form.setValue("jobTitle", resumeState.personalInfo.jobTitle);
+      form.setValue("email", resumeState.personalInfo.email);
+      form.setValue("phone", resumeState.personalInfo.phone);
+      form.setValue("website", resumeState.personalInfo.website);
+      form.setValue("address1", resumeState.personalInfo.address1);
+      form.setValue("address2", resumeState.personalInfo.address2);
+      setIsButtonDisable(true);
+    }
+  }, [resumeState]);
+
+  form.watch(() => {
+    setIsButtonDisable(false);
+  });
+
+  if (!resumeState.template == null || status == "unauthenticated") {
     return redirect("/create-resume");
   }
 
@@ -145,34 +222,27 @@ export default function PersonalInformationComponent({}: Props) {
       {suggestions.length > 0 && (
         <SuggestionBox>
           {suggestions.map((item, index) => (
-            <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/5">
+            <CarouselItem
+              key={index}
+              className="h-full md:basis-1/3 2xl:basis-1/5"
+            >
               <div className="p-1">
                 <Card
-                  className={`relative cursor-pointer p-[3px] text-start ${
-                    selectedSuggestions === index && "grainy-gradient2 "
+                  className={`relative h-full cursor-pointer p-[3px] text-start ${
+                    selectedSuggestionId == item.id && "grainy-gradient2 "
                   }`}
                 >
                   <div
-                    className="flex h-full w-full flex-col gap-1 rounded-md bg-white text-xs"
+                    className="flex h-full  w-full flex-col gap-1 rounded-md bg-white text-xs"
                     onClick={() => {
-                      if (selectedSuggestions === index) {
-                        setPersonalInfo(defautPersonalInfo);
-                        setSelectedSuggestions(-1);
-                        return;
-                      }
-
-                      setPersonalInfo({
-                        id: item.id,
-                        name: item.name,
-                        email: item.email,
-                        phone: item.phone,
-                        website: item.website,
-                        jobTitle: item.jobTitle,
-                        address1: item.address1,
-                        address2: item.address2,
-                      });
-
-                      setSelectedSuggestions(index);
+                      setSelectedSuggestionId(item.id);
+                      form.setValue("name", item.name);
+                      form.setValue("jobTitle", item.jobTitle);
+                      form.setValue("email", item.email);
+                      form.setValue("phone", item.phone);
+                      form.setValue("website", item.website);
+                      form.setValue("address1", item.address1);
+                      form.setValue("address2", item.address2);
                     }}
                   >
                     <CardHeader className="pb-2">
@@ -193,7 +263,7 @@ export default function PersonalInformationComponent({}: Props) {
                   <span
                     className="absolute right-2 top-2"
                     onClick={async () => {
-                      toast.promise(deletePersonalInfo(item.id), {
+                      toast.promise(action.deletePersonalInfo(item.id), {
                         loading: "Deleting...",
                         success: () => {
                           getSuggestions();
@@ -239,13 +309,12 @@ export default function PersonalInformationComponent({}: Props) {
 
             {/* // This is the form for the user to input their personal information */}
             <PersonalInformationForm
-              personalInformation={personalInfo}
-              changePersonalInformation={setPersonalInfo}
-              saveData={saveData}
-              setSelectedSuggestions={setSelectedSuggestions}
+              form={form}
               selectedTempletePersonInfo={selectedTemplete.personalInfo}
-              className="container mt-10 flex w-full flex-col "
-              isSaveButtonDisabled={isSaveButtonDisabled}
+              setSelectedSuggestionId={setSelectedSuggestionId}
+              submit={saveData}
+              className="w-full"
+              isDisabled={isButtonDisable}
             />
           </div>
         </section>
@@ -262,7 +331,18 @@ export default function PersonalInformationComponent({}: Props) {
             className="relative flex h-full w-full items-center justify-center bg-white"
             id="pdf"
           >
-            <PdfDoc personalInfo={personalInfo} social={resumeState.social} />
+            <PdfDoc
+              personalInfo={{
+                id: selectedSuggestionId ?? "",
+                name: form.watch("name") ?? "",
+                jobTitle: form.watch("jobTitle") ?? "",
+                email: form.watch("email") ?? "",
+                phone: form.watch("phone") ?? "",
+                website: form.watch("website") ?? "",
+                address1: form.watch("address1") ?? "",
+                address2: form.watch("address2") ?? "",
+              }}
+            />
           </div>
         </section>
       </div>

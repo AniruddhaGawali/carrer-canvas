@@ -192,9 +192,6 @@ export async function setEducationInResume(
           set: education,
         },
       },
-      include: {
-        personalInfo: true,
-      },
     });
 
     const newResume: Resume = {
@@ -222,9 +219,6 @@ export async function setAwardsAndCertificationsInResume(
         awardsAndCertifications: {
           set: awardsAndCertifications,
         },
-      },
-      include: {
-        personalInfo: true,
       },
     });
 

@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
   page: {
     width: "100%",
     height: "100%",
+    position: "relative",
     color: "#000",
     padding: 20,
     fontSize: 11,
@@ -120,7 +121,10 @@ const Classic1 = ({ personalInfo, skills, social }: Classic1Prop) => (
                 <Text>
                   -{" "}
                   <Link
-                    src={personalInfo.website ?? ""}
+                    src={
+                      `https://www.linkedin.com/in/${social?.linkedin?.split("@")[1]}` ??
+                      ""
+                    }
                     style={{
                       color: "black",
                     }}
@@ -136,48 +140,68 @@ const Classic1 = ({ personalInfo, skills, social }: Classic1Prop) => (
 
         <View
           style={{
-            display: "flex",
             marginTop: 10,
-            flexDirection: "row",
-            gap: 2,
-            alignItems: "center",
-            justifyContent: "center",
+            textAlign: "center",
           }}
         >
-          <View>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "semibold",
-                textAlign: "center",
-                width: "100%",
-                marginTop: 10,
-                marginBottom: 5,
-              }}
-            >
-              Skills
-            </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "bold",
+            }}
+          >
+            Skills
+          </Text>
 
-            <Svg>
-              <Rect x="0" y="0" width="1000" height="2" fill="black" />
-            </Svg>
-          </View>
+          <Svg
+            style={{
+              marginTop: 8,
+              height: 2,
+            }}
+          >
+            <Rect x={0} y={0} width={1000} height={2} fill="black" />
+          </Svg>
 
-          {skills && (
-            <>
-              {skills.map((skill, index) => (
-                <Text
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: 8,
+              marginTop: 10,
+              padding: "0 20",
+            }}
+          >
+            {skills &&
+              skills.map((skill, index) => (
+                <View
                   key={index}
                   style={{
-                    fontSize: 11,
-                    fontWeight: "semibold",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
                 >
-                  {skill.skills ?? ""}
-                </Text>
+                  <Text
+                    style={{
+                      padding: 4,
+                    }}
+                  >
+                    {skill.skills}
+                  </Text>
+                  {skill.level == "Expert" && (
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                      }}
+                    >
+                      (Prof)
+                    </Text>
+                  )}
+                </View>
               ))}
-            </>
-          )}
+          </View>
         </View>
       </Page>
     </Document>

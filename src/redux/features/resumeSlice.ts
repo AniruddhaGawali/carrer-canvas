@@ -14,11 +14,29 @@ const initalResumeState: Resume & {
   uploadStatus: "idle",
 };
 
-export const saveResume = createAsyncThunk(
-  "resume/saveResume",
+export const setResumeToDB = createAsyncThunk(
+  "resume/setResumeToDB",
   async ({ resume, session }: { resume: Resume; session: Session | null }) => {
-    const { res } = await uploadResume(resume, session);
-    return res as unknown as Resume;
+    const res = await uploadResume(resume, session);
+
+    if (!res) throw new Error("User not found");
+
+    const newResume: Resume = {
+      id: res.id,
+      title: res.title,
+      userId: res.userId,
+      template: res.template,
+      personalInfo: res.personalInfo as PersonalInfo,
+      social: res.social as Social,
+      exprerience: res.experience as Experience[],
+      education: res.education as Education[],
+      awardsAndCertifications:
+        res.awardsAndCertifications as AwardsAndCertifications[],
+      project: res.project as Project[],
+      skills: res.skills as Skill[],
+    };
+
+    return newResume;
   },
 );
 export const saveResumeById = createAsyncThunk(
@@ -27,8 +45,25 @@ export const saveResumeById = createAsyncThunk(
     if (session) {
       throw new Error("User not found");
     }
-    const { resume } = await getResumeById(id);
-    return resume as unknown as Resume;
+    const res = await getResumeById(id);
+    if (!res) throw new Error("User not found");
+
+    const newResume: Resume = {
+      id: res.id,
+      title: res.title,
+      userId: res.userId,
+      template: res.template,
+      personalInfo: res.personalInfo as PersonalInfo,
+      social: res.social as Social,
+      exprerience: res.experience as Experience[],
+      education: res.education as Education[],
+      awardsAndCertifications:
+        res.awardsAndCertifications as AwardsAndCertifications[],
+      project: res.project as Project[],
+      skills: res.skills as Skill[],
+    };
+
+    return newResume;
   },
 );
 
@@ -64,15 +99,15 @@ const resumeSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(saveResume.fulfilled, (state, action) => {
+    builder.addCase(setResumeToDB.fulfilled, (state, action) => {
       return { ...action.payload, uploadStatus: "success" };
     });
 
-    builder.addCase(saveResume.pending, (state) => {
+    builder.addCase(setResumeToDB.pending, (state) => {
       state.uploadStatus = "loading";
     });
 
-    builder.addCase(saveResume.rejected, (state) => {
+    builder.addCase(setResumeToDB.rejected, (state) => {
       state.uploadStatus = "failed";
     });
 
