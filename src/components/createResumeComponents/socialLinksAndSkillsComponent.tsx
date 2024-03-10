@@ -29,7 +29,7 @@ export default function SocialLinksAndSkills({}: Props) {
     resumeState,
     setResumeStateById,
     setResumeToDefaultState,
-    saveResumeState,
+    pushResume,
   } = useResume();
   const { data: session } = useSession();
 
@@ -140,14 +140,13 @@ export default function SocialLinksAndSkills({}: Props) {
 
     if (session) {
       await action.setSkills(skillsSuggestions, session);
-      var newResume = await action.setSkillsInResume(skills, resumeState);
-      if (newResume) {
-        await action.setSocial(socialSuggestions, session);
-        newResume = await action.setSocialInResume(socialLinks, resumeState);
-      }
-      if (newResume) {
-        saveResumeState(newResume as unknown as Resume, session);
-      }
+      await action.setSocial(socialSuggestions, session);
+      const newResume = {
+        ...resumeState,
+        skills: skills,
+        social: socialLinks,
+      };
+      pushResume(newResume, session);
     }
     setDisabledSaveButton(true);
     setIsSocialAndSkillSaving(false);
@@ -273,7 +272,11 @@ export default function SocialLinksAndSkills({}: Props) {
                       >
                         <Chips
                           className={`group m-1 flex items-center gap-2 border-2 border-primary transition-all hover:border-0 ${
-                            skills.includes(skill) &&
+                            skills.filter(
+                              (item) =>
+                                item.level == skill.level &&
+                                item.skills == skill.skills,
+                            ).length > 0 &&
                             "grainy-gradient2 border-0 text-black"
                           }`}
                           key={index}

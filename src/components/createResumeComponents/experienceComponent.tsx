@@ -64,7 +64,7 @@ export default function Experience({}: Props) {
   const { data: session, status } = useSession();
   const {
     resumeState,
-    setResumeState,
+    pushResume,
     setResumeStateById,
     setResumeToDefaultState,
   } = useResume();
@@ -108,25 +108,12 @@ export default function Experience({}: Props) {
 
   async function addExperiences() {
     setDisabledSaveButton(true);
-    const experiencesRes = await action.setExperiences(experiences, session!);
-
-    if (experiencesRes) {
-      setExperiences(experiencesRes);
-      const res = await action.setExperiencesInResume(
-        experiencesRes,
-        resumeState.id,
-      );
-
-      if (!res) return;
-
-      const newResume: Resume = {
-        ...resumeState,
-        exprerience: res.experience as Experience[],
-      };
-      console.log(res);
-
-      setResumeState(newResume);
-    }
+    await action.setExperiences(experiences, session!);
+    const newResume: Resume = {
+      ...resumeState,
+      exprerience: experiences,
+    };
+    pushResume(newResume, session);
     setDisabledSaveButton(false);
   }
 
