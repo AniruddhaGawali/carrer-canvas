@@ -74,9 +74,10 @@ export default function Experience({}: Props) {
   const [selectedSuggestionId, setSelectedSuggestionId] = useState<
     string | null
   >(null);
-  const [disabledSaveButton, setDisabledSaveButton] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [disabledSaveButton, setDisabledSaveButton] = useState<boolean>(false);
+  const [loadingSaveButton, setLoadingSaveButton] = useState<boolean>(false);
 
   async function fetchSuggestions() {
     if (session) {
@@ -108,17 +109,20 @@ export default function Experience({}: Props) {
 
   async function addExperiences() {
     setDisabledSaveButton(true);
+    setLoadingSaveButton(true);
     await action.setExperiences(experiences, session!);
     const newResume: Resume = {
       ...resumeState,
       exprerience: experiences,
     };
     pushResume(newResume, session);
-    setDisabledSaveButton(false);
+    setLoadingSaveButton(false);
   }
 
   useEffect(() => {
-    console.log(resumeState);
+    if (resumeState.id != "" && resumeState.exprerience) {
+      setExperiences(resumeState.exprerience);
+    }
   }, [resumeState]);
 
   useEffect(() => {
@@ -129,6 +133,12 @@ export default function Experience({}: Props) {
     if (resumeState.id == "" && session) setResumeToDefaultState();
     fetchSuggestions();
   }, [session]);
+
+  useEffect(() => {
+    if (experiences.length > 0) {
+      setDisabledSaveButton(false);
+    }
+  }, [experiences]);
 
   if (status == "unauthenticated") {
     router.push("/register");
@@ -142,7 +152,7 @@ export default function Experience({}: Props) {
       </div>
 
       {suggestions.length > 0 && (
-        <SuggestionBox>
+        <SuggestionBox className="bg-secondary/60">
           {suggestions.map((item, index) => (
             <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/5">
               <div className="p-1">
@@ -241,14 +251,15 @@ export default function Experience({}: Props) {
             </section>
           </div>
 
-          <div className="mt-10 flex w-full items-center justify-center">
+          <h3 className="container mt-20 w-full text-start text-xl font-medium ">
+            Your Experiences
+          </h3>
+          <div className="mt-5  w-11/12 rounded-md bg-secondary/60 p-5">
             {experiences.length > 0 ? (
-              <div className="w-full max-w-sm">
-                <h3 className="text-2xl font-medium">Preview</h3>
-
+              <div className="m-auto w-full max-w-md">
                 {experiences.map((item, index) => (
                   <div className="relative w-full p-1" key={index}>
-                    <Card className="relative w-full cursor-pointer  text-start">
+                    <Card className="relative w-full text-start">
                       <CardHeader>
                         <CardTitle>{item.company}</CardTitle>
                         <CardDescription>
@@ -267,7 +278,7 @@ export default function Experience({}: Props) {
                       </CardContent>
 
                       <span
-                        className="absolute right-2 top-2"
+                        className="absolute right-2 top-2 cursor-pointer"
                         onClick={() => {
                           const newExperiences = experiences.filter(
                             (exp, i) => i !== index,
@@ -293,7 +304,7 @@ export default function Experience({}: Props) {
             className="mt-5 w-full max-w-md"
             onClick={addExperiences}
             disabled={disabledSaveButton}
-            loading={disabledSaveButton}
+            loading={loadingSaveButton}
           >
             Save
           </LoadingButton>

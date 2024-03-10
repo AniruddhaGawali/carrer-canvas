@@ -220,7 +220,7 @@ export default function PersonalInformationComponent({}: Props) {
 
       {/* //Suggestion Box */}
       {suggestions.length > 0 && (
-        <SuggestionBox>
+        <SuggestionBox className="bg-secondary/60">
           {suggestions.map((item, index) => (
             <CarouselItem
               key={index}
@@ -302,12 +302,14 @@ export default function PersonalInformationComponent({}: Props) {
             </Button>
           </div>
 
+          <h3 className="flex items-center justify-center text-center text-2xl font-medium">
+            Edit Your Personal Information
+          </h3>
           <div className="container mt-10 flex w-11/12 flex-col gap-5 rounded-md bg-secondary/60 p-10">
-            <h3 className="flex items-center justify-center text-center text-2xl font-medium">
-              Edit Your Personal Information
-            </h3>
-
             {/* // This is the form for the user to input their personal information */}
+            <h4 className="flex items-center justify-between text-lg font-medium">
+              Personal Information
+            </h4>
             <PersonalInformationForm
               form={form}
               selectedTempletePersonInfo={selectedTemplete.personalInfo}

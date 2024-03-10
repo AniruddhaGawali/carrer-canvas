@@ -237,7 +237,7 @@ export default function SocialLinksAndSkills({}: Props) {
               <div>
                 {skills.length > 0 && (
                   <>
-                    <h4 className="mt-5 text-wrap text-lg font-medium text-primary">
+                    <h4 className="mb-2 mt-5 text-wrap text-lg font-medium text-primary">
                       Your Skills
                     </h4>
                     <div className="flex w-full flex-wrap gap-3 rounded-md border p-3 ">
@@ -364,10 +364,10 @@ export default function SocialLinksAndSkills({}: Props) {
               <div>
                 {Object.keys(socialLinks).length > 0 && (
                   <>
-                    <h4 className="mt-5 text-wrap text-lg font-medium text-primary">
+                    <h4 className="mb-3 mt-5 text-wrap text-lg font-medium text-primary">
                       Your Skills
                     </h4>
-                    <div className="flex w-full flex-wrap gap-3 rounded-md border-2  p-3">
+                    <div className="flex w-full flex-wrap gap-3 rounded-md border-2 p-3">
                       {Object.keys(socialLinks).map((social, index) => (
                         <div
                           key={index}
