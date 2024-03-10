@@ -271,7 +271,7 @@ export default function ProjectForm({ projects, setProjects }: Props) {
             )}
           />
 
-          <div className="flex flex-col gap-5 xl:flex-row">
+          <div className="flex flex-wrap gap-5">
             <FormField
               name="startDate"
               render={() => (

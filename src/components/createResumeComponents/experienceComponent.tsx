@@ -26,6 +26,7 @@ import SuggestionBox from "../suggestionBox";
 import LoadingButton from "../loadingButton";
 import { Separator } from "../ui/separator";
 import PdfDoc from "../pdfView";
+import { set } from "date-fns";
 
 type Props = {};
 
@@ -76,7 +77,7 @@ export default function Experience({}: Props) {
   >(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [disabledSaveButton, setDisabledSaveButton] = useState<boolean>(false);
+  const [disabledSaveButton, setDisabledSaveButton] = useState<boolean>(true);
   const [loadingSaveButton, setLoadingSaveButton] = useState<boolean>(false);
 
   async function fetchSuggestions() {
@@ -135,8 +136,28 @@ export default function Experience({}: Props) {
   }, [session]);
 
   useEffect(() => {
-    if (experiences.length > 0) {
-      setDisabledSaveButton(false);
+    let isDisabled = true;
+    if (experiences.length <= 0 || resumeState.exprerience == null) {
+      isDisabled = false;
+      setDisabledSaveButton(isDisabled);
+      return;
+    }
+
+    for (const exp of experiences) {
+      for (const item of resumeState.exprerience) {
+        if (
+          exp.company !== item.company ||
+          exp.position !== item.position ||
+          exp.location !== item.location ||
+          exp.description !== item.description ||
+          new Date(exp.startDate).toISOString() !== item.startDate ||
+          new Date(exp.endDate).toISOString() !== item.endDate
+        ) {
+          isDisabled = false;
+          setDisabledSaveButton(isDisabled);
+          return;
+        }
+      }
     }
   }, [experiences]);
 
@@ -158,8 +179,18 @@ export default function Experience({}: Props) {
               <div className="p-1">
                 <Card
                   className={`relative cursor-pointer p-[3px] text-start ${
-                    experiences.find((exp) => item.id == exp.id) &&
-                    "grainy-gradient2 "
+                    experiences.filter((exp) => {
+                      console.log(item.startDate, "exp", exp.startDate);
+                      return (
+                        item.company === exp.company &&
+                        item.position === exp.position &&
+                        item.location === exp.location &&
+                        item.description === exp.description &&
+                        new Date(item.startDate).toISOString() ==
+                          exp.startDate &&
+                        new Date(item.endDate).toISOString() == exp.endDate
+                      );
+                    }).length > 0 && "grainy-gradient2 "
                   }`}
                 >
                   <div
@@ -196,7 +227,7 @@ export default function Experience({}: Props) {
                   <span
                     className="absolute right-2 top-2"
                     onClick={async () => {
-                      await action.deleteExperience(item.id, session!);
+                      await action.deleteExperience(item.id);
                       const newSuggestions = suggestions.filter(
                         (exp) => exp.id !== item.id,
                       );
@@ -251,49 +282,51 @@ export default function Experience({}: Props) {
             </section>
           </div>
 
-          <h3 className="container mt-20 w-full text-start text-xl font-medium ">
-            Your Experiences
-          </h3>
-          <div className="mt-5  w-11/12 rounded-md bg-secondary/60 p-5">
-            {experiences.length > 0 ? (
-              <div className="m-auto w-full max-w-md">
-                {experiences.map((item, index) => (
-                  <div className="relative w-full p-1" key={index}>
-                    <Card className="relative w-full text-start">
-                      <CardHeader>
-                        <CardTitle>{item.company}</CardTitle>
-                        <CardDescription>
-                          <p className="text-base font-medium">
-                            {item.position}{" "}
-                          </p>
-                          <p>at {item.location}</p>
-                          <p>
-                            {new Date(item.startDate).toLocaleDateString()} -{" "}
-                            {new Date(item.endDate).toLocaleDateString()}
-                          </p>
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <p>{item.description}</p>
-                      </CardContent>
+          {experiences.length > 0 ? (
+            <>
+              <h3 className="container mt-20 w-full text-start text-xl font-medium ">
+                Your Experiences
+              </h3>
+              <div className="mt-5  w-11/12 rounded-md bg-secondary/60 p-5">
+                <div className="m-auto w-full max-w-md">
+                  {experiences.map((item, index) => (
+                    <div className="relative w-full p-1" key={index}>
+                      <Card className="relative w-full text-start">
+                        <CardHeader>
+                          <CardTitle>{item.company}</CardTitle>
+                          <CardDescription>
+                            <p className="text-base font-medium">
+                              {item.position}{" "}
+                            </p>
+                            <p>at {item.location}</p>
+                            <p>
+                              {new Date(item.startDate).toLocaleDateString()} -{" "}
+                              {new Date(item.endDate).toLocaleDateString()}
+                            </p>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <p>{item.description}</p>
+                        </CardContent>
 
-                      <span
-                        className="absolute right-2 top-2 cursor-pointer"
-                        onClick={() => {
-                          const newExperiences = experiences.filter(
-                            (exp, i) => i !== index,
-                          );
-                          setExperiences(newExperiences);
-                        }}
-                      >
-                        <Trash2 size={20} />
-                      </span>
-                    </Card>
-                  </div>
-                ))}
+                        <span
+                          className="absolute right-2 top-2 cursor-pointer"
+                          onClick={() => {
+                            const newExperiences = experiences.filter(
+                              (exp, i) => i !== index,
+                            );
+                            setExperiences(newExperiences);
+                          }}
+                        >
+                          <Trash2 size={20} />
+                        </span>
+                      </Card>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ) : null}
-          </div>
+            </>
+          ) : null}
 
           <Separator
             orientation="horizontal"

@@ -86,7 +86,7 @@ function Dashboard({}: Props) {
                             action.deleteResume(item.id, session);
                             fetchResumes();
                           }}
-                          className="flex  items-center justify-center gap-3"
+                          className="flex  items-center justify-center gap-3 bg-destructive/80"
                         >
                           <Trash2 /> Delete
                         </Button>

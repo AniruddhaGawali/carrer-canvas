@@ -49,11 +49,16 @@ export async function setPersonalInfo(
 }
 
 export async function deletePersonalInfo(id: string) {
-  const res = await db.personalInfo.delete({
-    where: {
-      id: id,
-    },
-  });
+  try {
+    const res = await db.personalInfo.delete({
+      where: {
+        id: id,
+      },
+    });
 
-  return { success: true, message: "Personal info deleted", res };
+    return res;
+  } catch (error) {
+    console.error(error);
+    return new Error("Error deleting personal info");
+  }
 }

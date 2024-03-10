@@ -57,21 +57,18 @@ export async function setExperiences(
   }
 }
 
-export async function deleteExperience(experienceId: string, session: Session) {
-  const userId = session.user.id;
+export async function deleteExperience(experienceId: string) {
   try {
     const res = await db.experience.delete({
       where: {
         id: experienceId,
-        AND: {
-          userId: userId,
-        },
       },
     });
 
     return res;
   } catch (error) {
-    return null;
+    console.log("error", error);
+    throw Error("Error deleting experience");
   }
 }
 

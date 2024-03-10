@@ -19,34 +19,29 @@ import { useSession } from "next-auth/react";
 import useResume from "@/redux/dispatch/useResume";
 import SuggestionBox from "../suggestionBox";
 import { CarouselItem } from "../ui/carousel";
+import { toast } from "sonner";
+import { useSearchParams } from "next/navigation";
 
 type Props = {};
 
 export default function ProjectComponent({}: Props) {
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
-  const { resumeState, setResumeState } = useResume();
+  const {
+    resumeState,
+    pushResume,
+    setResumeStateById,
+    setResumeToDefaultState,
+  } = useResume();
   const [showResume, setShowResume] = useState<boolean>(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [suggestions, setSuggestions] = useState<Project[]>([]);
   const [selectedSuggestions, setSelectedSuggestions] = useState<Project[]>([]);
 
   async function addProjects() {
-    console.log("projects", projects);
-    if (!session) return;
-    const resProject = await action.setProjects(projects, session);
-    console.log("resProject", resProject);
-
-    if (resProject) {
-      setProjects(resProject);
-      console.log("resProject", resProject, projects);
-      const res = action.setProjectsInResume(resProject, resumeState.id);
-
-      if (!res) return;
-
-      const newResume: Resume = { ...resumeState, project: resProject };
-
-      setResumeState(newResume);
-    }
+    await action.setProjects(projects, session);
+    const newResume: Resume = { ...resumeState, project: projects };
+    pushResume(newResume, session);
   }
 
   async function fetchSuggestions() {
@@ -59,6 +54,17 @@ export default function ProjectComponent({}: Props) {
   }
 
   useEffect(() => {
+    if (resumeState.project) {
+      setProjects(resumeState.project);
+    }
+  }, [resumeState.project]);
+
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (resumeState.id == "" && id != null) {
+      setResumeStateById(id, session);
+    }
+    if (resumeState.id == "" && session) setResumeToDefaultState();
     fetchSuggestions();
   }, [session]);
 
@@ -109,17 +115,15 @@ export default function ProjectComponent({}: Props) {
 
                   <span
                     className="absolute right-2 top-2"
-                    onClick={() => {
-                      // const newExperiences = projects.filter(
-                      //   (exp, i) => i !== index,
-                      // );
-                      // setProjects(newExperiences);
-                      // // if (suggestions.includes(item)) {
-                      // //   const newSuggestions = suggestions.filter(
-                      // //     (exp) => exp.id !== item.id,
-                      // //   );
-                      // //   setSuggestions(newSuggestions);
-                      // // }
+                    onClick={async () => {
+                      toast.promise(action.deleteProject(item.id), {
+                        loading: "Deleting...",
+                        success: () => {
+                          fetchSuggestions();
+                          return "Deleted Successfully";
+                        },
+                        error: "Error Deleting",
+                      });
                     }}
                   >
                     <Trash2 size={20} />
@@ -154,8 +158,8 @@ export default function ProjectComponent({}: Props) {
             Edit Your Projects
           </h3>
 
-          <div className="flex w-full flex-col items-center justify-evenly gap-5">
-            <section className="container mt-10 flex w-5/6 flex-col gap-5">
+          <div className="mt-10 flex w-11/12 flex-col items-center justify-evenly gap-5 rounded-md bg-secondary/60 p-10">
+            <section className="container flex w-full flex-col gap-5">
               <h4 className="flex items-center justify-between text-lg font-medium">
                 Projects
               </h4>
@@ -168,13 +172,12 @@ export default function ProjectComponent({}: Props) {
             className="my-5 w-full border-t border-primary"
           />
 
-          <div className=" flex w-full items-center justify-center">
+          <div className="">
+            <h3 className="container mt-10 text-2xl font-medium">Preview</h3>
             {projects.length > 0 ? (
-              <div className="w-full max-w-sm">
-                <h3 className="text-2xl font-medium">Preview</h3>
-
+              <div className="m-auto mt-5 flex w-11/12 flex-col items-center justify-center rounded-md bg-secondary/60 p-10">
                 {projects.map((item, index) => (
-                  <div className="relative w-full p-1" key={index}>
+                  <div className="relative  p-1" key={index}>
                     <Card className="relative w-full cursor-pointer  text-start">
                       <CardHeader>
                         <CardTitle>{item.name}</CardTitle>
@@ -190,6 +193,17 @@ export default function ProjectComponent({}: Props) {
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
+                        <div className="mb-2 flex flex-wrap gap-2">
+                          {item.tech.map((tech, index) => (
+                            <span
+                              key={index}
+                              className="rounded-md bg-primary/70 p-1 px-2 text-xs font-medium text-white"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+
                         <p>{item.description}</p>
                       </CardContent>
 

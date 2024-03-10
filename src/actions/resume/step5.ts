@@ -16,7 +16,11 @@ export async function getProjects(session: Session) {
   }
 }
 
-export async function setProjects(projects: Project[], session: Session) {
+export async function setProjects(
+  projects: Project[],
+  session: Session | null,
+) {
+  if (!session) return null;
   const userId = session.user.id;
   try {
     let resArray: Project[] = [];
@@ -65,7 +69,8 @@ export async function deleteProject(id: string) {
     });
     return res;
   } catch (error) {
-    return null;
+    console.error(error);
+    throw new Error("Error deleting project");
   }
 }
 
