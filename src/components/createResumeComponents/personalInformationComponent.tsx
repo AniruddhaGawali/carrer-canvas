@@ -303,7 +303,7 @@ export default function PersonalInformationComponent({}: Props) {
           </div>
 
           <h3 className="flex items-center justify-center text-center text-2xl font-medium">
-            Edit Your Personal Details
+            Manage Your Personal Details
           </h3>
           <div className="container mt-10 flex w-11/12 flex-col gap-5 rounded-md bg-secondary/60 p-10">
             {/* // This is the form for the user to input their personal information */}

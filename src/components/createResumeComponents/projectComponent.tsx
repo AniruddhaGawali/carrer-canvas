@@ -174,8 +174,10 @@ export default function ProjectComponent({}: Props) {
   return (
     <div className=" my-[9rem] min-h-screen w-full">
       <div className="mb-20 flex flex-col items-center justify-center">
-        <h2 className="mb-3 text-center text-3xl font-bold">{Steps[4].name}</h2>
-        <p>{Steps[4].desc}</p>
+        <h2 className="mb-3 text-center text-4xl font-bold">{Steps[4].name}</h2>
+        <p className="text-center text-lg font-medium text-primary">
+          {Steps[4].desc}
+        </p>
       </div>
 
       {suggestions.length > 0 && (
@@ -271,7 +273,7 @@ export default function ProjectComponent({}: Props) {
           </div>
 
           <h3 className="flex items-center justify-center text-center text-2xl font-medium">
-            Edit Your Projects
+            Manage Your Projects
           </h3>
 
           <div className="mt-10 flex w-11/12 flex-col items-center justify-evenly gap-5 rounded-md bg-secondary/60 p-10">

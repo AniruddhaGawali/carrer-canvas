@@ -23,6 +23,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import SuggestionBox from "../suggestionBox";
+import { CarouselItem } from "../ui/carousel";
+import ComboBox from "../ui/combo-box";
+import { compare } from "bcrypt";
+import { toast } from "sonner";
 
 type Props = {};
 
@@ -49,6 +54,25 @@ export default function EducationAndCertificationComponents({}: Props) {
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const [completedDate, setCompletedDate] = useState<Date | null>(null);
+  const [suggestionEducation, setSuggestionEducation] = useState<Education[]>(
+    [],
+  );
+  const [suggestionCertification, setSuggestionCertification] = useState<
+    AwardsAndCertifications[]
+  >([]);
+
+  const suggestionType = [
+    {
+      label: "Education Suggestions",
+      value: "education",
+    },
+    {
+      label: "Certification Suggestions",
+      value: "certification",
+    },
+  ];
+
+  const [value, setValue] = useState<string>(suggestionType[0].value);
 
   const certificationFormSchema = z.object({
     name: z.string().min(2, {
@@ -112,22 +136,26 @@ export default function EducationAndCertificationComponents({}: Props) {
     }
   }
 
+  async function fetchSuggestion() {
+    if (session) {
+      const education = await action.getEducation(session);
+      const certification = await action.getAwardsAndCertifications(session);
+
+      console.log(education, certification);
+
+      if (education) setSuggestionEducation(education);
+      if (certification) setSuggestionCertification(certification);
+    }
+  }
+
   useEffect(() => {
     const id = searchParams.get("id");
     if (resumeState.id == "" && id != null) {
       setResumeStateById(id, session);
     }
     if (resumeState.id == "" && session) setResumeToDefaultState();
+    fetchSuggestion();
   }, [session]);
-
-  useEffect(() => {
-    if (resumeState.education) {
-      setEducation(resumeState.education);
-    }
-    if (resumeState.awardsAndCertifications) {
-      setCertification(resumeState.awardsAndCertifications);
-    }
-  }, [resumeState]);
 
   useEffect(() => {
     console.log(education);
@@ -141,9 +169,166 @@ export default function EducationAndCertificationComponents({}: Props) {
   return (
     <div className=" my-[9rem] min-h-screen w-full">
       <div className="mb-20 flex flex-col items-center justify-center">
-        <h2 className="mb-3 text-center text-3xl font-bold">{Steps[5].name}</h2>
-        <p>{Steps[5].desc}</p>
+        <h2 className="mb-3 text-center text-4xl font-bold">{Steps[5].name}</h2>
+        <p className="text-center text-lg font-medium text-primary">
+          {Steps[5].desc}
+        </p>
       </div>
+
+      {(suggestionEducation.length > 0 ||
+        suggestionCertification.length > 0) && (
+        <div>
+          <h2 className="container mb-5 w-full text-left text-xl text-primary/80 ">
+            <ComboBox
+              frameworks={suggestionType}
+              value={value}
+              setValue={(value) => setValue(value)}
+            />
+          </h2>
+
+          <SuggestionBox className="bg-secondary/60">
+            {value === "education" ? (
+              <>
+                {suggestionEducation.map((item, index) => (
+                  <CarouselItem
+                    key={index}
+                    className="h-full md:basis-1/3 2xl:basis-1/5"
+                  >
+                    <div className="p-1">
+                      <Card
+                        className={`relative h-full cursor-pointer p-[3px] text-start ${
+                          education.filter(
+                            (edu) =>
+                              edu.college === item.college &&
+                              edu.degree === item.degree &&
+                              edu.description === item.description &&
+                              edu.startDate ===
+                                new Date(item.startDate).toISOString(),
+                          ).length > 0 && "grainy-gradient2 "
+                        }`}
+                        onClick={() => {
+                          educationForm.setValue("college", item.college);
+                          educationForm.setValue("degree", item.degree);
+                          educationForm.setValue(
+                            "description",
+                            item.description,
+                          );
+                          setStartDate(new Date(item.startDate));
+                        }}
+                      >
+                        <div className="flex h-full w-full flex-col gap-1 rounded-md bg-white text-xs">
+                          <CardHeader>
+                            <CardTitle>{item.degree}</CardTitle>
+                            <CardDescription>
+                              <p className="text-base font-medium">
+                                {item.college}{" "}
+                              </p>
+
+                              <p>
+                                {new Date(item.startDate).toLocaleDateString()}{" "}
+                                - {new Date(item.endDate).toLocaleDateString()}
+                              </p>
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div>{item.description}</div>
+                          </CardContent>
+                        </div>
+
+                        <span
+                          className="absolute right-2 top-2"
+                          onClick={async () => {
+                            toast.promise(action.deleteEducation(item.id), {
+                              loading: "Deleting...",
+                              success: () => {
+                                const newEducation = suggestionEducation.filter(
+                                  (edu) => edu.id !== item.id,
+                                );
+                                setSuggestionEducation(newEducation);
+                                return "Deleted Successfully";
+                              },
+                              error: "Failed to delete",
+                            });
+                          }}
+                        >
+                          <Trash2 size={20} />
+                        </span>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </>
+            ) : (
+              <>
+                {suggestionCertification.map((item, index) => (
+                  <CarouselItem
+                    key={index}
+                    className="h-full md:basis-1/3 2xl:basis-1/5"
+                  >
+                    <div className="p-1">
+                      <Card
+                        className={`relative h-full cursor-pointer p-[3px] text-start ${
+                          certification.filter(
+                            (cert) =>
+                              cert.name === item.name &&
+                              cert.description === item.description &&
+                              cert.date === new Date(item.date).toISOString(),
+                          ).length > 0 && "grainy-gradient2 "
+                        }`}
+                        onClick={() => {
+                          certificationForm.setValue("name", item.name);
+                          certificationForm.setValue(
+                            "description",
+                            item.description,
+                          );
+                          setCompletedDate(new Date(item.date));
+                        }}
+                      >
+                        <div className="flex h-full w-full flex-col gap-1 rounded-md bg-white text-xs">
+                          <CardHeader>
+                            <CardTitle>{item.name}</CardTitle>
+                            <CardDescription>
+                              <p>
+                                at {new Date(item.date).toLocaleDateString()}
+                              </p>
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div>{item.description}</div>
+                          </CardContent>
+                        </div>
+
+                        <span
+                          className="absolute right-2 top-2"
+                          onClick={async () => {
+                            toast.promise(
+                              action.deleteAwardsAndCertifications(item.id),
+                              {
+                                loading: "Deleting...",
+                                success: () => {
+                                  const newCertification =
+                                    suggestionCertification.filter(
+                                      (cert) => cert.id !== item.id,
+                                    );
+                                  setSuggestionCertification(newCertification);
+                                  return "Deleted Successfully";
+                                },
+                                error: "Failed to delete",
+                              },
+                            );
+                          }}
+                        >
+                          <Trash2 size={20} />
+                        </span>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </>
+            )}
+          </SuggestionBox>
+        </div>
+      )}
 
       <div className="container flex min-h-screen w-full flex-col-reverse items-center justify-center gap-5 lg:flex-row lg:items-stretch">
         <section className="relative flex w-full max-w-xl flex-col items-center justify-start rounded-lg border-2 border-primary bg-white p-5 pt-10 lg:w-1/2 lg:max-w-none ">
@@ -165,7 +350,7 @@ export default function EducationAndCertificationComponents({}: Props) {
           </div>
 
           <h3 className="flex items-center justify-center text-center text-2xl font-medium">
-            Edit Your Education and Certification
+            Manage Your Education and Certification
           </h3>
 
           <div className="flex w-full flex-col items-center justify-evenly gap-5">
@@ -193,7 +378,7 @@ export default function EducationAndCertificationComponents({}: Props) {
                 <div className="m-auto mt-5 flex w-full flex-col items-center justify-center rounded-md bg-secondary/60 p-10">
                   {education.map((item, index) => (
                     <div className="relative w-full p-1" key={index}>
-                      <Card className="relative w-full cursor-pointer  text-start">
+                      <Card className="relative w-full text-start">
                         <CardHeader>
                           <CardTitle>{item.degree}</CardTitle>
                           <CardDescription>
@@ -211,7 +396,15 @@ export default function EducationAndCertificationComponents({}: Props) {
                           <div>{item.description}</div>
                         </CardContent>
 
-                        <span className="absolute right-2 top-2">
+                        <span
+                          className="absolute right-2 top-2 cursor-pointer"
+                          onClick={() => {
+                            const newEducation = education.filter(
+                              (education) => education.id !== item.id,
+                            );
+                            setEducation(newEducation);
+                          }}
+                        >
                           <Trash2 size={20} />
                         </span>
                       </Card>
@@ -249,7 +442,7 @@ export default function EducationAndCertificationComponents({}: Props) {
               <div className="m-auto mt-5 flex w-full flex-col items-center justify-center rounded-md bg-secondary/60 p-10">
                 {certification.map((item, index) => (
                   <div className="relative w-full p-1" key={index}>
-                    <Card className="relative w-full cursor-pointer  text-start">
+                    <Card className="relative w-full  text-start">
                       <CardHeader>
                         <CardTitle>{item.name}</CardTitle>
                         <CardDescription>
@@ -260,7 +453,15 @@ export default function EducationAndCertificationComponents({}: Props) {
                         <div>{item.description}</div>
                       </CardContent>
 
-                      <span className="absolute right-2 top-2">
+                      <span
+                        className="absolute right-2 top-2 cursor-pointer "
+                        onClick={() => {
+                          const newCertification = certification.filter(
+                            (certification) => certification.id !== item.id,
+                          );
+                          setCertification(newCertification);
+                        }}
+                      >
                         <Trash2 size={20} />
                       </span>
                     </Card>

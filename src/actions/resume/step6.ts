@@ -11,7 +11,18 @@ export async function getEducation(session: Session) {
       },
     });
 
-    return res;
+    const education: Education[] = res.map((edu) => {
+      return {
+        college: edu.college,
+        degree: edu.degree,
+        endDate: edu.endDate.toLocaleDateString(),
+        id: edu.id,
+        startDate: edu.startDate.toLocaleDateString(),
+        description: edu.description,
+      };
+    });
+
+    return education;
   } catch (error) {
     return null;
   }
@@ -25,7 +36,18 @@ export async function getAwardsAndCertifications(session: Session) {
       },
     });
 
-    return res;
+    const awardsAndCertifications: AwardsAndCertifications[] = res.map(
+      (award) => {
+        return {
+          name: award.name,
+          date: award.date.toLocaleDateString(),
+          id: award.id,
+          description: award.description,
+        };
+      },
+    );
+
+    return awardsAndCertifications;
   } catch (error) {
     return null;
   }

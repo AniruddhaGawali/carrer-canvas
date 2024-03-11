@@ -62,8 +62,11 @@ function BottonNavigationBar({ currentStep }: Props) {
         {isDesktop ? (
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-              <Button variant="ghost" className="justify-start space-x-1">
-                <ChevronsUpDown size={18} className="mr-1" />
+              <Button
+                variant="outline"
+                className="flex min-w-[250px] items-center justify-center space-x-1 bg-transparent "
+              >
+                <ChevronsUpDown size={18} />
                 <span>
                   {currentStep + 1}/{StepsLinks.length}
                 </span>
@@ -82,13 +85,14 @@ function BottonNavigationBar({ currentStep }: Props) {
         ) : (
           <Drawer open={open} onOpenChange={setOpen}>
             <DrawerTrigger asChild>
-              <Button variant="ghost" className="justify-start space-x-1">
-                <ChevronsUpDown size={18} className="mr-1" />
+              <Button
+                variant="outline"
+                className="justify-start space-x-1 bg-transparent"
+              >
+                <ChevronsUpDown size={18} />
                 <span>
                   {currentStep + 1}/{StepsLinks.length}
                 </span>
-                <span>|</span>
-                <span>{StepsLinks[currentStep].name}</span>
               </Button>
             </DrawerTrigger>
             <DrawerContent>

@@ -72,9 +72,6 @@ function EducationForm({
           };
 
           setEducation([...education, newEducation]);
-
-          form.reset();
-          setStartDate(null);
         })}
       >
         <FormField
@@ -214,6 +211,17 @@ function EducationForm({
           />
         </div>
         <Button type="submit">Add</Button>
+        <Button
+          type="reset"
+          variant={"outline"}
+          onClick={() => {
+            form.reset();
+            setStartDate(null);
+            setEndDate(null);
+          }}
+        >
+          Reset
+        </Button>
       </form>
     </Form>
   );

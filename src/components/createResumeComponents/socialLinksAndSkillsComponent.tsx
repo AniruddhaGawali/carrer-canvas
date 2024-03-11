@@ -187,8 +187,10 @@ export default function SocialLinksAndSkills({}: Props) {
   return (
     <div className=" my-[9rem] min-h-screen w-full">
       <div className="mb-20 flex flex-col items-center justify-center">
-        <h2 className="mb-3 text-center text-3xl font-bold">{Steps[2].name}</h2>
-        <p>{Steps[2].desc}</p>
+        <h2 className="mb-3 text-center text-4xl font-bold">{Steps[2].name}</h2>
+        <p className="text-center text-lg font-medium text-primary">
+          {Steps[2].desc}
+        </p>
       </div>
 
       <div className="container flex min-h-screen w-full flex-col-reverse items-center justify-center gap-5 lg:flex-row lg:items-stretch">
@@ -211,7 +213,7 @@ export default function SocialLinksAndSkills({}: Props) {
           </div>
 
           <h3 className="flex items-center justify-center text-center text-2xl font-medium">
-            Add Skills & Social Links
+            Manage Your Skills & Social Links
           </h3>
 
           <div className="flex w-full flex-col items-center justify-evenly gap-5 ">

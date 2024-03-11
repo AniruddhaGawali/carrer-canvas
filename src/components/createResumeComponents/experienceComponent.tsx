@@ -27,6 +27,7 @@ import LoadingButton from "../loadingButton";
 import { Separator } from "../ui/separator";
 import PdfDoc from "../pdfView";
 import { set } from "date-fns";
+import { toast } from "sonner";
 
 type Props = {};
 
@@ -168,8 +169,10 @@ export default function Experience({}: Props) {
   return (
     <div className=" my-[9rem] min-h-screen w-full">
       <div className="mb-20 flex flex-col items-center justify-center">
-        <h2 className="mb-3 text-center text-3xl font-bold">{Steps[3].name}</h2>
-        <p>{Steps[3].desc}</p>
+        <h2 className="mb-3 text-center text-4xl font-bold">{Steps[3].name}</h2>
+        <p className="text-center text-lg font-medium text-primary">
+          {Steps[3].desc}
+        </p>
       </div>
 
       {suggestions.length > 0 && (
@@ -227,11 +230,17 @@ export default function Experience({}: Props) {
                   <span
                     className="absolute right-2 top-2"
                     onClick={async () => {
-                      await action.deleteExperience(item.id);
-                      const newSuggestions = suggestions.filter(
-                        (exp) => exp.id !== item.id,
-                      );
-                      setSuggestions(newSuggestions);
+                      toast.promise(action.deleteExperience(item.id), {
+                        loading: "Deleting...",
+                        success: () => {
+                          const newSuggestions = suggestions.filter(
+                            (exp) => exp.id !== item.id,
+                          );
+                          setSuggestions(newSuggestions);
+                          return "Deleted Successfully";
+                        },
+                        error: "Failed to delete",
+                      });
                     }}
                   >
                     <Trash2 size={20} />
@@ -263,7 +272,7 @@ export default function Experience({}: Props) {
           </div>
 
           <h3 className="flex items-center justify-center text-center text-2xl font-medium">
-            Edit Your Experience
+            Manage Your Experience
           </h3>
 
           <div className="flex w-full flex-col items-center justify-evenly gap-5">

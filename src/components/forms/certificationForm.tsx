@@ -65,8 +65,6 @@ function CertificationForm({
             ...data,
           };
           setCertification([...certification, newCertification]);
-          form.reset();
-          setDate(null);
         })}
       >
         <FormField
@@ -139,6 +137,17 @@ function CertificationForm({
 
         <Button type="submit" className="w-full">
           Add
+        </Button>
+        <Button
+          type="reset"
+          variant={"outline"}
+          onClick={() => {
+            form.reset();
+            setDate(null);
+          }}
+          className="w-full"
+        >
+          Reset
         </Button>
       </form>
     </Form>
