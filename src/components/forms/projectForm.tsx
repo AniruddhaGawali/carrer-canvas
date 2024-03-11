@@ -1,9 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import {
   Form,
@@ -31,87 +28,69 @@ import { Textarea } from "../ui/textarea";
 import { Label } from "@radix-ui/react-label";
 import TagsInputForm from "./tagsInputForm";
 import { Separator } from "../ui/separator";
+import { UseFormReturn } from "react-hook-form";
 
 type Props = {
   projects: Project[];
   setProjects: React.Dispatch<React.SetStateAction<Project[]>>;
+  form: UseFormReturn<
+    {
+      name: string;
+      link: string;
+      projectType: string;
+      description: string;
+    },
+    any,
+    {
+      name: string;
+      link: string;
+      projectType: string;
+      description: string;
+    }
+  >;
+  githubLinkForm: UseFormReturn<
+    {
+      githubLink: string;
+    },
+    any,
+    {
+      githubLink: string;
+    }
+  >;
+  fetchGithubRepoData(
+    user: string,
+    repo: string,
+  ): Promise<{
+    name: any;
+    projectType: string;
+    link: any;
+    description: any;
+    startDate: any;
+    endDate: any;
+    tech: string[];
+  }>;
+  setTech: React.Dispatch<React.SetStateAction<string[]>>;
+  setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  tech: string[];
+  startDate: Date | null;
+  endDate: Date | null;
 };
 
-export default function ProjectForm({ projects, setProjects }: Props) {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [tech, setTech] = useState<string[]>([]);
+export default function ProjectForm({
+  projects,
+  setProjects,
+  form,
+  githubLinkForm,
+  fetchGithubRepoData,
+  setEndDate,
+  setStartDate,
+  setTech,
+  tech,
+  startDate,
+  endDate,
+}: Props) {
   const [fetching, setFetching] = useState<boolean>(false);
-
-  async function fetchGithubRepoData(user: string, repo: string) {
-    const res = await fetch(`https://api.github.com/repos/${user}/${repo}`);
-    // https://api.github.com/repos/AniruddhaGawali/Spend-Wise
-    const techRes = await fetch(
-      `https://api.github.com/repos/${user}/${repo}/languages`,
-    );
-    // https://api.github.com/repos/AniruddhaGawali/Spend-Wise/languages
-    const data = await res.json();
-    const techData = await techRes.json();
-
-    const techUse = Object.keys(techData);
-
-    const projectData = {
-      name: data.name,
-      projectType: data.topics[0] + " | " + data.language,
-      link: data.homepage.length > 0 ? data.homepage : data.html_url,
-      description: data.description,
-      startDate: data.created_at,
-      endDate: data.updated_at,
-      tech: techUse,
-    };
-    console.log(projectData);
-
-    return projectData;
-  }
-
-  const projectFormSchema = z.object({
-    name: z.string().min(2, {
-      message: "Project name must be at least 2 characters.",
-    }),
-    projectType: z.string().min(2, {
-      message: "Project type must be at least 2 characters.",
-    }),
-    link: z.string().url({
-      message: "Please enter a valid URL.",
-    }),
-
-    description: z
-      .string()
-      .min(10, {
-        message: "Description must be at least 10 characters.",
-      })
-      .max(350, {
-        message: "Description must not be longer than 30 characters.",
-      }),
-  });
-
-  const githubLinkFormSchema = z.object({
-    githubLink: z.string().url({
-      message: "Please enter a valid URL.",
-    }),
-  });
-
-  const form = useForm<z.infer<typeof projectFormSchema>>({
-    resolver: zodResolver(projectFormSchema),
-    values: {
-      name: "",
-      projectType: "",
-      link: "",
-      description: "",
-    },
-  });
-
-  const githubLinkForm = useForm<z.infer<typeof githubLinkFormSchema>>({
-    resolver: zodResolver(githubLinkFormSchema),
-    values: {
-      githubLink: "",
-    },
-  });
 
   return (
     <>
@@ -409,6 +388,20 @@ export default function ProjectForm({ projects, setProjects }: Props) {
 
         <Button type="submit" form="project-form">
           Add
+        </Button>
+
+        <Button
+          variant={"outline"}
+          onClick={() => {
+            form.reset();
+            setTech([]);
+            setStartDate(null);
+            setEndDate(null);
+          }}
+          type="reset"
+          form="project-form"
+        >
+          Reset
         </Button>
       </Form>
     </>

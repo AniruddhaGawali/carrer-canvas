@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { UseFormReturn, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
@@ -32,33 +32,28 @@ type Props = {
   setCertification: React.Dispatch<
     React.SetStateAction<AwardsAndCertifications[]>
   >;
+  form: UseFormReturn<
+    {
+      name: string;
+      description: string;
+    },
+    any,
+    {
+      name: string;
+      description: string;
+    }
+  >;
+  setDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  date: Date | null;
 };
 
-function CertificationForm({ certification, setCertification }: Props) {
-  const [date, setDate] = useState<Date | null>(null);
-
-  const certificationFormSchema = z.object({
-    name: z.string().min(2, {
-      message: "Name must be at least 2 characters.",
-    }),
-    description: z
-      .string()
-      .min(10, {
-        message: "Description must be at least 10 characters.",
-      })
-      .max(160, {
-        message: "Description must not be longer than 160 characters.",
-      }),
-  });
-
-  const form = useForm<z.infer<typeof certificationFormSchema>>({
-    resolver: zodResolver(certificationFormSchema),
-    values: {
-      name: "",
-      description: "",
-    },
-  });
-
+function CertificationForm({
+  certification,
+  setCertification,
+  date,
+  form,
+  setDate,
+}: Props) {
   return (
     <Form {...form}>
       <form
@@ -142,7 +137,7 @@ function CertificationForm({ certification, setCertification }: Props) {
           )}
         />
 
-        <Button type="submit" className="w-full max-w-md">
+        <Button type="submit" className="w-full">
           Add
         </Button>
       </form>

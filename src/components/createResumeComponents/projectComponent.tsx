@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { StepsLinks as Steps } from "@/data/resume-step";
 import { Button } from "../ui/button";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
@@ -20,28 +23,83 @@ import useResume from "@/redux/dispatch/useResume";
 import SuggestionBox from "../suggestionBox";
 import { CarouselItem } from "../ui/carousel";
 import { toast } from "sonner";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import LoadingButton from "../loadingButton";
 
 type Props = {};
 
 export default function ProjectComponent({}: Props) {
   const searchParams = useSearchParams();
-  const { data: session } = useSession();
+  const router = useRouter();
+
+  const { data: session, status } = useSession();
   const {
     resumeState,
     pushResume,
     setResumeStateById,
     setResumeToDefaultState,
   } = useResume();
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [tech, setTech] = useState<string[]>([]);
   const [showResume, setShowResume] = useState<boolean>(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [suggestions, setSuggestions] = useState<Project[]>([]);
   const [selectedSuggestions, setSelectedSuggestions] = useState<Project[]>([]);
+  const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
+  const [disabledButton, setDisabledButton] = useState<boolean>(false);
+
+  const projectFormSchema = z.object({
+    name: z.string().min(2, {
+      message: "Project name must be at least 2 characters.",
+    }),
+    projectType: z.string().min(2, {
+      message: "Project type must be at least 2 characters.",
+    }),
+    link: z.string().url({
+      message: "Please enter a valid URL.",
+    }),
+
+    description: z
+      .string()
+      .min(10, {
+        message: "Description must be at least 10 characters.",
+      })
+      .max(350, {
+        message: "Description must not be longer than 30 characters.",
+      }),
+  });
+
+  const githubLinkFormSchema = z.object({
+    githubLink: z.string().url({
+      message: "Please enter a valid URL.",
+    }),
+  });
+
+  const form = useForm<z.infer<typeof projectFormSchema>>({
+    resolver: zodResolver(projectFormSchema),
+    values: {
+      name: "",
+      projectType: "",
+      link: "",
+      description: "",
+    },
+  });
+
+  const githubLinkForm = useForm<z.infer<typeof githubLinkFormSchema>>({
+    resolver: zodResolver(githubLinkFormSchema),
+    values: {
+      githubLink: "",
+    },
+  });
 
   async function addProjects() {
+    setSaveInProgress(true);
+    setDisabledButton(true);
     await action.setProjects(projects, session);
     const newResume: Resume = { ...resumeState, project: projects };
     pushResume(newResume, session);
+    setSaveInProgress(false);
   }
 
   async function fetchSuggestions() {
@@ -51,6 +109,32 @@ export default function ProjectComponent({}: Props) {
         setSuggestions(res as unknown as Project[]);
       }
     }
+  }
+
+  async function fetchGithubRepoData(user: string, repo: string) {
+    const res = await fetch(`https://api.github.com/repos/${user}/${repo}`);
+    // https://api.github.com/repos/AniruddhaGawali/Spend-Wise
+    const techRes = await fetch(
+      `https://api.github.com/repos/${user}/${repo}/languages`,
+    );
+    // https://api.github.com/repos/AniruddhaGawali/Spend-Wise/languages
+    const data = await res.json();
+    const techData = await techRes.json();
+
+    const techUse = Object.keys(techData);
+
+    const projectData = {
+      name: data.name,
+      projectType: data.topics[0] + " | " + data.language,
+      link: data.homepage.length > 0 ? data.homepage : data.html_url,
+      description: data.description,
+      startDate: data.created_at,
+      endDate: data.updated_at,
+      tech: techUse,
+    };
+    console.log(projectData);
+
+    return projectData;
   }
 
   useEffect(() => {
@@ -68,6 +152,25 @@ export default function ProjectComponent({}: Props) {
     fetchSuggestions();
   }, [session]);
 
+  useEffect(() => {
+    setDisabledButton(false);
+  }, [tech, startDate, endDate]);
+
+  form.watch((value) => {
+    if (
+      form.formState.touchedFields.name &&
+      form.formState.touchedFields.projectType &&
+      form.formState.touchedFields.link &&
+      form.formState.touchedFields.description
+    ) {
+      setDisabledButton(false);
+    }
+  });
+
+  if (status == "unauthenticated") {
+    router.push("/register");
+  }
+
   return (
     <div className=" my-[9rem] min-h-screen w-full">
       <div className="mb-20 flex flex-col items-center justify-center">
@@ -76,23 +179,36 @@ export default function ProjectComponent({}: Props) {
       </div>
 
       {suggestions.length > 0 && (
-        <SuggestionBox>
+        <SuggestionBox className="bg-secondary/60">
           {suggestions.map((item, index) => (
             <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
               <div className="relative w-full p-1" key={index}>
                 <Card
                   className={`relative cursor-pointer p-[3px] text-start ${
-                    selectedSuggestions.includes(item) && "grainy-gradient2 "
+                    projects.filter((sugg) => {
+                      console.log();
+                      return (
+                        sugg.description == item.description &&
+                        sugg.link == item.link &&
+                        sugg.name == item.name &&
+                        sugg.projectType == item.projectType &&
+                        sugg.startDate ==
+                          new Date(item.startDate).toISOString() &&
+                        sugg.endDate == new Date(item.endDate).toISOString()
+                      );
+                    }).length > 0 && "grainy-gradient2 "
                   }`}
                 >
                   <div
                     className="flex h-full w-full flex-col gap-1 rounded-md bg-white text-xs"
                     onClick={() => {
-                      if (!selectedSuggestions.includes(item)) {
-                        const newSuggestions = [...selectedSuggestions, item];
-                        setSelectedSuggestions(newSuggestions);
-                        setProjects((prev) => [...prev, item]);
-                      }
+                      form.setValue("name", item.name);
+                      form.setValue("projectType", item.projectType);
+                      form.setValue("link", item.link);
+                      form.setValue("description", item.description);
+                      setStartDate(new Date(item.startDate));
+                      setEndDate(new Date(item.endDate));
+                      setTech(item.tech);
                     }}
                   >
                     <CardHeader>
@@ -163,7 +279,19 @@ export default function ProjectComponent({}: Props) {
               <h4 className="flex items-center justify-between text-lg font-medium">
                 Projects
               </h4>
-              <ProjectForm projects={projects} setProjects={setProjects} />
+              <ProjectForm
+                projects={projects}
+                setProjects={setProjects}
+                form={form}
+                githubLinkForm={githubLinkForm}
+                setTech={setTech}
+                tech={tech}
+                setStartDate={setStartDate}
+                endDate={endDate}
+                setEndDate={setEndDate}
+                startDate={startDate}
+                fetchGithubRepoData={fetchGithubRepoData}
+              />
             </section>
           </div>
 
@@ -231,12 +359,14 @@ export default function ProjectComponent({}: Props) {
               </div>
             ) : null}
           </div>
-          <Button
+          <LoadingButton
             className="group mt-5 flex w-full max-w-md p-3 transition-all"
             onClick={addProjects}
+            loading={saveInProgress}
+            disabled={disabledButton}
           >
             <span>Save</span>
-          </Button>
+          </LoadingButton>
         </section>
         <section
           className={`relative max-w-xl overflow-hidden rounded-lg border-primary transition-all lg:max-w-none ${

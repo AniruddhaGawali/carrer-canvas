@@ -1,9 +1,12 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import React, { useEffect, useState } from "react";
 import { StepsLinks as Steps } from "@/data/resume-step";
 import { Button } from "../ui/button";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Trash2 } from "lucide-react";
 import EducationForm from "../forms/educationForm";
 import { Separator } from "../ui/separator";
 import CertificationForm from "../forms/certificationForm";
@@ -11,41 +14,128 @@ import * as action from "@/actions";
 import { useSession } from "next-auth/react";
 import useResume from "@/redux/dispatch/useResume";
 import LoadingButton from "../loadingButton";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 type Props = {};
 
 export default function EducationAndCertificationComponents({}: Props) {
-  const { data: session } = useSession();
-  const { resumeState, saveResumeState, setResumeState } = useResume();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const { data: session, status } = useSession();
+  const {
+    resumeState,
+    pushResume,
+    setResumeState,
+    setResumeStateById,
+    setResumeToDefaultState,
+  } = useResume();
   const [showResume, setShowResume] = useState<boolean>(false);
   const [education, setEducation] = useState<Education[]>([]);
   const [certification, setCertification] = useState<AwardsAndCertifications[]>(
     [],
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const educationAndCertification = [...education, ...certification];
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
+  const [completedDate, setCompletedDate] = useState<Date | null>(null);
+
+  const certificationFormSchema = z.object({
+    name: z.string().min(2, {
+      message: "Name must be at least 2 characters.",
+    }),
+    description: z
+      .string()
+      .min(10, {
+        message: "Description must be at least 10 characters.",
+      })
+      .max(160, {
+        message: "Description must not be longer than 160 characters.",
+      }),
+  });
+
+  const certificationForm = useForm<z.infer<typeof certificationFormSchema>>({
+    resolver: zodResolver(certificationFormSchema),
+    values: {
+      name: "",
+      description: "",
+    },
+  });
+
+  const educationFormSchema = z.object({
+    college: z.string().min(2, {
+      message: "College name must be at least 2 characters.",
+    }),
+    degree: z.string().min(2, {
+      message: "Degree must be at least 2 characters.",
+    }),
+    description: z
+      .string()
+      .min(10, {
+        message: "Description must be at least 10 characters.",
+      })
+      .max(160, {
+        message: "Description must not be longer than 160 characters.",
+      }),
+  });
+
+  const educationForm = useForm<z.infer<typeof educationFormSchema>>({
+    resolver: zodResolver(educationFormSchema),
+    values: {
+      college: "",
+      degree: "",
+      description: "",
+    },
+  });
 
   async function addEducationAndCertification() {
     if (session) {
-      const resEducation = await action.setEducation(education, session);
-      const resCertification = await action.setAwardsAndCertifications(
-        certification,
-        session,
-      );
+      await action.setEducation(education, session);
+      await action.setAwardsAndCertifications(certification, session);
 
-      if (resEducation && resCertification) {
-        setCertification(resCertification);
-        setEducation(resEducation);
-        await action.setEducationInResume(resEducation, resumeState);
-        const res = await action.setAwardsAndCertificationsInResume(
-          resCertification,
-          resumeState,
-        );
-        console.log(res);
-        if (res) setResumeState(res);
-      }
+      const newResume: Resume = {
+        ...resumeState,
+        education: education,
+        awardsAndCertifications: certification,
+      };
+      await pushResume(newResume, session);
     }
+  }
+
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (resumeState.id == "" && id != null) {
+      setResumeStateById(id, session);
+    }
+    if (resumeState.id == "" && session) setResumeToDefaultState();
+  }, [session]);
+
+  useEffect(() => {
+    if (resumeState.education) {
+      setEducation(resumeState.education);
+    }
+    if (resumeState.awardsAndCertifications) {
+      setCertification(resumeState.awardsAndCertifications);
+    }
+  }, [resumeState]);
+
+  useEffect(() => {
+    console.log(education);
+    console.log(certification);
+  }, [education, certification]);
+
+  if (status == "unauthenticated") {
+    router.push("/register");
   }
 
   return (
@@ -79,31 +169,106 @@ export default function EducationAndCertificationComponents({}: Props) {
           </h3>
 
           <div className="flex w-full flex-col items-center justify-evenly gap-5">
-            <section className="container mt-10 flex w-5/6 flex-col gap-5">
+            <section className="container mt-10 flex w-11/12 flex-col gap-5 rounded-md bg-secondary/60 p-10">
               <h4 className="flex items-center justify-between text-lg font-medium">
                 Education
               </h4>
               <EducationForm
                 education={education}
                 setEducation={setEducation}
+                form={educationForm}
+                startDate={startDate}
+                setStartDate={setStartDate}
+                endDate={endDate}
+                setEndDate={setEndDate}
               />
             </section>
+
+            {education.length > 0 ? (
+              <div className="container flex w-full flex-col items-center">
+                <h3 className="mt-10 w-full text-start text-2xl font-medium">
+                  Preview
+                </h3>
+
+                <div className="m-auto mt-5 flex w-full flex-col items-center justify-center rounded-md bg-secondary/60 p-10">
+                  {education.map((item, index) => (
+                    <div className="relative w-full p-1" key={index}>
+                      <Card className="relative w-full cursor-pointer  text-start">
+                        <CardHeader>
+                          <CardTitle>{item.degree}</CardTitle>
+                          <CardDescription>
+                            <p className="text-base font-medium">
+                              {item.college}{" "}
+                            </p>
+
+                            <p>
+                              {new Date(item.startDate).toLocaleDateString()} -{" "}
+                              {new Date(item.endDate).toLocaleDateString()}
+                            </p>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div>{item.description}</div>
+                        </CardContent>
+
+                        <span className="absolute right-2 top-2">
+                          <Trash2 size={20} />
+                        </span>
+                      </Card>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
 
             <Separator
               orientation="horizontal"
               className="my-5 w-full border-t border-primary"
             />
 
-            <section className="container mt-5 flex w-5/6 flex-col gap-5">
+            <section className="container mt-5 flex w-11/12 flex-col gap-5 rounded-md bg-secondary/60 p-10">
               <h4 className="flex items-center justify-between text-lg font-medium">
                 Certification
               </h4>
               <CertificationForm
                 certification={certification}
                 setCertification={setCertification}
+                date={completedDate}
+                form={certificationForm}
+                setDate={setCompletedDate}
               />
             </section>
           </div>
+
+          {certification.length > 0 ? (
+            <div className="container flex w-full flex-col items-center">
+              <h3 className="mt-10 w-full text-start text-2xl font-medium">
+                Preview
+              </h3>
+
+              <div className="m-auto mt-5 flex w-full flex-col items-center justify-center rounded-md bg-secondary/60 p-10">
+                {certification.map((item, index) => (
+                  <div className="relative w-full p-1" key={index}>
+                    <Card className="relative w-full cursor-pointer  text-start">
+                      <CardHeader>
+                        <CardTitle>{item.name}</CardTitle>
+                        <CardDescription>
+                          <p>at {new Date(item.date).toLocaleDateString()}</p>
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div>{item.description}</div>
+                      </CardContent>
+
+                      <span className="absolute right-2 top-2">
+                        <Trash2 size={20} />
+                      </span>
+                    </Card>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           <Separator
             orientation="horizontal"

@@ -1,9 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import {
   Form,
@@ -26,42 +23,39 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
+import { UseFormReturn } from "react-hook-form";
 
 type Props = {
   education: Education[];
   setEducation: React.Dispatch<React.SetStateAction<Education[]>>;
+  form: UseFormReturn<
+    {
+      college: string;
+      degree: string;
+      description: string;
+    },
+    any,
+    {
+      college: string;
+      degree: string;
+      description: string;
+    }
+  >;
+  setStartDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setEndDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  startDate: Date | null;
+  endDate: Date | null;
 };
 
-function EducationForm({ education, setEducation }: Props) {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-
-  const educationFormSchema = z.object({
-    college: z.string().min(2, {
-      message: "College name must be at least 2 characters.",
-    }),
-    degree: z.string().min(2, {
-      message: "Degree must be at least 2 characters.",
-    }),
-    description: z
-      .string()
-      .min(10, {
-        message: "Description must be at least 10 characters.",
-      })
-      .max(160, {
-        message: "Description must not be longer than 160 characters.",
-      }),
-  });
-
-  const form = useForm<z.infer<typeof educationFormSchema>>({
-    resolver: zodResolver(educationFormSchema),
-    values: {
-      college: "",
-      degree: "",
-      description: "",
-    },
-  });
-
+function EducationForm({
+  education,
+  setEducation,
+  form,
+  endDate,
+  setEndDate,
+  setStartDate,
+  startDate,
+}: Props) {
   return (
     <Form {...form}>
       <form
