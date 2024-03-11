@@ -114,15 +114,15 @@ export default function Experience({}: Props) {
     await action.setExperiences(experiences, session!);
     const newResume: Resume = {
       ...resumeState,
-      exprerience: experiences,
+      experience: experiences,
     };
     pushResume(newResume, session);
     setLoadingSaveButton(false);
   }
 
   useEffect(() => {
-    if (resumeState.id != "" && resumeState.exprerience) {
-      setExperiences(resumeState.exprerience);
+    if (resumeState.id != "" && resumeState.experience) {
+      setExperiences(resumeState.experience);
     }
   }, [resumeState]);
 
@@ -137,14 +137,14 @@ export default function Experience({}: Props) {
 
   useEffect(() => {
     let isDisabled = true;
-    if (experiences.length <= 0 || resumeState.exprerience == null) {
+    if (experiences.length <= 0 || resumeState.experience == null) {
       isDisabled = false;
       setDisabledSaveButton(isDisabled);
       return;
     }
 
     for (const exp of experiences) {
-      for (const item of resumeState.exprerience) {
+      for (const item of resumeState.experience) {
         if (
           exp.company !== item.company ||
           exp.position !== item.position ||

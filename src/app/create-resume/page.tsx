@@ -5,9 +5,9 @@ import { WavyBackground } from "@/components/ui/wavy-background";
 import useResume from "@/redux/dispatch/useResume";
 import { useSession } from "next-auth/react";
 import { LoadingSpinner } from "@/components/ui/loading";
-import { useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import LoadingButton from "@/components/loadingButton";
 
 type Props = {};
 
@@ -15,17 +15,6 @@ function CreateResumePage({}: Props) {
   const router = useRouter();
   const { setResumeTitle, pushResume, resumeState } = useResume();
   const { data: session } = useSession();
-  const firstUpdate = useRef(true);
-
-  useEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
-    }
-    if (!firstUpdate.current) {
-      pushResume(resumeState, session);
-    }
-  }, [resumeState.title]);
 
   return (
     <div className="relative h-screen">
@@ -43,7 +32,14 @@ function CreateResumePage({}: Props) {
             const title = formData.get("title");
             if (typeof title === "string") {
               if (title.length > 0) {
-                setResumeTitle(title);
+                const newResume: Resume = {
+                  ...resumeState,
+                  title: title,
+                };
+
+                console.log("newResume", newResume);
+
+                pushResume(newResume, session);
               }
               if (resumeState.id != "")
                 router.push(
@@ -64,15 +60,14 @@ function CreateResumePage({}: Props) {
             Enter the title of your resume
           </p>
 
-          <Button size={"lg"} type="submit" className="mt-8 text-lg">
-            {resumeState.uploadStatus == "loading" ? (
-              <LoadingSpinner className="h-6 w-6" />
-            ) : (
-              <div className="flex items-center gap-3">
-                Next <ArrowRight size={24} />
-              </div>
-            )}
-          </Button>
+          <LoadingButton
+            loading={resumeState.uploadStatus === "loading"}
+            type="submit"
+            className="mt-8 space-x-3 text-lg"
+          >
+            <span>Next</span>{" "}
+            <ArrowRight size={24} className="animate-in-out" />
+          </LoadingButton>
         </form>
       </div>
     </div>

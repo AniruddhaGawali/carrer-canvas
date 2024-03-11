@@ -24,7 +24,7 @@ type Resume = {
   personalInfo?: PersonalInfo | null;
   social?: Social | null;
   skills?: Skill[] | null;
-  exprerience?: Experience[] | null;
+  experience?: Experience[] | null;
   project?: Project[] | null;
   education?: Education[] | null;
   awardsAndCertifications?: AwardsAndCertifications[] | null;

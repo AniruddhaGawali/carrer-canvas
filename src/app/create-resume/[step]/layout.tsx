@@ -19,6 +19,7 @@ export default function StepLayout({
   const paths = StepsLinks.map((step) => step.path);
 
   const index = paths.indexOf(params.step);
+  console.log("index", index);
 
   metadata = {
     title: `${StepsLinks[index].name} | Career Canves`,

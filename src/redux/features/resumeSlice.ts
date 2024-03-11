@@ -21,6 +21,8 @@ export const setResumeToDB = createAsyncThunk(
 
     if (!res) throw new Error("User not found");
 
+    console.log(res);
+
     const newResume: Resume = {
       id: res.id,
       title: res.title,
@@ -28,7 +30,7 @@ export const setResumeToDB = createAsyncThunk(
       template: res.template,
       personalInfo: res.personalInfo as PersonalInfo,
       social: res.social as Social,
-      exprerience: res.experience as Experience[],
+      experience: res.experience as Experience[],
       education: res.education as Education[],
       awardsAndCertifications:
         res.awardsAndCertifications as AwardsAndCertifications[],
@@ -48,6 +50,8 @@ export const saveResumeById = createAsyncThunk(
     const res = await getResumeById(id);
     if (!res) throw new Error("User not found");
 
+    console.log("redux", res);
+
     const newResume: Resume = {
       id: res.id,
       title: res.title,
@@ -55,7 +59,7 @@ export const saveResumeById = createAsyncThunk(
       template: res.template,
       personalInfo: res.personalInfo as PersonalInfo,
       social: res.social as Social,
-      exprerience: res.experience as Experience[],
+      experience: res.experience as Experience[],
       education: res.education as Education[],
       awardsAndCertifications:
         res.awardsAndCertifications as AwardsAndCertifications[],
