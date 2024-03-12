@@ -58,7 +58,7 @@ export default function DownloadResumeComponent({}: Props) {
         numberOfPieces={1000}
         initialVelocityX={20}
         initialVelocityY={20}
-        gravity={0.08}
+        gravity={0.1}
       />
 
       <div className=" my-[9rem] min-h-screen w-full">
