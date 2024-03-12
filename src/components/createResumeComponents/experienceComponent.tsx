@@ -178,7 +178,7 @@ export default function Experience({}: Props) {
       {suggestions.length > 0 && (
         <SuggestionBox className="bg-secondary/60">
           {suggestions.map((item, index) => (
-            <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/5">
+            <CarouselItem key={index} className="basis-1/3">
               <div className="p-1">
                 <Card
                   className={`relative cursor-pointer p-[3px] text-start ${
@@ -367,6 +367,8 @@ export default function Experience({}: Props) {
               skills={resumeState.skills}
               social={resumeState.social}
               experience={experiences}
+              awardsAndCertifications={resumeState.awardsAndCertifications}
+              education={resumeState.education}
             />
           </div>
         </section>

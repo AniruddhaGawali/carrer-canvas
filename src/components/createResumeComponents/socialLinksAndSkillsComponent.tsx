@@ -490,6 +490,9 @@ export default function SocialLinksAndSkills({}: Props) {
               personalInfo={resumeState.personalInfo}
               skills={skills}
               social={socialLinks}
+              awardsAndCertifications={resumeState.awardsAndCertifications}
+              education={resumeState.education}
+              experience={resumeState.experience}
             />
           </div>
         </section>

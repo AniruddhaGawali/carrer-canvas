@@ -383,6 +383,9 @@ export default function ProjectComponent({}: Props) {
             skills={resumeState.skills}
             social={resumeState.social}
             experience={resumeState.experience}
+            education={resumeState.education}
+            projects={projects}
+            awardsAndCertifications={resumeState.awardsAndCertifications}
           />
         </section>
       </div>

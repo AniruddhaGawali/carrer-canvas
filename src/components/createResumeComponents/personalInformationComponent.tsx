@@ -344,6 +344,11 @@ export default function PersonalInformationComponent({}: Props) {
                 address1: form.watch("address1") ?? "",
                 address2: form.watch("address2") ?? "",
               }}
+              awardsAndCertifications={resumeState.awardsAndCertifications}
+              education={resumeState.education}
+              experience={resumeState.experience}
+              skills={resumeState.skills}
+              social={resumeState.social}
             />
           </div>
         </section>
