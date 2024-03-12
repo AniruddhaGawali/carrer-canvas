@@ -28,6 +28,7 @@ import { CarouselItem } from "../ui/carousel";
 import ComboBox from "../ui/combo-box";
 import { compare } from "bcrypt";
 import { toast } from "sonner";
+import PdfDoc from "../pdfView";
 
 type Props = {};
 
@@ -39,7 +40,6 @@ export default function EducationAndCertificationComponents({}: Props) {
   const {
     resumeState,
     pushResume,
-    setResumeState,
     setResumeStateById,
     setResumeToDefaultState,
   } = useResume();
@@ -83,7 +83,7 @@ export default function EducationAndCertificationComponents({}: Props) {
       .min(10, {
         message: "Description must be at least 10 characters.",
       })
-      .max(160, {
+      .max(20, {
         message: "Description must not be longer than 160 characters.",
       }),
   });
@@ -141,8 +141,6 @@ export default function EducationAndCertificationComponents({}: Props) {
       const education = await action.getEducation(session);
       const certification = await action.getAwardsAndCertifications(session);
 
-      console.log(education, certification);
-
       if (education) setSuggestionEducation(education);
       if (certification) setSuggestionCertification(certification);
     }
@@ -158,9 +156,13 @@ export default function EducationAndCertificationComponents({}: Props) {
   }, [session]);
 
   useEffect(() => {
-    console.log(education);
-    console.log(certification);
-  }, [education, certification]);
+    if (resumeState.education) {
+      setEducation(resumeState.education);
+    }
+    if (resumeState.awardsAndCertifications) {
+      setCertification(resumeState.awardsAndCertifications);
+    }
+  }, [resumeState]);
 
   if (status == "unauthenticated") {
     router.push("/register");
@@ -497,7 +499,16 @@ export default function EducationAndCertificationComponents({}: Props) {
               ? "h-screen w-full max-w-xl border-2 p-1 lg:h-auto lg:w-1/2"
               : "h-0 max-w-xl lg:h-auto lg:w-0"
           }`}
-        ></section>
+        >
+          <PdfDoc
+            personalInfo={resumeState.personalInfo}
+            skills={resumeState.skills}
+            social={resumeState.social}
+            experience={resumeState.experience}
+            education={education}
+            awardsAndCertifications={certification}
+          />
+        </section>
       </div>
     </div>
   );

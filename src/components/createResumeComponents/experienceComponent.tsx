@@ -48,8 +48,8 @@ export default function Experience({}: Props) {
       .min(10, {
         message: "Bio must be at least 10 characters.",
       })
-      .max(160, {
-        message: "Bio must not be longer than 30 characters.",
+      .max(400, {
+        message: "Bio must not be longer than 160 characters.",
       }),
   });
 
@@ -366,6 +366,7 @@ export default function Experience({}: Props) {
               personalInfo={resumeState.personalInfo}
               skills={resumeState.skills}
               social={resumeState.social}
+              experience={experiences}
             />
           </div>
         </section>

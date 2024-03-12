@@ -25,6 +25,7 @@ import { CarouselItem } from "../ui/carousel";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import LoadingButton from "../loadingButton";
+import PdfDoc from "../pdfView";
 
 type Props = {};
 
@@ -376,7 +377,14 @@ export default function ProjectComponent({}: Props) {
               ? "h-screen w-full max-w-xl border-2 p-1 lg:h-auto lg:w-1/2"
               : "h-0 max-w-xl lg:h-auto lg:w-0"
           }`}
-        ></section>
+        >
+          <PdfDoc
+            personalInfo={resumeState.personalInfo}
+            skills={resumeState.skills}
+            social={resumeState.social}
+            experience={resumeState.experience}
+          />
+        </section>
       </div>
     </div>
   );

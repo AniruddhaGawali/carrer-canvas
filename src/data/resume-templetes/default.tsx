@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Rect,
   Svg,
-  Circle,
   PDFViewer,
   Font,
   Link,
@@ -71,10 +70,20 @@ type Classic1Prop = {
   personalInfo?: PersonalInfo | null;
   skills?: Skill[] | null;
   social?: Social | null;
+  experience?: Experience[] | null;
+  education?: Education[] | null;
+  awardsAndCertifications?: AwardsAndCertifications[] | null;
 };
 
 // Create Document Component
-const Classic1 = ({ personalInfo, skills, social }: Classic1Prop) => (
+const Classic1 = ({
+  personalInfo,
+  skills,
+  social,
+  experience,
+  awardsAndCertifications,
+  education,
+}: Classic1Prop) => (
   <PDFViewer
     style={{
       width: "100%",
@@ -168,9 +177,8 @@ const Classic1 = ({ personalInfo, skills, social }: Classic1Prop) => (
               flexDirection: "row",
               flexWrap: "wrap",
               justifyContent: "center",
-              gap: 8,
               marginTop: 10,
-              padding: "0 20",
+              padding: "0px 20px",
             }}
           >
             {skills &&
@@ -185,7 +193,7 @@ const Classic1 = ({ personalInfo, skills, social }: Classic1Prop) => (
                 >
                   <Text
                     style={{
-                      padding: 4,
+                      padding: "1px 5px",
                     }}
                   >
                     {skill.skills}
@@ -201,6 +209,284 @@ const Classic1 = ({ personalInfo, skills, social }: Classic1Prop) => (
                   )}
                 </View>
               ))}
+          </View>
+        </View>
+
+        <View
+          style={{
+            marginTop: 10,
+            textAlign: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "bold",
+            }}
+          >
+            Experience
+          </Text>
+
+          <Svg
+            style={{
+              marginTop: 8,
+              height: 2,
+            }}
+          >
+            <Rect x={0} y={0} width={1000} height={2} fill="black" />
+          </Svg>
+
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginTop: 10,
+              padding: "0 20",
+            }}
+          >
+            {experience?.map((exp, index) => (
+              <>
+                <View
+                  key={exp.id}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    padding: 8,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "medium",
+                        }}
+                      >
+                        {exp.company}{" "}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 13,
+                        }}
+                      >
+                        {exp.position}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "flex-end",
+                      }}
+                    >
+                      <Text>
+                        {new Date(exp.startDate).toLocaleDateString()} -{" "}
+                        {new Date(exp.endDate).toLocaleDateString()}
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: "medium",
+                          fontSize: 12,
+                        }}
+                      >
+                        {exp.location}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <Text
+                    style={{
+                      marginTop: 8,
+                      textAlign: "left",
+                    }}
+                  >
+                    {exp.description}
+                  </Text>
+                </View>
+              </>
+            ))}
+          </View>
+        </View>
+
+        <View
+          style={{
+            marginTop: 10,
+            textAlign: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "bold",
+            }}
+          >
+            Education
+          </Text>
+
+          <Svg
+            style={{
+              marginTop: 8,
+              height: 2,
+            }}
+          >
+            <Rect x={0} y={0} width={1000} height={2} fill="black" />
+          </Svg>
+
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginTop: 10,
+              padding: "0 20",
+            }}
+          >
+            {education?.map((edu, index) => (
+              <>
+                <View
+                  key={edu.id}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    padding: 8,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "medium",
+                        }}
+                      >
+                        {edu.college}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 13,
+                        }}
+                      >
+                        {edu.degree}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "flex-end",
+                      }}
+                    >
+                      <Text>
+                        {new Date(edu.startDate).toLocaleDateString()} -{" "}
+                        {new Date(edu.endDate).toLocaleDateString()}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </>
+            ))}
+          </View>
+        </View>
+
+        <View
+          style={{
+            marginTop: 10,
+            textAlign: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "bold",
+            }}
+          >
+            Certificates & Awards
+          </Text>
+
+          <Svg
+            style={{
+              marginTop: 8,
+              height: 2,
+            }}
+          >
+            <Rect x={0} y={0} width={1000} height={2} fill="black" />
+          </Svg>
+
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginTop: 10,
+              padding: "0 20",
+            }}
+          >
+            {awardsAndCertifications?.map((award, index) => (
+              <>
+                <View
+                  key={award.id}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    padding: 8,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "medium",
+                        }}
+                      >
+                        {award.name}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 13,
+                        }}
+                      >
+                        {award.description}
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "flex-end",
+                      }}
+                    >
+                      <Text>{new Date(award.date).toLocaleDateString()}</Text>
+                    </View>
+                  </View>
+                </View>
+              </>
+            ))}
           </View>
         </View>
       </Page>
