@@ -39,8 +39,7 @@ export default async function RootLayout({
           <body className="relative">
             <ThemeProvider
               attribute="class"
-              defaultTheme="system"
-              enableSystem
+              defaultTheme="light"
               disableTransitionOnChange
             >
               <Toaster richColors position="top-right" />
