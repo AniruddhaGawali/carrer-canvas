@@ -76,7 +76,7 @@ type Classic1Prop = {
 };
 
 // Create Document Component
-const Classic1 = ({
+export const Classic1 = ({
   personalInfo,
   skills,
   social,
@@ -84,414 +84,445 @@ const Classic1 = ({
   awardsAndCertifications,
   education,
 }: Classic1Prop) => (
-  <PDFViewer
-    style={{
-      width: "100%",
-      height: "100%",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      borderRadius: 8,
-    }}
-  >
-    <Document style={styles.document}>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.introView}>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "bold",
-            }}
-          >
-            {personalInfo ? personalInfo.name : ""}
-          </Text>
+  <Document style={styles.document}>
+    <Page size="A4" style={styles.page}>
+      <View style={styles.introView}>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+          }}
+        >
+          {personalInfo ? personalInfo.name : ""}
+        </Text>
 
-          <Text
-            style={{
-              fontSize: 14,
-            }}
-          >
-            {personalInfo ? personalInfo.jobTitle : ""}
-          </Text>
-
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-            }}
-          >
-            {personalInfo && (
-              <>
-                <Text>-{personalInfo.phone ?? ""}</Text>
-                <Text>- {personalInfo.email ?? ""}</Text>
-                <Text>
-                  -{" "}
-                  <Link
-                    src={
-                      `https://www.linkedin.com/in/${social?.linkedin?.split("@")[1]}` ??
-                      ""
-                    }
-                    style={{
-                      color: "black",
-                    }}
-                  >
-                    {social ? social.linkedin ?? "" : ""}
-                  </Link>
-                </Text>
-                <Text>- {personalInfo.address2 ?? ""}</Text>
-              </>
-            )}
-          </View>
-        </View>
+        <Text
+          style={{
+            fontSize: 14,
+          }}
+        >
+          {personalInfo ? personalInfo.jobTitle : ""}
+        </Text>
 
         <View
           style={{
-            marginTop: 10,
-            textAlign: "center",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
           }}
         >
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-            }}
-          >
-            Skills
-          </Text>
-
-          <Svg
-            style={{
-              marginTop: 8,
-              height: 2,
-            }}
-          >
-            <Rect x={0} y={0} width={1000} height={2} fill="black" />
-          </Svg>
-
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              marginTop: 10,
-              padding: "0px 20px",
-            }}
-          >
-            {skills &&
-              skills.map((skill, index) => (
-                <View
-                  key={index}
+          {personalInfo && (
+            <>
+              <Text>-{personalInfo.phone ?? ""}</Text>
+              <Text>- {personalInfo.email ?? ""}</Text>
+              <Text>
+                -{" "}
+                <Link
+                  src={
+                    `https://www.linkedin.com/in/${social?.linkedin?.split("@")[1]}` ??
+                    ""
+                  }
                   style={{
+                    color: "black",
+                  }}
+                >
+                  {social ? social.linkedin ?? "" : ""}
+                </Link>
+              </Text>
+              <Text>- {personalInfo.address2 ?? ""}</Text>
+            </>
+          )}
+        </View>
+      </View>
+
+      <View
+        style={{
+          marginTop: 10,
+          textAlign: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "bold",
+          }}
+        >
+          Skills
+        </Text>
+
+        <Svg
+          style={{
+            marginTop: 8,
+            height: 2,
+          }}
+        >
+          <Rect x={0} y={0} width={1000} height={2} fill="black" />
+        </Svg>
+
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            marginTop: 10,
+            padding: "0px 20px",
+          }}
+        >
+          {skills &&
+            skills.map((skill, index) => (
+              <View
+                key={index}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    padding: "1px 5px",
+                  }}
+                >
+                  {skill.skills}
+                </Text>
+                {skill.level == "Expert" && (
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                    }}
+                  >
+                    (Prof)
+                  </Text>
+                )}
+              </View>
+            ))}
+        </View>
+      </View>
+
+      <View
+        style={{
+          marginTop: 10,
+          textAlign: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "bold",
+          }}
+        >
+          Experience
+        </Text>
+
+        <Svg
+          style={{
+            marginTop: 8,
+            height: 2,
+          }}
+        >
+          <Rect x={0} y={0} width={1000} height={2} fill="black" />
+        </Svg>
+
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            marginTop: 10,
+            padding: "0 20",
+          }}
+        >
+          {experience?.map((exp, index) => (
+            <>
+              <View
+                key={exp.id}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  padding: 8,
+                }}
+              >
+                <View
+                  style={{
+                    width: "100%",
                     display: "flex",
                     flexDirection: "row",
+                    justifyContent: "space-between",
                     alignItems: "center",
                   }}
                 >
-                  <Text
-                    style={{
-                      padding: "1px 5px",
-                    }}
-                  >
-                    {skill.skills}
-                  </Text>
-                  {skill.level == "Expert" && (
+                  <View>
                     <Text
                       style={{
-                        fontWeight: "bold",
+                        fontSize: 14,
+                        fontWeight: "medium",
                       }}
                     >
-                      (Prof)
+                      {exp.company}{" "}
                     </Text>
-                  )}
+                    <Text
+                      style={{
+                        fontSize: 13,
+                      }}
+                    >
+                      {exp.position}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <Text>
+                      {new Date(exp.startDate).toLocaleDateString()} -{" "}
+                      {new Date(exp.endDate).toLocaleDateString()}
+                    </Text>
+                    <Text
+                      style={{
+                        fontWeight: "medium",
+                        fontSize: 12,
+                      }}
+                    >
+                      {exp.location}
+                    </Text>
+                  </View>
                 </View>
-              ))}
-          </View>
+
+                <Text
+                  style={{
+                    marginTop: 8,
+                    textAlign: "left",
+                  }}
+                >
+                  {exp.description}
+                </Text>
+              </View>
+            </>
+          ))}
         </View>
+      </View>
+
+      <View
+        style={{
+          marginTop: 10,
+          textAlign: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "bold",
+          }}
+        >
+          Education
+        </Text>
+
+        <Svg
+          style={{
+            marginTop: 8,
+            height: 2,
+          }}
+        >
+          <Rect x={0} y={0} width={1000} height={2} fill="black" />
+        </Svg>
 
         <View
           style={{
+            display: "flex",
+            flexDirection: "column",
             marginTop: 10,
-            textAlign: "center",
+            padding: "0 20",
           }}
         >
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-            }}
-          >
-            Experience
-          </Text>
-
-          <Svg
-            style={{
-              marginTop: 8,
-              height: 2,
-            }}
-          >
-            <Rect x={0} y={0} width={1000} height={2} fill="black" />
-          </Svg>
-
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              marginTop: 10,
-              padding: "0 20",
-            }}
-          >
-            {experience?.map((exp, index) => (
-              <>
+          {education?.map((edu, index) => (
+            <>
+              <View
+                key={edu.id}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  padding: 8,
+                }}
+              >
                 <View
-                  key={exp.id}
                   style={{
+                    width: "100%",
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    padding: 8,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  <View
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "medium",
-                        }}
-                      >
-                        {exp.company}{" "}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 13,
-                        }}
-                      >
-                        {exp.position}
-                      </Text>
-                    </View>
-                    <View
+                  <View>
+                    <Text
                       style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-end",
+                        fontSize: 14,
+                        fontWeight: "medium",
                       }}
                     >
-                      <Text>
-                        {new Date(exp.startDate).toLocaleDateString()} -{" "}
-                        {new Date(exp.endDate).toLocaleDateString()}
-                      </Text>
-                      <Text
-                        style={{
-                          fontWeight: "medium",
-                          fontSize: 12,
-                        }}
-                      >
-                        {exp.location}
-                      </Text>
-                    </View>
+                      {edu.college}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                      }}
+                    >
+                      {edu.degree}
+                    </Text>
                   </View>
-
-                  <Text
+                  <View
                     style={{
-                      marginTop: 8,
-                      textAlign: "left",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-end",
                     }}
                   >
-                    {exp.description}
-                  </Text>
+                    <Text>
+                      {new Date(edu.startDate).toLocaleDateString()} -{" "}
+                      {new Date(edu.endDate).toLocaleDateString()}
+                    </Text>
+                  </View>
                 </View>
-              </>
-            ))}
-          </View>
+              </View>
+            </>
+          ))}
         </View>
+      </View>
+
+      <View
+        style={{
+          marginTop: 10,
+          textAlign: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            fontWeight: "bold",
+          }}
+        >
+          Certificates & Awards
+        </Text>
+
+        <Svg
+          style={{
+            marginTop: 8,
+            height: 2,
+          }}
+        >
+          <Rect x={0} y={0} width={1000} height={2} fill="black" />
+        </Svg>
 
         <View
           style={{
+            display: "flex",
+            flexDirection: "column",
             marginTop: 10,
-            textAlign: "center",
+            padding: "0 20",
           }}
         >
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-            }}
-          >
-            Education
-          </Text>
-
-          <Svg
-            style={{
-              marginTop: 8,
-              height: 2,
-            }}
-          >
-            <Rect x={0} y={0} width={1000} height={2} fill="black" />
-          </Svg>
-
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              marginTop: 10,
-              padding: "0 20",
-            }}
-          >
-            {education?.map((edu, index) => (
-              <>
+          {awardsAndCertifications?.map((award, index) => (
+            <>
+              <View
+                key={award.id}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  padding: 8,
+                }}
+              >
                 <View
-                  key={edu.id}
                   style={{
+                    width: "100%",
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    padding: 8,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  <View
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "medium",
-                        }}
-                      >
-                        {edu.college}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 13,
-                        }}
-                      >
-                        {edu.degree}
-                      </Text>
-                    </View>
-                    <View
+                  <View>
+                    <Text
                       style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-end",
+                        fontSize: 14,
+                        fontWeight: "medium",
                       }}
                     >
-                      <Text>
-                        {new Date(edu.startDate).toLocaleDateString()} -{" "}
-                        {new Date(edu.endDate).toLocaleDateString()}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              </>
-            ))}
-          </View>
-        </View>
-
-        <View
-          style={{
-            marginTop: 10,
-            textAlign: "center",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-            }}
-          >
-            Certificates & Awards
-          </Text>
-
-          <Svg
-            style={{
-              marginTop: 8,
-              height: 2,
-            }}
-          >
-            <Rect x={0} y={0} width={1000} height={2} fill="black" />
-          </Svg>
-
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              marginTop: 10,
-              padding: "0 20",
-            }}
-          >
-            {awardsAndCertifications?.map((award, index) => (
-              <>
-                <View
-                  key={award.id}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    padding: 8,
-                  }}
-                >
-                  <View
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "medium",
-                        }}
-                      >
-                        {award.name}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 13,
-                        }}
-                      >
-                        {award.description}
-                      </Text>
-                    </View>
-                    <View
+                      {award.name}
+                    </Text>
+                    <Text
                       style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "flex-end",
+                        fontSize: 13,
                       }}
                     >
-                      <Text>{new Date(award.date).toLocaleDateString()}</Text>
-                    </View>
+                      {award.description}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <Text>{new Date(award.date).toLocaleDateString()}</Text>
                   </View>
                 </View>
-              </>
-            ))}
-          </View>
+              </View>
+            </>
+          ))}
         </View>
-      </Page>
-    </Document>
-  </PDFViewer>
+      </View>
+    </Page>
+  </Document>
 );
 
-export default Classic1;
+import React from "react";
+
+type Props = {
+  personalInfo?: PersonalInfo | null;
+  skills?: Skill[] | null;
+  social?: Social | null;
+  experience?: Experience[] | null;
+  education?: Education[] | null;
+  awardsAndCertifications?: AwardsAndCertifications[] | null;
+};
+
+function ClassicPDFView({
+  personalInfo,
+  skills,
+  social,
+  experience,
+  education,
+  awardsAndCertifications,
+}: Props) {
+  return (
+    <PDFViewer
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 8,
+      }}
+    >
+      <Classic1
+        personalInfo={personalInfo}
+        skills={skills}
+        social={social}
+        experience={experience}
+        education={education}
+        awardsAndCertifications={awardsAndCertifications}
+      />
+    </PDFViewer>
+  );
+}
+
+export default ClassicPDFView;

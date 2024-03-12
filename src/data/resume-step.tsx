@@ -7,6 +7,7 @@ import ExperienceComponent from "@/components/createResumeComponents/experienceC
 import ProjectComponent from "@/components/createResumeComponents/projectComponent";
 import EducationAndCertificationComponents from "@/components/createResumeComponents/educationAndCertificationComponents";
 import templetes from "./resume-templete";
+import DownloadResumeComponent from "@/components/createResumeComponents/downloadResumeComponent";
 
 export const StepsLinks: {
   name: string;
@@ -132,6 +133,16 @@ export const StepsLinks: {
     desc: "Enter your education and certifications",
     component: <EducationAndCertificationComponents />,
     path: "education-certifications",
+    validation: (resumeState: Resume) => {
+      return true;
+    },
+  },
+  {
+    name: "Download Resume",
+    stepNo: 7,
+    desc: "Download your resume",
+    component: <DownloadResumeComponent />,
+    path: "download-resume",
     validation: (resumeState: Resume) => {
       return true;
     },
