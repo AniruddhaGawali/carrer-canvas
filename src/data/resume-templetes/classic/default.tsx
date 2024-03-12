@@ -11,6 +11,16 @@ import {
   Link,
 } from "@react-pdf/renderer";
 
+type Classic1Prop = {
+  personalInfo?: PersonalInfo | null;
+  skills?: Skill[] | null;
+  social?: Social | null;
+  experience?: Experience[] | null;
+  projects?: Project[] | null;
+  education?: Education[] | null;
+  awardsAndCertifications?: AwardsAndCertifications[] | null;
+};
+
 Font.register({
   family: "Jost",
   fonts: [
@@ -65,16 +75,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
-type Classic1Prop = {
-  personalInfo?: PersonalInfo | null;
-  skills?: Skill[] | null;
-  social?: Social | null;
-  experience?: Experience[] | null;
-  projects?: Project[] | null;
-  education?: Education[] | null;
-  awardsAndCertifications?: AwardsAndCertifications[] | null;
-};
 
 // Create Document Component
 export const Classic1 = ({
@@ -626,19 +626,7 @@ export const Classic1 = ({
   </Document>
 );
 
-import React from "react";
-
-type Props = {
-  personalInfo?: PersonalInfo | null;
-  skills?: Skill[] | null;
-  social?: Social | null;
-  experience?: Experience[] | null;
-  education?: Education[] | null;
-  projects?: Project[] | null;
-  awardsAndCertifications?: AwardsAndCertifications[] | null;
-};
-
-function ClassicPDFView({
+export default function ClassicPDFView({
   personalInfo,
   skills,
   social,
@@ -646,7 +634,7 @@ function ClassicPDFView({
   education,
   projects,
   awardsAndCertifications,
-}: Props) {
+}: Classic1Prop) {
   return (
     <PDFViewer
       style={{
@@ -670,5 +658,3 @@ function ClassicPDFView({
     </PDFViewer>
   );
 }
-
-export default ClassicPDFView;
