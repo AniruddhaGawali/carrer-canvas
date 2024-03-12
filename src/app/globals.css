@@ -83,6 +83,12 @@
         rgba(255, 255, 255, 0.5) 70.5%
       )
       --gradient-foreground: 210 40% 98%;
+
+    --color: #00ccb1;
+    --color: #7b61ff;
+    --color: #ffc414;
+    --color: #1ca0fb;
+    --color: #141316;
   }
 }
 

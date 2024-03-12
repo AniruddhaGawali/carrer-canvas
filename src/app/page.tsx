@@ -21,6 +21,7 @@ import { type CarouselApi } from "@/components/ui/carousel";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { set } from "date-fns";
+import UpcomingFeatures from "@/components/upcoming-features";
 
 export default function Home() {
   const [loadPage, setLoadPage] = useState<boolean>(false);
@@ -80,9 +81,9 @@ export default function Home() {
         <HeroSection enterNoState={{ enterOn, setEnterOn }} />
 
         <div className="relative lg:h-screen">
-          <h2 className="mt-20 text-center text-3xl font-semibold  lg:text-7xl">
+          <h2 className="mt-20 text-center text-5xl font-semibold leading-tight sm:leading-none md:text-6xl lg:text-7xl">
             Get your{" "}
-            <div className="from-5%% inline-block bg-gradient-to-r  from-[#84fab0] via-[#8fd3f4] to-[#ff9382] bg-clip-text text-transparent">
+            <div className="inline-block bg-gradient-to-r from-[#84fab0]  from-5% via-[#8fd3f4] to-[#ff9382] bg-clip-text text-transparent">
               Resume
             </div>{" "}
             in 3 steps
@@ -144,6 +145,7 @@ export default function Home() {
             </section>
           </div>
         </div>
+        <UpcomingFeatures />
         <Footer />
       </main>
     </>
