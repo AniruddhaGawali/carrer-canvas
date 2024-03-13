@@ -102,24 +102,24 @@ export default function ProjectForm({
             const splitLink = data.githubLink.split("/");
             const user = splitLink[3];
             const repo = splitLink[4];
-            // const projectData = await fetchGithubRepoData(user, repo);
-            const projectData = {
-              name: "Spend-Wise",
-              projectType: "showcase | Dart",
-              link: "https://github.com/AniruddhaGawali/Spend-Wise",
-              description:
-                "Spend Wise is the essential expense management app that simplifies the task of tracking and categorizing your transactions, helping you gain control over your finances. With a streamlined user experience, it focuses on key functionalities that are perfect for users who want to start managing their expenses right away.",
-              startDate: "2023-10-09T02:44:49Z",
-              endDate: "2023-11-24T07:38:58Z",
-              tech: [
-                "Dart",
-                "JavaScript",
-                "CSS",
-                "Swift",
-                "Kotlin",
-                "Objective-C",
-              ],
-            };
+            const projectData = await fetchGithubRepoData(user, repo);
+            // const projectData = {
+            //   name: "Spend-Wise",
+            //   projectType: "showcase | Dart",
+            //   link: "https://github.com/AniruddhaGawali/Spend-Wise",
+            //   description:
+            //     "Spend Wise is the essential expense management app that simplifies the task of tracking and categorizing your transactions, helping you gain control over your finances. With a streamlined user experience, it focuses on key functionalities that are perfect for users who want to start managing their expenses right away.",
+            //   startDate: "2023-10-09T02:44:49Z",
+            //   endDate: "2023-11-24T07:38:58Z",
+            //   tech: [
+            //     "Dart",
+            //     "JavaScript",
+            //     "CSS",
+            //     "Swift",
+            //     "Kotlin",
+            //     "Objective-C",
+            //   ],
+            // };
             console.log(projectData);
             form.setValue("name", projectData.name);
             form.setValue("projectType", projectData.projectType);
