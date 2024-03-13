@@ -43,7 +43,7 @@ function Dashboard({}: Props) {
   }
 
   if (status == "unauthenticated") {
-    router.push("/auth/signin");
+    router.push("/login");
   }
 
   return (
