@@ -112,23 +112,29 @@ function DashboardGrid({ resumes, fetchResumes }: Props) {
             ))}
           </>
         </div>
-        <DialogContent className="w-[800px]">
-          <DialogHeader>
-            <DialogTitle>{resumeSeleted?.title}</DialogTitle>
-          </DialogHeader>
-          <div
-            className="relative flex h-full w-full items-center justify-center bg-white"
-            id="pdf"
-          >
-            <PdfDoc
-              awardsAndCertifications={resumeSeleted?.awardsAndCertifications}
-              education={resumeSeleted?.education}
-              experience={resumeSeleted?.experience}
-              social={resumeSeleted?.social}
-              skills={resumeSeleted?.skills}
-              projects={resumeSeleted?.project}
-              personalInfo={resumeSeleted?.personalInfo}
-            />
+
+        <DialogContent
+          className="h-3/4
+         min-w-[60%]"
+        >
+          <div className="relative flex h-full w-full flex-col  justify-center bg-white">
+            <DialogHeader className="mb-5">
+              <DialogTitle>{resumeSeleted?.title}</DialogTitle>
+            </DialogHeader>
+            <div
+              className="relative flex h-full w-full items-center justify-center bg-white"
+              id="pdf"
+            >
+              <PdfDocWithoutToolTip
+                awardsAndCertifications={resumeSeleted?.awardsAndCertifications}
+                education={resumeSeleted?.education}
+                experience={resumeSeleted?.experience}
+                social={resumeSeleted?.social}
+                skills={resumeSeleted?.skills}
+                projects={resumeSeleted?.project}
+                personalInfo={resumeSeleted?.personalInfo}
+              />
+            </div>
           </div>
         </DialogContent>
       </Dialog>
@@ -180,7 +186,7 @@ function DashboardGrid({ resumes, fetchResumes }: Props) {
                   </Button>
                 </div>
 
-                <div className="h-2/3 min-h-[300px] w-full rounded-md bg-white shadow-inner transition-all duration-300">
+                <div className="h-full w-full rounded-md bg-white shadow-inner transition-all duration-300">
                   <PdfDocWithoutToolTip
                     awardsAndCertifications={item.awardsAndCertifications}
                     education={item.education}
@@ -202,23 +208,27 @@ function DashboardGrid({ resumes, fetchResumes }: Props) {
         </>
       </div>
       <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>{resumeSeleted?.title}</DrawerTitle>
-        </DrawerHeader>
-        <PdfDoc
-          awardsAndCertifications={resumeSeleted?.awardsAndCertifications}
-          education={resumeSeleted?.education}
-          experience={resumeSeleted?.experience}
-          social={resumeSeleted?.social}
-          skills={resumeSeleted?.skills}
-          projects={resumeSeleted?.project}
-          personalInfo={resumeSeleted?.personalInfo}
-        />
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
+        <div>
+          <DrawerHeader className="text-left">
+            <DrawerTitle>{resumeSeleted?.title}</DrawerTitle>
+          </DrawerHeader>
+          <div className="h-2/3 min-h-[300px] w-full rounded-md bg-white shadow-inner transition-all duration-300">
+            <PdfDoc
+              awardsAndCertifications={resumeSeleted?.awardsAndCertifications}
+              education={resumeSeleted?.education}
+              experience={resumeSeleted?.experience}
+              social={resumeSeleted?.social}
+              skills={resumeSeleted?.skills}
+              projects={resumeSeleted?.project}
+              personalInfo={resumeSeleted?.personalInfo}
+            />
+          </div>
+          <DrawerFooter className="pt-2">
+            <DrawerClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </div>
       </DrawerContent>
     </Drawer>
   );
