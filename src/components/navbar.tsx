@@ -27,7 +27,7 @@ type Props = {
 function Navbar({ isDashboard, title }: Props) {
   const router = useRouter();
   const { setTheme, themes } = useTheme();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { setResumeTitle } = useResume();
   const [show, setShow] = useState(true);
   const [isTitleEditOn, setIsTitleEditOn] = useState(false);
@@ -135,12 +135,23 @@ function Navbar({ isDashboard, title }: Props) {
                 Home
               </Link>
             ) : (
-              <Link
-                href="/dashboard"
-                className="link hidden text-xl font-medium sm:flex"
-              >
-                Dashboard
-              </Link>
+              <>
+                {status === "unauthenticated" ? (
+                  <Link
+                    href="/login"
+                    className="link hidden text-xl font-medium sm:flex"
+                  >
+                    Login
+                  </Link>
+                ) : (
+                  <Link
+                    href="/dashboard"
+                    className="link hidden text-xl font-medium sm:flex"
+                  >
+                    Dashboard
+                  </Link>
+                )}
+              </>
             )}
 
             {session?.user ? (

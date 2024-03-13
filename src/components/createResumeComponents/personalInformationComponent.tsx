@@ -348,6 +348,7 @@ export default function PersonalInformationComponent({}: Props) {
               education={resumeState.education}
               experience={resumeState.experience}
               skills={resumeState.skills}
+              projects={resumeState.project}
               social={resumeState.social}
             />
           </div>

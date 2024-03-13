@@ -92,6 +92,7 @@ export default function DownloadResumeComponent({}: Props) {
           <PdfDoc
             personalInfo={resumeState.personalInfo}
             education={resumeState.education}
+            projects={resumeState.project}
             experience={resumeState.experience}
             awardsAndCertifications={resumeState.awardsAndCertifications}
             skills={resumeState.skills}

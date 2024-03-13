@@ -139,7 +139,7 @@ export const Classic1 = ({
         </View>
       )}
 
-      {skills && (
+      {skills && skills.length > 0 && (
         <View
           style={{
             marginTop: 10,
@@ -205,7 +205,7 @@ export const Classic1 = ({
         </View>
       )}
 
-      {experience && (
+      {experience && experience.length > 0 && (
         <View
           style={{
             marginTop: 10,
@@ -312,7 +312,7 @@ export const Classic1 = ({
         </View>
       )}
 
-      {projects && (
+      {projects && projects.length > 0 && (
         <View
           style={{
             marginTop: 10,
@@ -446,7 +446,7 @@ export const Classic1 = ({
         </View>
       )}
 
-      {education && (
+      {education && education.length > 0 && (
         <View
           style={{
             marginTop: 10,
@@ -536,7 +536,7 @@ export const Classic1 = ({
         </View>
       )}
 
-      {awardsAndCertifications && (
+      {awardsAndCertifications && awardsAndCertifications.length > 0 && (
         <View
           style={{
             marginTop: 10,

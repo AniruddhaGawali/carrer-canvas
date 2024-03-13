@@ -505,6 +505,7 @@ export default function EducationAndCertificationComponents({}: Props) {
             social={resumeState.social}
             experience={resumeState.experience}
             education={education}
+            projects={resumeState.project}
             awardsAndCertifications={certification}
           />
         </section>
