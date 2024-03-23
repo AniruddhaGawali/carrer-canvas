@@ -73,13 +73,13 @@ function Dashboard({}: Props) {
               >
                 <Plus size={64} />
               </div>
-              <div className="absolute right-24 top-10 m-auto">
+              <div className="absolute right-[32rem] top-24 m-auto">
                 <Image
-                  src="/images/curved arrow.svg"
-                  width={600}
-                  height={600}
+                  src="/images/curved_arrow.png"
+                  width={150}
+                  height={150}
                   alt="arrow"
-                  className=" rotate-180 -scale-x-100"
+                  className=" pointer-events-none rotate-[130deg] -scale-x-100"
                 />
               </div>
               <h2 className="rounded-m my-5  py-3 text-center text-3xl font-medium ">

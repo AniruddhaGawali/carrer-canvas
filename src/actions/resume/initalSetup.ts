@@ -53,10 +53,12 @@ export async function getResumes(session: Session | null) {
   return resumes;
 }
 
-export async function getResumeById(id: string) {
+export async function getResumeById(id: string, session: Session | null) {
+  if (!session) return null;
   const resume = await db.resume.findFirst({
     where: {
       id: id,
+      userId: session.user.id,
     },
   });
 

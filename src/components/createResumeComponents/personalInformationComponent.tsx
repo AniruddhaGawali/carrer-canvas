@@ -27,7 +27,6 @@ type Props = {};
 export default function PersonalInformationComponent({}: Props) {
   const {
     resumeState,
-    setResumePersonalInfo,
     setResumeStateById,
     setResumeToDefaultState,
     pushResume,
