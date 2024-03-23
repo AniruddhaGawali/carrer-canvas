@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import useMousePosition from "@/hooks/useMousePosition";
 
-import { Button } from "./ui/button";
-import { ArrowRight, NotepadTextDashed } from "lucide-react";
+import { Button } from "../../ui/button";
+import { ArrowRight, ChevronsDown, NotepadTextDashed } from "lucide-react";
 
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
@@ -10,7 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-import { BackgroundGradientAnimation } from "./ui/background-gradient-animation";
+import { BackgroundGradientAnimation } from "../../ui/background-gradient-animation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,7 +55,7 @@ function HeroSection({ enterNoState }: Props) {
       onMouseEnter={() => enterNoState.setEnterOn(0)}
     >
       <BackgroundGradientAnimation
-        containerClassName="absolute inset-0 grainy-gradient"
+        containerClassName="absolute w-full inset-0 grainy-gradient"
         gradientBackgroundStart="rgb(143, 211, 244, 0.5)"
         gradientBackgroundEnd="rgb(132, 250, 176, 0.5)"
         firstColor="32, 250, 176"
@@ -151,6 +151,17 @@ function HeroSection({ enterNoState }: Props) {
           <NotepadTextDashed />
         </Button>
       </section>
+      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 cursor-pointer">
+        <ChevronsDown
+          className="h-8 w-8 animate-bounce"
+          onClick={() => {
+            window.scrollTo({
+              top: window.innerHeight + 80,
+              behavior: "smooth",
+            });
+          }}
+        />
+      </div>
     </div>
   );
 }

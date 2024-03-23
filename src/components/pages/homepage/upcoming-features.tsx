@@ -1,7 +1,7 @@
 import React from "react";
-import { BackgroundGradientAnimation } from "./ui/background-gradient-animation";
-import { BackgroundGradient } from "./ui/background-gradient";
-import { Button } from "./ui/button";
+import { BackgroundGradientAnimation } from "../../ui/background-gradient-animation";
+import { BackgroundGradient } from "../../ui/background-gradient";
+import { Button } from "../../ui/button";
 import Image from "next/image";
 
 type Props = {};
@@ -10,7 +10,7 @@ function UpcomingFeatures({}: Props) {
   return (
     <>
       {" "}
-      <div className="mb-20 mt-20 flex min-h-screen w-full flex-col items-center justify-center sm:mt-0">
+      <div className="mb-20 mt-32 flex min-h-screen w-full flex-col items-center justify-center sm:mt-0">
         <h2 className="text-center text-5xl font-semibold leading-tight sm:leading-none md:text-6xl lg:text-7xl">
           Upcoming{" "}
           <div className="inline-block bg-gradient-to-r from-[#84fab0] from-5% via-[#8fd3f4] to-[#ff9382] bg-clip-text text-transparent">
