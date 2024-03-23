@@ -1,6 +1,8 @@
 import React from "react";
 import type { Metadata } from "next";
 import * as actions from "@/actions";
+import { AuroraBackground } from "@/components/ui/aurora-background";
+import Navbar from "@/components/navbar";
 
 type Props = {
   children: React.ReactNode;
@@ -26,7 +28,14 @@ async function ShareLayout({ children, params }: Props) {
         "Craft. Create. Captivate. Elevate Your Career with Career Canves",
     };
 
-    return <div>{children}</div>;
+    return (
+      <>
+        <Navbar />
+        <div className="grainy-gradient  flex min-h-screen items-center justify-center ">
+          {children}
+        </div>
+      </>
+    );
   }
 }
 

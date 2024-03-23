@@ -31,11 +31,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 import { Download, Edit, Eye, MoreVertical, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import useResume from "@/redux/dispatch/useResume";
-import DownloadPDF from "./downloadPDF";
+import DownloadPDF from "../../downloadPDF";
 import { Classic1 } from "@/data/resume-templetes/classic/default";
 
 type Props = {
@@ -82,6 +82,15 @@ function DashboardGrid({ resumes, fetchResumes }: Props) {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent aria-label="submenu">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            `${process.env.NEXT_PUBLIC_SITE_URL}/share/${item.id}`,
+                          );
+                        }}
+                      >
+                        Share Link
+                      </DropdownMenuItem>
                       <DropdownMenuItem>Make a Copy</DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => {

@@ -12,7 +12,7 @@ import GridLoading from "@/components/loadingComponents/gridLoading";
 import * as action from "@/actions";
 import { Button } from "@/components/ui/button";
 import DashboardLoading from "@/components/loadingComponents/dashboardLoading";
-import DashboardGrid from "@/components/dashboardGrid";
+import DashboardGrid from "@/components/pages/dashboard/dashboardGrid";
 
 type Props = {};
 
