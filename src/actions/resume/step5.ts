@@ -95,24 +95,3 @@ export async function updateProject(project: Project) {
     return null;
   }
 }
-
-export async function setProjectsInResume(
-  projects: Project[],
-  resumeId: string,
-) {
-  try {
-    const res = await db.resume.update({
-      where: {
-        id: resumeId,
-      },
-      data: {
-        project: {
-          set: projects,
-        },
-      },
-    });
-    return res;
-  } catch (error) {
-    return null;
-  }
-}
