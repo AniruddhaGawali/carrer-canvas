@@ -47,34 +47,45 @@ function Dashboard({}: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center ">
-      <div
-        className="grainy-gradient2 container my-20 mt-[9rem] flex h-32  cursor-pointer items-center justify-center rounded-xl bg-black transition-all hover:border-[3px] hover:border-black"
-        onClick={() => router.push("/create-resume")}
-      >
-        <Plus size={64} />
-      </div>
+    <div className="mt-[9rem] flex flex-col items-center  justify-center ">
+      {resumes.length > 0 && (
+        <div
+          className="grainy-gradient2 container flex  h-32 cursor-pointer items-center justify-center rounded-xl bg-black transition-all hover:border-[3px] hover:border-black"
+          onClick={() => router.push("/create-resume")}
+        >
+          <Plus size={64} />
+        </div>
+      )}
 
-      <h2 className="container w-full text-6xl font-bold">Your Resumes</h2>
+      <h2 className="container mt-32 w-full text-6xl font-bold">
+        Your Resumes
+      </h2>
 
       {isResumeLoading ? (
         <GridLoading />
       ) : (
         <>
           {resumes.length === 0 ? (
-            <div className="m-auto mt-20 flex min-h-screen flex-col items-center justify-center">
-              <div className="w-1/2">
+            <div className="relative m-auto mt-20 flex min-h-screen w-full flex-col items-center justify-self-center">
+              <div
+                className="grainy-gradient2 container flex h-32  cursor-pointer items-center justify-center rounded-xl bg-black transition-all hover:border-[3px] hover:border-black"
+                onClick={() => router.push("/create-resume")}
+              >
+                <Plus size={64} />
+              </div>
+              <div className="absolute right-24 top-10 m-auto">
                 <Image
-                  src={"/images/empty.svg"}
-                  alt="Empty"
-                  width="0"
-                  height="0"
-                  sizes="100vw"
-                  className=" h-auto w-full opacity-70"
+                  src="/images/curved arrow.svg"
+                  width={600}
+                  height={600}
+                  alt="arrow"
+                  className=" rotate-180 -scale-x-100"
                 />
               </div>
-              <h2 className="my-10 text-center text-5xl font-medium ">
+              <h2 className="rounded-m my-5  py-3 text-center text-3xl font-medium ">
                 You don&apos;t have any resumes yet.
+                <br />
+                Click to create one.
               </h2>
             </div>
           ) : (
