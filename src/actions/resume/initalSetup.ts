@@ -65,6 +65,16 @@ export async function getResumeById(id: string, session: Session | null) {
   return resume;
 }
 
+export async function getSharedResumeById(id: string) {
+  const resume = await db.resume.findFirst({
+    where: {
+      id: id,
+    },
+  });
+
+  return resume;
+}
+
 export async function deleteResume(id: string, session: Session | null) {
   if (!session?.user) return { success: false, message: "User not found" };
 

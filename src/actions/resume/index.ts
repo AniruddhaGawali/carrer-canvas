@@ -3,6 +3,7 @@ export {
   getResumeById,
   getResumes,
   uploadResume,
+  getSharedResumeById,
 } from "./initalSetup";
 
 export { setResumeTemplete } from "./step1";

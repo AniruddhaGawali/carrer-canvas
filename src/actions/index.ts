@@ -7,6 +7,7 @@ export {
 } from "./auth";
 
 export {
+  getSharedResumeById,
   deletePersonalInfo,
   getPersonalInfo,
   setPersonalInfo,
@@ -36,3 +37,5 @@ export {
   setEducation,
   updateEducation,
 } from "./resume";
+
+export { getUserById } from "./user";
