@@ -49,7 +49,7 @@ function SharePage({}: Props) {
     );
   }
   return (
-    <div className="z-10 m-auto mt-20 h-screen  w-[90%] bg-transparent p-10 md:w-1/2">
+    <div className="z-10 m-auto mt-20 h-screen w-full bg-transparent p-10 sm:w-[90%] md:w-1/2">
       <PdfDoc
         awardsAndCertifications={data?.awardsAndCertifications}
         education={data?.education}

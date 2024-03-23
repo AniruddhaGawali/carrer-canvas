@@ -37,6 +37,7 @@ import { useSession } from "next-auth/react";
 import useResume from "@/redux/dispatch/useResume";
 import DownloadPDF from "../../downloadPDF";
 import { Classic1 } from "@/data/resume-templetes/classic/default";
+import { toast } from "sonner";
 
 type Props = {
   resumes: Resume[];
@@ -87,6 +88,7 @@ function DashboardGrid({ resumes, fetchResumes }: Props) {
                           navigator.clipboard.writeText(
                             `${process.env.NEXT_PUBLIC_SITE_URL}/share/${item.id}`,
                           );
+                          toast("Link Copied to Clipboard");
                         }}
                       >
                         Share Link
@@ -269,6 +271,16 @@ function DashboardGrid({ resumes, fetchResumes }: Props) {
                       >
                         Download
                       </DownloadPDF>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        navigator.clipboard.writeText(
+                          `${process.env.NEXT_PUBLIC_SITE_URL}/share/${item.id}`,
+                        );
+                        toast("Link Copied to Clipboard");
+                      }}
+                    >
+                      Share Link
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => {
