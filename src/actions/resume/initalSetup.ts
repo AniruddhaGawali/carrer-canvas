@@ -5,7 +5,6 @@ import { Session } from "next-auth";
 
 export async function uploadResume(data: Resume, session: Session | null) {
   if (!session?.user) return null;
-  console.log(data);
 
   if (data.id == "") {
     const res = await db.resume.create({
@@ -17,7 +16,6 @@ export async function uploadResume(data: Resume, session: Session | null) {
 
     return res;
   } else {
-    console.log(data.experience);
     const res = await db.resume.update({
       where: {
         id: data.id,

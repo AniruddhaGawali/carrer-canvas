@@ -48,7 +48,6 @@ export function SelectSkillForm({
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
     addSkill(data.skill, data.level as SkillLevel);
     form.reset({
       level: undefined,

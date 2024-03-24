@@ -96,7 +96,6 @@ function DashboardGrid({ resumes }: Props) {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={async () => {
-                          console.log(item);
                           const resume = await action.copyResume(item, session);
                           if (resume) {
                             toast.success("Resume Copied");

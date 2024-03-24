@@ -135,7 +135,6 @@ export default function ProjectComponent({}: Props) {
       endDate: data.updated_at,
       tech: techUse,
     };
-    console.log(projectData);
 
     return projectData;
   }
@@ -216,7 +215,6 @@ export default function ProjectComponent({}: Props) {
                 <Card
                   className={`relative cursor-pointer p-[3px] text-start ${
                     projects.filter((sugg) => {
-                      console.log();
                       return (
                         sugg.description == item.description &&
                         sugg.link == item.link &&

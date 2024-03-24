@@ -21,8 +21,6 @@ export const setResumeToDB = createAsyncThunk(
 
     if (!res) throw new Error("User not found");
 
-    console.log(res);
-
     const newResume: Resume = {
       id: res.id,
       title: res.title,
@@ -49,8 +47,6 @@ export const saveResumeById = createAsyncThunk(
     }
     const res = await getResumeById(id, session);
     if (!res) throw new Error("User not found");
-
-    console.log("redux", res);
 
     const newResume: Resume = {
       id: res.id,
