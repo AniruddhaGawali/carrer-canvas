@@ -22,6 +22,8 @@ import PersonalInformationForm from "../forms/personalInfoForm";
 import { useSession } from "next-auth/react";
 import PdfDoc from "../pdfView";
 import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
+import { motion } from "framer-motion";
+import PageTransition from "../pageTransition";
 
 type Props = {};
 
@@ -287,78 +289,80 @@ export default function PersonalInformationComponent({}: Props) {
         </SuggestionBox>
       )}
 
-      <div className="container flex min-h-screen w-full flex-col-reverse items-center justify-center gap-5 lg:flex-row lg:items-stretch">
-        <section className="relative flex w-full max-w-xl flex-col items-center justify-center rounded-lg border-2 border-primary bg-white p-5 pt-10 lg:w-1/2 lg:max-w-none ">
+      <PageTransition>
+        <div className="container flex min-h-screen w-full flex-col-reverse items-center justify-center gap-5 lg:flex-row lg:items-stretch">
+          <section className="relative flex w-full max-w-xl flex-col items-center justify-center rounded-lg border-2 border-primary bg-white p-5 pt-10 lg:w-1/2 lg:max-w-none ">
+            {/* // This is the pdf for the user to input their personal information */}
+            <div
+              className="absolute right-0 top-0 cursor-pointer p-2"
+              onClick={() => setShowResume(!showResume)}
+            >
+              <Button className="grainy-gradient2 group flex p-3 text-primary transition-all hover:border-primary hover:bg-[rgba(0,0,0,0.2)]">
+                {showResume ? (
+                  <>
+                    <EyeOff size="18" />
+                  </>
+                ) : (
+                  <>
+                    <Eye size="18" />
+                  </>
+                )}
+              </Button>
+            </div>
+
+            <h3 className="flex items-center justify-center text-center text-2xl font-medium">
+              Manage Your Personal Details
+            </h3>
+            <div className="container mt-10 flex w-11/12 flex-col gap-5 rounded-md bg-secondary/60 p-10">
+              {/* // This is the form for the user to input their personal information */}
+              <h4 className="flex items-center justify-between text-lg font-medium">
+                Personal Information Details
+              </h4>
+              <PersonalInformationForm
+                form={form}
+                selectedTempletePersonInfo={selectedTemplete.personalInfo}
+                setSelectedSuggestionId={setSelectedSuggestionId}
+                submit={saveData}
+                className="w-full"
+                isDisabled={isButtonDisable}
+              />
+            </div>
+          </section>
+
           {/* // This is the pdf for the user to input their personal information */}
-          <div
-            className="absolute right-0 top-0 cursor-pointer p-2"
-            onClick={() => setShowResume(!showResume)}
+          <section
+            className={`relative max-w-xl overflow-hidden rounded-lg border-primary transition-all lg:max-w-none ${
+              showResume
+                ? "h-screen w-full max-w-xl border-2 p-1 lg:h-auto lg:w-1/2"
+                : "h-0 max-w-xl lg:h-auto lg:w-0"
+            }`}
           >
-            <Button className="grainy-gradient2 group flex p-3 text-primary transition-all hover:border-primary hover:bg-[rgba(0,0,0,0.2)]">
-              {showResume ? (
-                <>
-                  <EyeOff size="18" />
-                </>
-              ) : (
-                <>
-                  <Eye size="18" />
-                </>
-              )}
-            </Button>
-          </div>
-
-          <h3 className="flex items-center justify-center text-center text-2xl font-medium">
-            Manage Your Personal Details
-          </h3>
-          <div className="container mt-10 flex w-11/12 flex-col gap-5 rounded-md bg-secondary/60 p-10">
-            {/* // This is the form for the user to input their personal information */}
-            <h4 className="flex items-center justify-between text-lg font-medium">
-              Personal Information Details
-            </h4>
-            <PersonalInformationForm
-              form={form}
-              selectedTempletePersonInfo={selectedTemplete.personalInfo}
-              setSelectedSuggestionId={setSelectedSuggestionId}
-              submit={saveData}
-              className="w-full"
-              isDisabled={isButtonDisable}
-            />
-          </div>
-        </section>
-
-        {/* // This is the pdf for the user to input their personal information */}
-        <section
-          className={`relative max-w-xl overflow-hidden rounded-lg border-primary transition-all lg:max-w-none ${
-            showResume
-              ? "h-screen w-full max-w-xl border-2 p-1 lg:h-auto lg:w-1/2"
-              : "h-0 max-w-xl lg:h-auto lg:w-0"
-          }`}
-        >
-          <div
-            className="relative flex h-full w-full items-center justify-center bg-white"
-            id="pdf"
-          >
-            <PdfDoc
-              personalInfo={{
-                id: selectedSuggestionId ?? "",
-                name: form.watch("name") ?? "",
-                jobTitle: form.watch("jobTitle") ?? "",
-                email: form.watch("email") ?? "",
-                phone: form.watch("phone") ?? "",
-                website: form.watch("website") ?? "",
-                address1: form.watch("address1") ?? "",
-                address2: form.watch("address2") ?? "",
-              }}
-              awardsAndCertifications={resumeState.awardsAndCertifications}
-              education={resumeState.education}
-              experience={resumeState.experience}
-              skills={resumeState.skills}
-              projects={resumeState.project}
-              social={resumeState.social}
-            />
-          </div>
-        </section>
-      </div>
+            <div
+              className="relative flex h-full w-full items-center justify-center bg-white"
+              id="pdf"
+            >
+              <PdfDoc
+                personalInfo={{
+                  id: selectedSuggestionId ?? "",
+                  name: form.watch("name") ?? "",
+                  jobTitle: form.watch("jobTitle") ?? "",
+                  email: form.watch("email") ?? "",
+                  phone: form.watch("phone") ?? "",
+                  website: form.watch("website") ?? "",
+                  address1: form.watch("address1") ?? "",
+                  address2: form.watch("address2") ?? "",
+                }}
+                awardsAndCertifications={resumeState.awardsAndCertifications}
+                education={resumeState.education}
+                experience={resumeState.experience}
+                skills={resumeState.skills}
+                projects={resumeState.project}
+                social={resumeState.social}
+              />
+            </div>
+          </section>
+        </div>
+      </PageTransition>
     </div>
   );
 }
