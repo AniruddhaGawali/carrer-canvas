@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Image from "next/image";
 import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import templetes from "@/data/resume-templete";
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
+import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
 
 type Props = {
   currentStep: number;
@@ -35,6 +36,7 @@ function SelectTempleteComponent() {
     setResumeStateById,
     setResumeToDefaultState,
   } = useResume();
+  const { setIsDetailSaved } = useContext(IsDetailSavedContext);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -43,6 +45,12 @@ function SelectTempleteComponent() {
     }
     if (resumeState.id == "" && session) setResumeToDefaultState();
   }, [session]);
+
+  useEffect(() => {
+    setIsDetailSaved(
+      resumeState.template != null && resumeState.template != undefined,
+    );
+  }, [resumeState]);
 
   return (
     <>

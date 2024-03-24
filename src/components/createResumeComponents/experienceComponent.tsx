@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import { Button } from "../ui/button";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
@@ -26,8 +26,8 @@ import SuggestionBox from "../suggestionBox";
 import LoadingButton from "../loadingButton";
 import { Separator } from "../ui/separator";
 import PdfDoc from "../pdfView";
-import { set } from "date-fns";
 import { toast } from "sonner";
+import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
 
 type Props = {};
 
@@ -80,6 +80,7 @@ export default function Experience({}: Props) {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [disabledSaveButton, setDisabledSaveButton] = useState<boolean>(true);
   const [loadingSaveButton, setLoadingSaveButton] = useState<boolean>(false);
+  const { setIsDetailSaved } = useContext(IsDetailSavedContext);
 
   async function fetchSuggestions() {
     if (session) {
@@ -125,7 +126,7 @@ export default function Experience({}: Props) {
     if (resumeState.id != "" && resumeState.experience) {
       setExperiences(resumeState.experience);
     }
-  }, [resumeState]);
+  }, []);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -138,29 +139,32 @@ export default function Experience({}: Props) {
 
   useEffect(() => {
     let isDisabled = true;
-    if (experiences.length <= 0 || resumeState.experience == null) {
+
+    if (resumeState.experience) {
+      if (experiences.length == resumeState.experience.length) {
+        isDisabled = resumeState.experience.every((exp, i) => {
+          return (
+            exp.company === experiences[i].company &&
+            exp.position === experiences[i].position &&
+            exp.location === experiences[i].location &&
+            exp.description === experiences[i].description &&
+            exp.startDate == experiences[i].startDate &&
+            exp.endDate == experiences[i].endDate
+          );
+        });
+      } else {
+        isDisabled = false;
+      }
+    } else {
       isDisabled = false;
-      setDisabledSaveButton(isDisabled);
-      return;
     }
 
-    for (const exp of experiences) {
-      for (const item of resumeState.experience) {
-        if (
-          exp.company !== item.company ||
-          exp.position !== item.position ||
-          exp.location !== item.location ||
-          exp.description !== item.description ||
-          new Date(exp.startDate).toISOString() !== item.startDate ||
-          new Date(exp.endDate).toISOString() !== item.endDate
-        ) {
-          isDisabled = false;
-          setDisabledSaveButton(isDisabled);
-          return;
-        }
-      }
-    }
+    setDisabledSaveButton(isDisabled);
   }, [experiences]);
+
+  useEffect(() => {
+    setIsDetailSaved(disabledSaveButton);
+  }, [disabledSaveButton]);
 
   if (status == "unauthenticated") {
     router.push("/register");
@@ -183,7 +187,6 @@ export default function Experience({}: Props) {
                 <Card
                   className={`relative cursor-pointer p-[3px] text-start ${
                     experiences.filter((exp) => {
-                      console.log(item.startDate, "exp", exp.startDate);
                       return (
                         item.company === exp.company &&
                         item.position === exp.position &&

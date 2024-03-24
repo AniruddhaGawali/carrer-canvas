@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import LoadingButton from "../loadingButton";
 import PdfDoc from "../pdfView";
+import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
 
 type Props = {};
 
@@ -49,6 +50,7 @@ export default function ProjectComponent({}: Props) {
   const [selectedSuggestions, setSelectedSuggestions] = useState<Project[]>([]);
   const [saveInProgress, setSaveInProgress] = useState<boolean>(false);
   const [disabledButton, setDisabledButton] = useState<boolean>(false);
+  const { setIsDetailSaved } = useContext(IsDetailSavedContext);
 
   const projectFormSchema = z.object({
     name: z.string().min(2, {
@@ -142,7 +144,7 @@ export default function ProjectComponent({}: Props) {
     if (resumeState.project) {
       setProjects(resumeState.project);
     }
-  }, [resumeState.project]);
+  }, []);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -154,8 +156,33 @@ export default function ProjectComponent({}: Props) {
   }, [session]);
 
   useEffect(() => {
-    setDisabledButton(false);
-  }, [tech, startDate, endDate]);
+    let isDisabled = true;
+    if (resumeState.project) {
+      if (projects.length == resumeState.project.length) {
+        isDisabled = resumeState.project.every((item, index) => {
+          return (
+            item.name == projects[index].name &&
+            item.projectType == projects[index].projectType &&
+            item.link == projects[index].link &&
+            item.description == projects[index].description &&
+            item.endDate == projects[index].endDate &&
+            item.startDate == projects[index].startDate &&
+            item.tech.length == projects[index].tech.length
+          );
+        });
+      } else {
+        isDisabled = false;
+      }
+    } else {
+      isDisabled = false;
+    }
+
+    setDisabledButton(isDisabled);
+  });
+
+  useEffect(() => {
+    setIsDetailSaved(disabledButton);
+  }, [disabledButton]);
 
   form.watch((value) => {
     if (
@@ -185,7 +212,7 @@ export default function ProjectComponent({}: Props) {
         <SuggestionBox className="bg-secondary/60">
           {suggestions.map((item, index) => (
             <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-              <div className="relative w-full p-1" key={index}>
+              <div className="relative w-full p-1">
                 <Card
                   className={`relative cursor-pointer p-[3px] text-start ${
                     projects.filter((sugg) => {

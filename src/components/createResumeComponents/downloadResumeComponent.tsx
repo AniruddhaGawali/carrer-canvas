@@ -69,6 +69,7 @@ export default function DownloadResumeComponent({}: Props) {
                 personalInfo={resumeState.personalInfo}
                 education={resumeState.education}
                 experience={resumeState.experience}
+                projects={resumeState.project}
                 awardsAndCertifications={resumeState.awardsAndCertifications}
                 skills={resumeState.skills}
                 social={resumeState.social}

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import useResume from "@/redux/dispatch/useResume";
 import { Button } from "../ui/button";
@@ -21,6 +21,7 @@ import * as action from "@/actions";
 import PersonalInformationForm from "../forms/personalInfoForm";
 import { useSession } from "next-auth/react";
 import PdfDoc from "../pdfView";
+import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
 
 type Props = {};
 
@@ -116,6 +117,7 @@ export default function PersonalInformationComponent({}: Props) {
     string | null
   >(null);
   const [isButtonDisable, setIsButtonDisable] = useState(false);
+  const { setIsDetailSaved } = useContext(IsDetailSavedContext);
 
   async function saveData(data: {
     name?: string | undefined;
@@ -198,6 +200,10 @@ export default function PersonalInformationComponent({}: Props) {
       setIsButtonDisable(true);
     }
   }, [resumeState]);
+
+  useEffect(() => {
+    setIsDetailSaved(isButtonDisable);
+  }, [isButtonDisable]);
 
   form.watch(() => {
     setIsButtonDisable(false);

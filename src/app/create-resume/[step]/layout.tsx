@@ -2,6 +2,7 @@ import BottonNavigationBar from "@/components/navigationBottomBar";
 import { StepsLinks } from "@/data/resume-step-navigation";
 import React from "react";
 import type { Metadata } from "next";
+import IsDetailSavedProvider from "@/provider/isDetailSavedProvider";
 
 export let metadata: Metadata = {
   title: "Create Resume | Career Canves",
@@ -27,8 +28,10 @@ export default function StepLayout({
   };
   return (
     <>
-      {children}
-      <BottonNavigationBar currentStep={index} />
+      <IsDetailSavedProvider>
+        {children}
+        <BottonNavigationBar currentStep={index} />
+      </IsDetailSavedProvider>
     </>
   );
 }
