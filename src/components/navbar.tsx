@@ -75,15 +75,13 @@ function Navbar({ isDashboard, title }: Props) {
                 <>
                   {isDashboard ? (
                     <Link href="/dashboard" className="-mb-0.5">
-                      {" "}
                       Dashboard
                     </Link>
                   ) : (
                     <Link href="/" className="-mb-0.5">
-                      {" "}
                       Home
                     </Link>
-                  )}{" "}
+                  )}
                 </>
               ) : (
                 <>

@@ -155,3 +155,10 @@ model AwardsAndCertifications {
   description String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Feedback {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String
+  feedback String
+}

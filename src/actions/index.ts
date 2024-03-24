@@ -40,3 +40,5 @@ export {
 } from "./resume";
 
 export { getUserById } from "./user";
+
+export { feedback } from "./feedback";
