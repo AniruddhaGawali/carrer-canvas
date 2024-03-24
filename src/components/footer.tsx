@@ -1,5 +1,7 @@
 import React from "react";
 import { Github, Mail } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 type Props = {};
 
@@ -13,7 +15,15 @@ const Footer = (props: Props) => {
         <span>All Copyright &copy; of website are reserved by owner</span>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex items-center gap-3">
+        <Link href="/feedback">
+          <Button
+            variant="link"
+            className="text-background transition-all hover:text-secondary/90"
+          >
+            Give Your Feedback
+          </Button>
+        </Link>
         <a href="https://github.com/AniruddhaGawali" target="_blank">
           <Github />
         </a>
