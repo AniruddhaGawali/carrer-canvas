@@ -3,24 +3,18 @@ export {
   getResumeById,
   getResumes,
   uploadResume,
+  getSharedResumeById,
+  copyResume,
 } from "./initalSetup";
 
 export { setResumeTemplete } from "./step1";
 
 export { deletePersonalInfo, getPersonalInfo, setPersonalInfo } from "./step2";
 
-export {
-  setSkills,
-  setSkillsInResume,
-  getSkills,
-  getSocial,
-  setSocial,
-  setSocialInResume,
-} from "./step3";
+export { setSkills, getSkills, getSocial, setSocial } from "./step3";
 
 export {
   getExperiences,
-  setExperiencesInResume,
   deleteExperience,
   setExperiences,
   updateExperience,
@@ -30,7 +24,6 @@ export {
   deleteProject,
   getProjects,
   setProjects,
-  setProjectsInResume,
   updateProject,
 } from "./step5";
 
@@ -43,6 +36,4 @@ export {
   updateAwardsAndCertifications,
   setEducation,
   updateEducation,
-  setEducationInResume,
-  setAwardsAndCertificationsInResume,
 } from "./step6";

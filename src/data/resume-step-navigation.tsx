@@ -43,22 +43,22 @@ export const StepsLinks: {
       const templete = templetes[resumeState.template!];
 
       if (!resumeState.personalInfo) {
-        toast.error("Please enter your personal details");
+        toast.error("Please enter your personal details or save details");
         return false;
       }
 
       if (templete.personalInfo.name && !resumeState.personalInfo.name) {
-        toast.error("Please enter your name");
+        toast.error("Please enter your name or save details");
         return false;
       }
 
       if (templete.personalInfo.email && !resumeState.personalInfo.email) {
-        toast.error("Please enter your email");
+        toast.error("Please enter your email or save details");
         return false;
       }
 
       if (templete.personalInfo.phone && !resumeState.personalInfo.phone) {
-        toast.error("Please enter your phone number");
+        toast.error("Please enter your phone number or save details");
         return false;
       }
 
@@ -66,7 +66,7 @@ export const StepsLinks: {
         templete.personalInfo.jobTitle &&
         !resumeState.personalInfo.jobTitle
       ) {
-        toast.error("Please enter your job title");
+        toast.error("Please enter your job title or save details");
         return false;
       }
 
@@ -76,12 +76,12 @@ export const StepsLinks: {
           resumeState.personalInfo.address1 && resumeState.personalInfo.address2
         )
       ) {
-        toast.error("Please enter your address");
+        toast.error("Please enter your address or save details");
         return false;
       }
 
       if (templete.personalInfo.website && !resumeState.personalInfo.website) {
-        toast.error("Please enter your website");
+        toast.error("Please enter your website or save details");
         return false;
       }
 
@@ -103,7 +103,8 @@ export const StepsLinks: {
       ) {
         return true;
       }
-      toast.error("Please enter your social links and skills");
+      toast.error("Please enter your social links and skills or save details");
+
       return false;
     },
   },

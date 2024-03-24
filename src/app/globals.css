@@ -84,11 +84,11 @@
       )
       --gradient-foreground: 210 40% 98%;
 
-    --color: #00ccb1;
-    --color: #7b61ff;
-    --color: #ffc414;
-    --color: #1ca0fb;
-    --color: #141316;
+    --color: rgb(32, 250, 176);
+    --color2: rgb(255, 147, 130);
+    --color3: rgb(17, 178, 172);
+    --color4: rgb(107, 226, 244);
+    --color5: rgb(143, 211, 244);
   }
 }
 

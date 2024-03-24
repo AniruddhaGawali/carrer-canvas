@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import Image from "next/image";
-import { StepsLinks as Steps } from "@/data/resume-step";
+import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import templetes from "@/data/resume-templete";
 import useResume from "@/redux/dispatch/useResume";
 import { Eye } from "lucide-react";
@@ -20,6 +20,9 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
+import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
+import PdfDoc, { PdfDocWithoutToolTip } from "../pdfView";
+import { dummyResumeData } from "@/data/dummy-resume-data";
 
 type Props = {
   currentStep: number;
@@ -35,6 +38,7 @@ function SelectTempleteComponent() {
     setResumeStateById,
     setResumeToDefaultState,
   } = useResume();
+  const { setIsDetailSaved } = useContext(IsDetailSavedContext);
 
   useEffect(() => {
     const id = searchParams.get("id");
@@ -43,6 +47,12 @@ function SelectTempleteComponent() {
     }
     if (resumeState.id == "" && session) setResumeToDefaultState();
   }, [session]);
+
+  useEffect(() => {
+    setIsDetailSaved(
+      resumeState.template != null && resumeState.template != undefined,
+    );
+  }, [resumeState]);
 
   return (
     <>
@@ -112,20 +122,17 @@ function SelectTempleteComponent() {
                     </DrawerDescription>
                   </DrawerHeader>
 
-                  <div className="w-[300px]">
-                    <ReactImageMagnify
-                      {...{
-                        smallImage: {
-                          alt: "Wristwatch by Ted Baker London",
-                          isFluidWidth: true,
-                          src: item.image,
-                        },
-                        largeImage: {
-                          src: item.image,
-                          width: 400,
-                          height: 1000,
-                        },
-                      }}
+                  <div className="h-[50vh] w-1/3">
+                    <PdfDocWithoutToolTip
+                      personalInfo={dummyResumeData.personalInfo}
+                      social={dummyResumeData.social}
+                      skills={dummyResumeData.skills}
+                      awardsAndCertifications={
+                        dummyResumeData.awardsAndCertifications
+                      }
+                      education={dummyResumeData.education}
+                      experience={dummyResumeData.experience}
+                      projects={dummyResumeData.project}
                     />
                   </div>
 

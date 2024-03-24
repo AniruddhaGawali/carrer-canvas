@@ -16,23 +16,6 @@ export async function getSkills(session: Session) {
   }
 }
 
-export async function setSkillsInResume(skills: Skill[], resume: Resume) {
-  const resumeId = resume.id;
-  try {
-    const newResume = await db.resume.update({
-      where: { id: resumeId },
-      data: {
-        skills: {
-          set: skills,
-        },
-      },
-    });
-    return newResume;
-  } catch (error) {
-    return null;
-  }
-}
-
 export async function setSkills(skills: Skill[], session: Session) {
   const userId = session.user.id;
   try {
@@ -121,23 +104,6 @@ export async function getSocial(session: Session) {
       },
     });
     return social;
-  } catch (error) {
-    return null;
-  }
-}
-
-export async function setSocialInResume(social: Social, resume: Resume) {
-  const resumeId = resume.id;
-  try {
-    const newResume = await db.resume.update({
-      where: { id: resumeId },
-      data: {
-        social: {
-          ...social,
-        },
-      },
-    });
-    return newResume;
   } catch (error) {
     return null;
   }

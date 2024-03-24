@@ -3,40 +3,37 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-
 import { useRouter } from "next/navigation";
-import { Edit, Eye, Plus, Trash2 } from "lucide-react";
-import { getResumes } from "@/actions/resume";
+import { Plus, RefreshCcw } from "lucide-react";
 import useResume from "@/redux/dispatch/useResume";
 import GridLoading from "@/components/loadingComponents/gridLoading";
-import * as action from "@/actions";
-import { Button } from "@/components/ui/button";
 import DashboardLoading from "@/components/loadingComponents/dashboardLoading";
-import DashboardGrid from "@/components/dashboardGrid";
+import DashboardGrid from "@/components/pages/dashboard/dashboardGrid";
+import useResumeList from "@/redux/dispatch/useResumeList";
+import { Button } from "@/components/ui/button";
 
 type Props = {};
 
 function Dashboard({}: Props) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [resumes, setResumes] = useState<Resume[]>([]);
-  const [isResumeLoading, setIsResumeLoading] = useState<boolean>(true);
   const { setResumeToDefaultState, setResumeState } = useResume();
+  const { fetchResumesList, resumeListState } = useResumeList();
+  const [resumes, setResumes] = useState<Resume[]>(resumeListState.resumes);
 
-  async function fetchResumes() {
-    setIsResumeLoading(true);
-    const res = await getResumes(session);
-    if (res) {
-      console.log(res);
-      setResumes(res as unknown as Resume[]);
-    }
-    setIsResumeLoading(false);
+  function fetchData() {
+    fetchResumesList(session);
   }
 
   useEffect(() => {
-    fetchResumes();
+    fetchData();
     setResumeToDefaultState();
   }, [session]);
+
+  useEffect(() => {
+    setResumes(resumeListState.resumes);
+    console.log(resumeListState.resumes);
+  }, [session, resumeListState.resumes]);
 
   if (status == "loading") {
     return <DashboardLoading />;
@@ -47,38 +44,59 @@ function Dashboard({}: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center ">
-      <div
-        className="grainy-gradient2 container my-20 mt-[9rem] flex h-32  cursor-pointer items-center justify-center rounded-xl bg-black transition-all hover:border-[3px] hover:border-black"
-        onClick={() => router.push("/create-resume")}
-      >
-        <Plus size={64} />
+    <div className="mt-[9rem] flex flex-col items-center  justify-center ">
+      {resumes.length > 0 && (
+        <div
+          className="grainy-gradient2 container flex  h-32 cursor-pointer items-center justify-center rounded-xl bg-black transition-all hover:border-[3px] hover:border-black"
+          onClick={() => router.push("/create-resume")}
+        >
+          <Plus size={64} />
+        </div>
+      )}
+
+      <div className="container mb-10 mt-32 flex w-full items-center justify-between">
+        <h2 className="container w-full text-6xl font-bold">Your Resumes</h2>
+        <Button
+          size="icon"
+          variant="secondary"
+          onClick={() => fetchData()}
+          title="Refresh Resumes"
+        >
+          <RefreshCcw
+            className={`${resumeListState.status == "loading" ? "animate-spin" : ""}`}
+          />
+        </Button>
       </div>
 
-      <h2 className="container w-full text-6xl font-bold">Your Resumes</h2>
-
-      {isResumeLoading ? (
+      {resumeListState.status == "loading" ? (
         <GridLoading />
       ) : (
         <>
-          {resumes.length === 0 ? (
-            <div className="m-auto mt-20 flex min-h-screen flex-col items-center justify-center">
-              <div className="w-1/2">
+          {resumeListState.resumes.length == 0 ? (
+            <div className="relative m-auto mt-20 flex min-h-screen w-full flex-col items-center justify-self-center">
+              <div
+                className="grainy-gradient2 container flex h-32  cursor-pointer items-center justify-center rounded-xl bg-black transition-all hover:border-[3px] hover:border-black"
+                onClick={() => router.push("/create-resume")}
+              >
+                <Plus size={64} />
+              </div>
+              <div className="absolute right-[32rem] top-24 m-auto">
                 <Image
-                  src={"/images/empty.svg"}
-                  alt="Empty"
-                  width="0"
-                  height="0"
-                  sizes="100vw"
-                  className=" h-auto w-full opacity-70"
+                  src="/images/curved_arrow.png"
+                  width={150}
+                  height={150}
+                  alt="arrow"
+                  className=" pointer-events-none rotate-[130deg] -scale-x-100"
                 />
               </div>
-              <h2 className="my-10 text-center text-5xl font-medium ">
+              <h2 className="rounded-m my-5  py-3 text-center text-3xl font-medium ">
                 You don&apos;t have any resumes yet.
+                <br />
+                Click to create one.
               </h2>
             </div>
           ) : (
-            <DashboardGrid fetchResumes={fetchResumes} resumes={resumes} />
+            <DashboardGrid resumes={resumes} />
           )}
         </>
       )}

@@ -1,7 +1,7 @@
 "use client";
 
-import { StepsLinks as Steps } from "@/data/resume-step";
-import React, { useEffect, useRef, useState } from "react";
+import { StepsLinks as Steps } from "@/data/resume-step-navigation";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import useResume from "@/redux/dispatch/useResume";
 import { Button } from "../ui/button";
@@ -20,6 +20,7 @@ import { useSession } from "next-auth/react";
 import * as action from "@/actions";
 import PdfDoc from "../pdfView";
 import { Separator } from "../ui/separator";
+import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
 
 type Props = {};
 
@@ -42,6 +43,7 @@ export default function SocialLinksAndSkills({}: Props) {
 
   const [skillsSuggestions, setSkillSuggestions] = useState<Skill[]>([]);
   const [socialSuggestions, setSocialSuggestions] = useState<Social>({});
+  const { setIsDetailSaved } = useContext(IsDetailSavedContext);
 
   const selectedTemplete =
     resumeState.template != null
@@ -180,6 +182,10 @@ export default function SocialLinksAndSkills({}: Props) {
     }
   }, [resumeState]);
 
+  useEffect(() => {
+    setIsDetailSaved(disabledSaveButton);
+  }, [disabledSaveButton]);
+
   if (!resumeState.template == null) {
     return redirect("/create-resume/step/1");
   }
@@ -270,7 +276,7 @@ export default function SocialLinksAndSkills({}: Props) {
                     {skillsSuggestions.map((skill, index) => (
                       <CarouselItem
                         key={index}
-                        className="flex items-center justify-center md:basis-1/3 lg:basis-1/3"
+                        className="flex items-center justify-center md:basis-1/2 xl:basis-1/3"
                       >
                         <Chips
                           className={`group m-1 flex items-center gap-2 border-2 border-primary transition-all hover:border-0 ${

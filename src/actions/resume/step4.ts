@@ -98,26 +98,3 @@ export async function updateExperience(
     return null;
   }
 }
-
-export async function setExperiencesInResume(
-  experiences: Experience[],
-  resumeId: string,
-) {
-  try {
-    const res = await db.resume.update({
-      where: {
-        id: resumeId,
-      },
-      data: {
-        experience: {
-          set: experiences,
-        },
-      },
-    });
-
-    return res;
-  } catch (error) {
-    console.log("error", error);
-    return null;
-  }
-}

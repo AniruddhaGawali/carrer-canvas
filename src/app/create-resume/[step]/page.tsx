@@ -2,7 +2,7 @@
 
 import React from "react";
 import Model from "@/components/model";
-import { StepsLinks } from "@/data/resume-step";
+import { StepsLinks } from "@/data/resume-step-navigation";
 import { notFound, useParams } from "next/navigation";
 
 type Props = {};

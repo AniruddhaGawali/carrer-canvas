@@ -7,6 +7,8 @@ export {
 } from "./auth";
 
 export {
+  copyResume,
+  getSharedResumeById,
   deletePersonalInfo,
   getPersonalInfo,
   setPersonalInfo,
@@ -16,20 +18,16 @@ export {
   deleteResume,
   setResumeTemplete,
   setSkills,
-  setSkillsInResume,
   getSkills,
   getSocial,
   setSocial,
-  setSocialInResume,
   getExperiences,
-  setExperiencesInResume,
   deleteExperience,
   setExperiences,
   updateExperience,
   deleteProject,
   getProjects,
   setProjects,
-  setProjectsInResume,
   updateProject,
   deleteAwardsAndCertifications,
   deleteEducation,
@@ -39,6 +37,6 @@ export {
   updateAwardsAndCertifications,
   setEducation,
   updateEducation,
-  setEducationInResume,
-  setAwardsAndCertificationsInResume,
 } from "./resume";
+
+export { getUserById } from "./user";

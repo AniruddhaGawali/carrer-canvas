@@ -6,6 +6,7 @@ import { authOptions } from "@/auth";
 import StoreProvider from "@/provider/storeProvider";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/provider/theme-provider";
+import PageAnimatePresence from "@/components/pageTransition";
 
 export const metadata: Metadata = {
   title: "Career Canves",
@@ -43,7 +44,7 @@ export default async function RootLayout({
               disableTransitionOnChange
             >
               <Toaster richColors position="top-right" />
-              {children}
+              <PageAnimatePresence>{children}</PageAnimatePresence>
             </ThemeProvider>
           </body>
         </StoreProvider>

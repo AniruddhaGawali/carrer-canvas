@@ -136,7 +136,7 @@ function Navbar({ isDashboard, title }: Props) {
               </Link>
             ) : (
               <>
-                {status === "unauthenticated" ? (
+                {status === "unauthenticated" || status == "loading" ? (
                   <Link
                     href="/login"
                     className="link hidden text-xl font-medium sm:flex"

@@ -3,8 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import React, { useEffect, useState } from "react";
-import { StepsLinks as Steps } from "@/data/resume-step";
+import React, { useEffect, useState, useContext } from "react";
+import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import { Button } from "../ui/button";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
 import EducationForm from "../forms/educationForm";
@@ -28,6 +28,7 @@ import { CarouselItem } from "../ui/carousel";
 import ComboBox from "../ui/combo-box";
 import { toast } from "sonner";
 import PdfDoc from "../pdfView";
+import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
 
 type Props = {};
 
@@ -59,6 +60,10 @@ export default function EducationAndCertificationComponents({}: Props) {
   const [suggestionCertification, setSuggestionCertification] = useState<
     AwardsAndCertifications[]
   >([]);
+
+  const [isSaveButtonDisabled, setIsSaveButtonDisabled] =
+    useState<boolean>(true);
+  const { setIsDetailSaved } = useContext(IsDetailSavedContext);
 
   const suggestionType = [
     {
@@ -162,6 +167,48 @@ export default function EducationAndCertificationComponents({}: Props) {
       setCertification(resumeState.awardsAndCertifications);
     }
   }, [resumeState]);
+
+  useEffect(() => {
+    let isDisabled = true;
+    console.log(resumeState.education);
+
+    if (resumeState.awardsAndCertifications && resumeState.education) {
+      if (
+        education.length == resumeState.education.length &&
+        certification.length == resumeState.awardsAndCertifications.length
+      ) {
+        isDisabled = resumeState.education.every(
+          (item, i) =>
+            item.college === education[i].college &&
+            item.degree === education[i].degree &&
+            item.description === education[i].description &&
+            item.startDate === education[i].startDate &&
+            item.endDate === education[i].endDate,
+        );
+
+        console.log(isDisabled);
+
+        isDisabled =
+          isDisabled &&
+          resumeState.awardsAndCertifications.every(
+            (item, i) =>
+              item.name === certification[i].name &&
+              item.description === certification[i].description &&
+              item.date === certification[i].date,
+          );
+      } else {
+        isDisabled = false;
+      }
+    } else {
+      isDisabled = false;
+    }
+
+    setIsSaveButtonDisabled(isDisabled);
+  }, [education, certification]);
+
+  useEffect(() => {
+    setIsDetailSaved(isSaveButtonDisabled);
+  }, [isSaveButtonDisabled]);
 
   if (status == "unauthenticated") {
     router.push("/register");
@@ -486,7 +533,7 @@ export default function EducationAndCertificationComponents({}: Props) {
               setIsLoading(false);
             }}
             loading={isLoading}
-            disabled={isLoading}
+            disabled={isSaveButtonDisabled}
           >
             Save
           </LoadingButton>

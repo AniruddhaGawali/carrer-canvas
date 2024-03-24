@@ -47,7 +47,7 @@ export const saveResumeById = createAsyncThunk(
     if (session) {
       throw new Error("User not found");
     }
-    const res = await getResumeById(id);
+    const res = await getResumeById(id, session);
     if (!res) throw new Error("User not found");
 
     console.log("redux", res);

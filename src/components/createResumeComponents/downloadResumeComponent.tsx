@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { StepsLinks as Steps } from "@/data/resume-step";
+import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import { Button } from "../ui/button";
 import PdfDoc from "../pdfView";
 import useResume from "@/redux/dispatch/useResume";
@@ -69,6 +69,7 @@ export default function DownloadResumeComponent({}: Props) {
                 personalInfo={resumeState.personalInfo}
                 education={resumeState.education}
                 experience={resumeState.experience}
+                projects={resumeState.project}
                 awardsAndCertifications={resumeState.awardsAndCertifications}
                 skills={resumeState.skills}
                 social={resumeState.social}
