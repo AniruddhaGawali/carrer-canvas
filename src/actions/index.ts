@@ -7,6 +7,7 @@ export {
 } from "./auth";
 
 export {
+  copyResume,
   getSharedResumeById,
   deletePersonalInfo,
   getPersonalInfo,

@@ -41,6 +41,42 @@ export async function uploadResume(data: Resume, session: Session | null) {
   }
 }
 
+export async function copyResume(resume: Resume, session: Session | null) {
+  if (!session?.user) return null;
+
+  const res = await db.resume.create({
+    data: {
+      title: resume.title + " Copy",
+      userId: session.user.id,
+      template: resume.template,
+      personalInfo: resume.personalInfo ?? null,
+      skills: resume.skills ?? [],
+      social: resume.social,
+      awardsAndCertifications: resume.awardsAndCertifications ?? [],
+      education: resume.education ?? [],
+      experience: resume.experience ?? [],
+      project: resume.project ?? [],
+    },
+  });
+
+  const newResume: Resume = {
+    id: res.id,
+    title: res.title,
+    userId: res.userId,
+    template: res.template,
+    personalInfo: res.personalInfo as PersonalInfo,
+    skills: res.skills as Skill[],
+    social: res.social as Social,
+    awardsAndCertifications:
+      res.awardsAndCertifications as AwardsAndCertifications[],
+    education: res.education as Education[],
+    experience: res.experience as Experience[],
+    project: res.project as Project[],
+  };
+
+  return newResume;
+}
+
 export async function getResumes(session: Session | null) {
   if (!session?.user) return null;
 

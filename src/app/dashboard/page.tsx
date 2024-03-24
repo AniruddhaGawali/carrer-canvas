@@ -3,40 +3,37 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-
 import { useRouter } from "next/navigation";
-import { Edit, Eye, Plus, Trash2 } from "lucide-react";
-import { getResumes } from "@/actions/resume";
+import { Plus, RefreshCcw } from "lucide-react";
 import useResume from "@/redux/dispatch/useResume";
 import GridLoading from "@/components/loadingComponents/gridLoading";
-import * as action from "@/actions";
-import { Button } from "@/components/ui/button";
 import DashboardLoading from "@/components/loadingComponents/dashboardLoading";
 import DashboardGrid from "@/components/pages/dashboard/dashboardGrid";
+import useResumeList from "@/redux/dispatch/useResumeList";
+import { Button } from "@/components/ui/button";
 
 type Props = {};
 
 function Dashboard({}: Props) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [resumes, setResumes] = useState<Resume[]>([]);
-  const [isResumeLoading, setIsResumeLoading] = useState<boolean>(true);
   const { setResumeToDefaultState, setResumeState } = useResume();
+  const { fetchResumesList, resumeListState } = useResumeList();
+  const [resumes, setResumes] = useState<Resume[]>(resumeListState.resumes);
 
-  async function fetchResumes() {
-    setIsResumeLoading(true);
-    const res = await getResumes(session);
-    if (res) {
-      console.log(res);
-      setResumes(res as unknown as Resume[]);
-    }
-    setIsResumeLoading(false);
+  function fetchData() {
+    fetchResumesList(session);
   }
 
   useEffect(() => {
-    fetchResumes();
+    fetchData();
     setResumeToDefaultState();
   }, [session]);
+
+  useEffect(() => {
+    setResumes(resumeListState.resumes);
+    console.log(resumeListState.resumes);
+  }, [session, resumeListState.resumes]);
 
   if (status == "loading") {
     return <DashboardLoading />;
@@ -57,15 +54,25 @@ function Dashboard({}: Props) {
         </div>
       )}
 
-      <h2 className="container mt-32 w-full text-6xl font-bold">
-        Your Resumes
-      </h2>
+      <div className="container mb-10 mt-32 flex w-full items-center justify-between">
+        <h2 className="container w-full text-6xl font-bold">Your Resumes</h2>
+        <Button
+          size="icon"
+          variant="secondary"
+          onClick={() => fetchData()}
+          title="Refresh Resumes"
+        >
+          <RefreshCcw
+            className={`${resumeListState.status == "loading" ? "animate-spin" : ""}`}
+          />
+        </Button>
+      </div>
 
-      {isResumeLoading ? (
+      {resumeListState.status == "loading" ? (
         <GridLoading />
       ) : (
         <>
-          {resumes.length === 0 ? (
+          {resumeListState.resumes.length == 0 ? (
             <div className="relative m-auto mt-20 flex min-h-screen w-full flex-col items-center justify-self-center">
               <div
                 className="grainy-gradient2 container flex h-32  cursor-pointer items-center justify-center rounded-xl bg-black transition-all hover:border-[3px] hover:border-black"
@@ -89,7 +96,7 @@ function Dashboard({}: Props) {
               </h2>
             </div>
           ) : (
-            <DashboardGrid fetchResumes={fetchResumes} resumes={resumes} />
+            <DashboardGrid resumes={resumes} />
           )}
         </>
       )}

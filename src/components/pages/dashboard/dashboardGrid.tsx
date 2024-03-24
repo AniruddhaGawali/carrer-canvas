@@ -38,18 +38,19 @@ import useResume from "@/redux/dispatch/useResume";
 import DownloadPDF from "../../downloadPDF";
 import { Classic1 } from "@/data/resume-templetes/classic/default";
 import { toast } from "sonner";
+import useResumeList from "@/redux/dispatch/useResumeList";
 
 type Props = {
   resumes: Resume[];
-  fetchResumes(): Promise<void>;
 };
 
-function DashboardGrid({ resumes, fetchResumes }: Props) {
+function DashboardGrid({ resumes }: Props) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const { data: session, status } = useSession();
   const router = useRouter();
   const { setResumeState } = useResume();
   const [open, setOpen] = useState(false);
+  const { fetchResumesList, deleteResume, addResume } = useResumeList();
 
   const [resumeSeleted, setResumeSeleted] = React.useState<Resume>();
 
@@ -93,11 +94,25 @@ function DashboardGrid({ resumes, fetchResumes }: Props) {
                       >
                         Share Link
                       </DropdownMenuItem>
-                      <DropdownMenuItem>Make a Copy</DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => {
-                          action.deleteResume(item.id, session);
-                          fetchResumes();
+                        onClick={async () => {
+                          console.log(item);
+                          const resume = await action.copyResume(item, session);
+                          if (resume) {
+                            toast.success("Resume Copied");
+                            addResume(resume);
+                          }
+                        }}
+                      >
+                        Make a Copy
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={async () => {
+                          const deleteItem = await action.deleteResume(
+                            item.id,
+                            session,
+                          );
+                          if (deleteItem) deleteResume(item.id);
                         }}
                         className="text-destructive focus:bg-destructive/50"
                       >
@@ -290,11 +305,24 @@ function DashboardGrid({ resumes, fetchResumes }: Props) {
                     >
                       Edit
                     </DropdownMenuItem>
-                    <DropdownMenuItem>Make a Copy</DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => {
-                        action.deleteResume(item.id, session);
-                        fetchResumes();
+                      onClick={async () => {
+                        const resume = await action.copyResume(item, session);
+                        if (resume) {
+                          toast.success("Resume Copied");
+                          addResume(resume);
+                        }
+                      }}
+                    >
+                      Make a Copy
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={async () => {
+                        const deleteItem = await action.deleteResume(
+                          item.id,
+                          session,
+                        );
+                        if (deleteItem) deleteResume(item.id);
                       }}
                       className="text-destructive focus:bg-destructive/50"
                     >
