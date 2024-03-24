@@ -170,7 +170,6 @@ export default function EducationAndCertificationComponents({}: Props) {
 
   useEffect(() => {
     let isDisabled = true;
-    console.log(resumeState.education);
 
     if (resumeState.awardsAndCertifications && resumeState.education) {
       if (
@@ -185,8 +184,6 @@ export default function EducationAndCertificationComponents({}: Props) {
             item.startDate === education[i].startDate &&
             item.endDate === education[i].endDate,
         );
-
-        console.log(isDisabled);
 
         isDisabled =
           isDisabled &&
@@ -528,7 +525,7 @@ export default function EducationAndCertificationComponents({}: Props) {
             className="w-full max-w-md"
             onClick={async () => {
               setIsLoading(true);
-              console.log(educationAndCertification);
+
               await addEducationAndCertification();
               setIsLoading(false);
             }}

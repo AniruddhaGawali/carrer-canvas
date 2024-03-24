@@ -190,7 +190,6 @@ export default function PersonalInformationComponent({}: Props) {
   }, [session]);
 
   useEffect(() => {
-    console.log("resumeState", resumeState);
     if (resumeState.personalInfo) {
       form.setValue("name", resumeState.personalInfo.name);
       form.setValue("jobTitle", resumeState.personalInfo.jobTitle);

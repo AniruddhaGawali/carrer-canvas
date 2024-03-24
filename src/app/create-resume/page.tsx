@@ -39,12 +39,10 @@ function CreateResumePage({}: Props) {
   });
 
   const submitForm = async (data: { title: string }) => {
-    console.log("data", data);
     const newResume: Resume = {
       ...resumeState,
       title: data.title,
     };
-    console.log("newResume", newResume);
     pushResume(newResume, session);
 
     router.push("create-resume/select-template?id=" + resumeState.id);

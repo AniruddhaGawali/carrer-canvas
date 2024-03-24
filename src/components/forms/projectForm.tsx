@@ -98,7 +98,7 @@ export default function ProjectForm({
         <form
           onSubmit={githubLinkForm.handleSubmit(async (data) => {
             setFetching(true);
-            console.log(data);
+
             const splitLink = data.githubLink.split("/");
             const user = splitLink[3];
             const repo = splitLink[4];
@@ -120,7 +120,7 @@ export default function ProjectForm({
             //     "Objective-C",
             //   ],
             // };
-            console.log(projectData);
+
             form.setValue("name", projectData.name);
             form.setValue("projectType", projectData.projectType);
             form.setValue("link", projectData.link);
@@ -176,7 +176,7 @@ export default function ProjectForm({
               endDate: endDate?.toISOString() ?? "",
               tech: tech,
             };
-            console.log(project);
+
             setProjects((prev) => [...prev, project]);
           })}
           id="project-form"

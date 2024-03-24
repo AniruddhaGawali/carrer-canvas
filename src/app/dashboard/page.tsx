@@ -32,7 +32,6 @@ function Dashboard({}: Props) {
 
   useEffect(() => {
     setResumes(resumeListState.resumes);
-    console.log(resumeListState.resumes);
   }, [session, resumeListState.resumes]);
 
   if (status == "loading") {
