@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import React, { useEffect, useState } from "react";
-import { StepsLinks as Steps } from "@/data/resume-step";
+import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import useResume from "@/redux/dispatch/useResume";
 import { Button } from "../ui/button";
 import { toast } from "sonner";

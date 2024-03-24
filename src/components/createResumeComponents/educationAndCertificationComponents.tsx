@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import React, { useEffect, useState } from "react";
-import { StepsLinks as Steps } from "@/data/resume-step";
+import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import { Button } from "../ui/button";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
 import EducationForm from "../forms/educationForm";

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import Image from "next/image";
-import { StepsLinks as Steps } from "@/data/resume-step";
+import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import templetes from "@/data/resume-templete";
 import useResume from "@/redux/dispatch/useResume";
 import { Eye } from "lucide-react";

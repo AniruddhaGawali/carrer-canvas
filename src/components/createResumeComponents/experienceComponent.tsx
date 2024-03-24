@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { StepsLinks as Steps } from "@/data/resume-step";
+import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import { Button } from "../ui/button";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
 import ExperienceForm from "@/components/forms/experienceForm";

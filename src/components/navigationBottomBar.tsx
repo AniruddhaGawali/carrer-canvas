@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { ChevronLeft, ChevronRight, Router } from "lucide-react";
 
 import { useRouter } from "next/navigation";
-import { StepsLinks } from "@/data/resume-step";
+import { StepsLinks } from "@/data/resume-step-navigation";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Command,

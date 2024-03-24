@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { StepsLinks as Steps } from "@/data/resume-step";
+import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import { Button } from "../ui/button";
 import PdfDoc from "../pdfView";
 import useResume from "@/redux/dispatch/useResume";

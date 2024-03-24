@@ -1,5 +1,5 @@
 import BottonNavigationBar from "@/components/navigationBottomBar";
-import { StepsLinks } from "@/data/resume-step";
+import { StepsLinks } from "@/data/resume-step-navigation";
 import React from "react";
 import type { Metadata } from "next";
 

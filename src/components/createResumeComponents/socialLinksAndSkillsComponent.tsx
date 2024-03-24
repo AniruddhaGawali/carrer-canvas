@@ -1,6 +1,6 @@
 "use client";
 
-import { StepsLinks as Steps } from "@/data/resume-step";
+import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 import useResume from "@/redux/dispatch/useResume";
