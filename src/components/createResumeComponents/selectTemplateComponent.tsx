@@ -21,6 +21,8 @@ import {
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
+import PdfDoc, { PdfDocWithoutToolTip } from "../pdfView";
+import { dummyResumeData } from "@/data/dummy-resume-data";
 
 type Props = {
   currentStep: number;
@@ -120,20 +122,17 @@ function SelectTempleteComponent() {
                     </DrawerDescription>
                   </DrawerHeader>
 
-                  <div className="w-[300px]">
-                    <ReactImageMagnify
-                      {...{
-                        smallImage: {
-                          alt: "Wristwatch by Ted Baker London",
-                          isFluidWidth: true,
-                          src: item.image,
-                        },
-                        largeImage: {
-                          src: item.image,
-                          width: 400,
-                          height: 1000,
-                        },
-                      }}
+                  <div className="h-[50vh] w-1/3">
+                    <PdfDocWithoutToolTip
+                      personalInfo={dummyResumeData.personalInfo}
+                      social={dummyResumeData.social}
+                      skills={dummyResumeData.skills}
+                      awardsAndCertifications={
+                        dummyResumeData.awardsAndCertifications
+                      }
+                      education={dummyResumeData.education}
+                      experience={dummyResumeData.experience}
+                      projects={dummyResumeData.project}
                     />
                   </div>
 
