@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { CircleUser, LogOut } from "lucide-react";
+import { CircleUser, LayoutDashboard, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   Popover,
@@ -167,6 +167,22 @@ function Navbar({ isDashboard, title }: Props) {
                   </PopoverTrigger>
 
                   <PopoverContent className="w-fit p-2">
+                    <div className="block sm:hidden">
+                      {!isDashboard ? (
+                        <Link href="/dashboard">
+                          <Button variant="ghost">
+                            <LayoutDashboard className="mr-2 h-4 w-4" />{" "}
+                            Dashboard
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Link href="/">
+                          <Button variant="ghost">
+                            <LayoutDashboard className="mr-2 h-4 w-4" /> Home
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
                     <div>
                       <Button variant="ghost" onClick={() => signOut()}>
                         <LogOut className="mr-2 h-4 w-4" /> Sign Out

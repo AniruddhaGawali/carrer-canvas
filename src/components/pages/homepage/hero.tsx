@@ -151,7 +151,7 @@ function HeroSection({ enterNoState }: Props) {
           <NotepadTextDashed />
         </Button>
       </section>
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 cursor-pointer">
+      <div className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 cursor-pointer sm:flex">
         <ChevronsDown
           className="h-8 w-8 animate-bounce"
           onClick={() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 import {
   Form,
@@ -24,6 +24,9 @@ import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { UseFormReturn } from "react-hook-form";
+import AIButton from "../ui/ai-button";
+import { toast } from "sonner";
+import DatePicker from "../ui/date-picker";
 
 type Props = {
   education: Education[];
@@ -109,11 +112,38 @@ function EducationForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  // className="resize-none"
-                  {...field}
-                />
+                <div className="relative">
+                  <Textarea
+                    placeholder="Tell us a little bit about yourself"
+                    // className="resize-none"
+                    {...field}
+                  />
+                  <AIButton
+                    className="absolute bottom-2 right-2"
+                    onClick={() => {
+                      if (
+                        form.getValues("college").length <= 0 &&
+                        form.getValues("degree").length <= 0
+                      ) {
+                        toast.error(
+                          "Please enter atleast college name and degree in order to generate description",
+                        );
+                        return;
+                      }
+                    }}
+                    prompt={
+                      "give the Description for a school or college experience in max 160 charaters strickly (include space and use pagragraph only no points) of college or school " +
+                      form.getValues("college") +
+                      " get the degree in " +
+                      form.getValues("degree") +
+                      (form.getValues("description") &&
+                      form.getValues("description").length > 0
+                        ? " like " + form.getValues("description")
+                        : "")
+                    }
+                    setText={(text) => form.setValue("description", text)}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -148,14 +178,11 @@ function EducationForm({
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={startDate ?? undefined}
-                      onSelect={(e) => setStartDate(e ?? null)}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
+                    <DatePicker
+                      value={startDate ?? new Date()}
+                      onChange={(e) => setStartDate(e)}
+                      maxDate={new Date()}
+                      minDate={new Date("1900-01-01")}
                     />
                   </PopoverContent>
                 </Popover>
@@ -192,15 +219,11 @@ function EducationForm({
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={endDate ?? undefined}
-                      onSelect={(e) => setEndDate(e ?? null)}
-                      disabled={(date) =>
-                        date > new Date() ||
-                        date < (startDate ?? new Date("1900-01-01"))
-                      }
-                      initialFocus
+                    <DatePicker
+                      value={endDate ?? new Date()}
+                      onChange={(e) => setEndDate(e)}
+                      maxDate={new Date()}
+                      minDate={startDate ?? new Date("1900-01-01")}
                     />
                   </PopoverContent>
                 </Popover>

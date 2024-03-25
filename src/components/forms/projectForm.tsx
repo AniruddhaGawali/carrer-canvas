@@ -29,6 +29,9 @@ import { Label } from "@radix-ui/react-label";
 import TagsInputForm from "./tagsInputForm";
 import { Separator } from "../ui/separator";
 import { UseFormReturn } from "react-hook-form";
+import AIButton from "../ui/ai-button";
+import { toast } from "sonner";
+import DatePicker from "../ui/date-picker";
 
 type Props = {
   projects: Project[];
@@ -278,14 +281,11 @@ export default function ProjectForm({
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={startDate ?? undefined}
-                        onSelect={(e) => setStartDate(e ?? null)}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
+                      <DatePicker
+                        value={startDate ?? new Date()}
+                        onChange={(e) => setStartDate(e)}
+                        maxDate={new Date()}
+                        minDate={new Date("1900-01-01")}
                       />
                     </PopoverContent>
                   </Popover>
@@ -322,15 +322,11 @@ export default function ProjectForm({
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={endDate ?? undefined}
-                        onSelect={(e) => setEndDate(e ?? null)}
-                        disabled={(date) =>
-                          date > new Date() ||
-                          date < (startDate ?? new Date("1900-01-01"))
-                        }
-                        initialFocus
+                      <DatePicker
+                        value={endDate ?? new Date()}
+                        onChange={(e) => setEndDate(e)}
+                        maxDate={new Date()}
+                        minDate={startDate ?? new Date("1900-01-01")}
                       />
                     </PopoverContent>
                   </Popover>
@@ -350,11 +346,43 @@ export default function ProjectForm({
                   Description <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="Tell us a little bit about yourself"
-                    //   className="resize-none"
-                    {...field}
-                  />
+                  <div className="relative">
+                    <Textarea
+                      placeholder="Tell us a little bit about yourself"
+                      //   className="resize-none"
+                      {...field}
+                    />
+                    <AIButton
+                      className="absolute bottom-2 right-2"
+                      onClick={() => {
+                        if (
+                          form.getValues("name").length <= 0 &&
+                          form.getValues("projectType").length <= 0
+                        ) {
+                          toast.error(
+                            "Please enter atleast project name and project type to generate description",
+                          );
+                          return;
+                        }
+                      }}
+                      prompt={
+                        "give the Description for a project in max 150 charaters strickly (include space and use pagragraph only no points) of a project " +
+                        form.getValues("name") +
+                        " project is of type " +
+                        form.getValues("projectType") +
+                        (form.getValues("link") &&
+                        form.getValues("link").length > 0
+                          ? " its live link or github repo link" +
+                            form.getValues("link")
+                          : "") +
+                        (form.getValues("description") &&
+                        form.getValues("description").length > 0
+                          ? " like " + form.getValues("description")
+                          : "")
+                      }
+                      setText={(text) => form.setValue("description", text)}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

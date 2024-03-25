@@ -42,3 +42,5 @@ export {
 export { getUserById } from "./user";
 
 export { feedback } from "./feedback";
+
+export { generateText } from "./gemini-generation";

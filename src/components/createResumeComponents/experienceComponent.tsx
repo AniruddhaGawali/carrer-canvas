@@ -182,7 +182,10 @@ export default function Experience({}: Props) {
       {suggestions.length > 0 && (
         <SuggestionBox className="bg-secondary/60">
           {suggestions.map((item, index) => (
-            <CarouselItem key={index} className="basis-1/3">
+            <CarouselItem
+              key={index}
+              className="h-full md:basis-1/3 2xl:basis-1/5"
+            >
               <div className="p-1">
                 <Card
                   className={`relative cursor-pointer p-[3px] text-start ${

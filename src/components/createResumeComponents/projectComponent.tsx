@@ -69,7 +69,7 @@ export default function ProjectComponent({}: Props) {
         message: "Description must be at least 10 characters.",
       })
       .max(350, {
-        message: "Description must not be longer than 30 characters.",
+        message: "Description must not be longer than 80 characters.",
       }),
   });
 
