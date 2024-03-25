@@ -56,7 +56,6 @@ function FeedbackPage({}: Props) {
         <form
           className="mt-8 flex w-full flex-col items-center gap-5"
           onSubmit={form.handleSubmit(async (data) => {
-            console.log(data);
             const res = await actions.feedback(data);
             if (res) {
               form.reset();

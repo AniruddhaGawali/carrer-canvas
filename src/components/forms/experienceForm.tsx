@@ -223,15 +223,15 @@ export default function ExperienceForm({
                     }}
                     prompt={
                       "give the Description for a job experience in max 160 charaters strickly (include space and use pagragraph only no points) of job in " +
-                        form.getValues("company") +
-                        " as a " +
-                        form.getValues("jobTitle") +
-                        (form.getValues("location") &&
-                        form.getValues("location").length > 0
-                          ? " in " + form.getValues("location")
-                          : "") +
-                        form.getValues("description") &&
-                      (form.getValues("description").length > 0
+                      form.getValues("company") +
+                      " as a " +
+                      form.getValues("jobTitle") +
+                      (form.getValues("location") &&
+                      form.getValues("location").length > 0
+                        ? " in " + form.getValues("location")
+                        : "") +
+                      (form.getValues("description") &&
+                      form.getValues("description").length > 0
                         ? " like " + form.getValues("description")
                         : "")
                     }

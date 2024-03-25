@@ -27,7 +27,6 @@ function AIButton({ className, prompt, onClick, setText }: Props) {
         onClick();
         setIsLoading(true);
         const text = await generateText(prompt);
-        console.log(text);
         setText(text);
         setIsLoading(false);
       }}
