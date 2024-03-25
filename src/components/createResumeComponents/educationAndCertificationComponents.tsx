@@ -87,7 +87,7 @@ export default function EducationAndCertificationComponents({}: Props) {
       .min(10, {
         message: "Description must be at least 10 characters.",
       })
-      .max(20, {
+      .max(350, {
         message: "Description must not be longer than 160 characters.",
       }),
   });
@@ -112,7 +112,7 @@ export default function EducationAndCertificationComponents({}: Props) {
       .min(10, {
         message: "Description must be at least 10 characters.",
       })
-      .max(160, {
+      .max(350, {
         message: "Description must not be longer than 160 characters.",
       }),
   });

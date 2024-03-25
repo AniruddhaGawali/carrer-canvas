@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 import {
   Form,
@@ -24,6 +24,8 @@ import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import { UseFormReturn } from "react-hook-form";
+import AIButton from "../ui/ai-button";
+import { toast } from "sonner";
 
 type Props = {
   education: Education[];
@@ -109,11 +111,38 @@ function EducationForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  // className="resize-none"
-                  {...field}
-                />
+                <div className="relative">
+                  <Textarea
+                    placeholder="Tell us a little bit about yourself"
+                    // className="resize-none"
+                    {...field}
+                  />
+                  <AIButton
+                    className="absolute bottom-2 right-2"
+                    onClick={() => {
+                      if (
+                        form.getValues("college").length <= 0 &&
+                        form.getValues("degree").length <= 0
+                      ) {
+                        toast.error(
+                          "Please enter atleast college name and degree in order to generate description",
+                        );
+                        return;
+                      }
+                    }}
+                    prompt={
+                      "give the Description for a school or college experience in max 160 charaters strickly (include space and use pagragraph only no points) of college or school " +
+                      form.getValues("college") +
+                      " get the degree in " +
+                      form.getValues("degree") +
+                      (form.getValues("description") &&
+                      form.getValues("description").length > 0
+                        ? " like " + form.getValues("description")
+                        : "")
+                    }
+                    setText={(text) => form.setValue("description", text)}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

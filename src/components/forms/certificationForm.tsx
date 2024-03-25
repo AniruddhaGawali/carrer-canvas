@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
 import { UseFormReturn, useForm } from "react-hook-form";
-import { z } from "zod";
 
 import {
   Form,
@@ -26,6 +24,8 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
+import AIButton from "../ui/ai-button";
+import { toast } from "sonner";
 
 type Props = {
   certification: AwardsAndCertifications[];
@@ -88,7 +88,29 @@ function CertificationForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="Description" {...field} />
+                <div className="relative">
+                  <Textarea placeholder="Description" {...field} />
+                  <AIButton
+                    className="absolute bottom-2 right-2"
+                    onClick={() => {
+                      if (form.getValues("name").length <= 0) {
+                        toast.error(
+                          "Please enter atleast college name and degree in order to generate description",
+                        );
+                        return;
+                      }
+                    }}
+                    prompt={
+                      "give the Description for a certication or award in max 160 charaters strickly (include space and use pagragraph only no points) certication or award of " +
+                      form.getValues("name") +
+                      (form.getValues("description") &&
+                      form.getValues("description").length > 0
+                        ? " like " + form.getValues("description")
+                        : "")
+                    }
+                    setText={(text) => form.setValue("description", text)}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

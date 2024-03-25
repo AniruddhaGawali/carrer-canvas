@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Textarea } from "../ui/textarea";
 import { UseFormReturn } from "react-hook-form";
+import AIButton from "../ui/ai-button";
+import { toast } from "sonner";
 
 type Props = {
   form: UseFormReturn<
@@ -206,11 +208,42 @@ export default function ExperienceForm({
                 Description <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  // className="resize-none"
-                  {...field}
-                />
+                <div className="relative">
+                  <Textarea
+                    placeholder="Tell us a little bit about yourself"
+                    // className="resize-none"
+                    {...field}
+                  />
+                  <AIButton
+                    className="absolute bottom-2 right-2"
+                    onClick={() => {
+                      if (
+                        form.getValues("company").length <= 0 &&
+                        form.getValues("jobTitle").length <= 0
+                      ) {
+                        toast.error(
+                          "Please enter atleast company name and job title in order to generate description",
+                        );
+                        return;
+                      }
+                    }}
+                    prompt={
+                      "give the Description for a job experience in max 160 charaters strickly (include space and use pagragraph only no points) of job in " +
+                        form.getValues("company") +
+                        " as a " +
+                        form.getValues("jobTitle") +
+                        (form.getValues("location") &&
+                        form.getValues("location").length > 0
+                          ? " in " + form.getValues("location")
+                          : "") +
+                        form.getValues("description") &&
+                      (form.getValues("description").length > 0
+                        ? " like " + form.getValues("description")
+                        : "")
+                    }
+                    setText={(text) => form.setValue("description", text)}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -29,6 +29,8 @@ import { Label } from "@radix-ui/react-label";
 import TagsInputForm from "./tagsInputForm";
 import { Separator } from "../ui/separator";
 import { UseFormReturn } from "react-hook-form";
+import AIButton from "../ui/ai-button";
+import { toast } from "sonner";
 
 type Props = {
   projects: Project[];
@@ -350,11 +352,43 @@ export default function ProjectForm({
                   Description <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="Tell us a little bit about yourself"
-                    //   className="resize-none"
-                    {...field}
-                  />
+                  <div className="relative">
+                    <Textarea
+                      placeholder="Tell us a little bit about yourself"
+                      //   className="resize-none"
+                      {...field}
+                    />
+                    <AIButton
+                      className="absolute bottom-2 right-2"
+                      onClick={() => {
+                        if (
+                          form.getValues("name").length <= 0 &&
+                          form.getValues("projectType").length <= 0
+                        ) {
+                          toast.error(
+                            "Please enter atleast project name and project type to generate description",
+                          );
+                          return;
+                        }
+                      }}
+                      prompt={
+                        "give the Description for a project in max 150 charaters strickly (include space and use pagragraph only no points) of a project " +
+                        form.getValues("name") +
+                        " project is of type " +
+                        form.getValues("projectType") +
+                        (form.getValues("link") &&
+                        form.getValues("link").length > 0
+                          ? " its live link or github repo link" +
+                            form.getValues("link")
+                          : "") +
+                        (form.getValues("description") &&
+                        form.getValues("description").length > 0
+                          ? " like " + form.getValues("description")
+                          : "")
+                      }
+                      setText={(text) => form.setValue("description", text)}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
