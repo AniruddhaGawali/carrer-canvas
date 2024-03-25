@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { StepsLinks as Steps } from "@/data/resume-step-navigation";
 import { Button } from "../ui/button";
 import PdfDoc from "../pdfView";
@@ -11,6 +11,7 @@ import { Classic1 } from "@/data/resume-templetes/classic/default";
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
+import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
 
 const PDFDownloadLink = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
@@ -31,6 +32,7 @@ export default function DownloadResumeComponent({}: Props) {
   const { resumeState, setResumeStateById, setResumeToDefaultState } =
     useResume();
 
+  const { setIsDetailSaved } = useContext(IsDetailSavedContext);
   useEffect(() => {
     const id = searchParams.get("id");
     if (resumeState.id == "" && id != null) {
@@ -38,6 +40,10 @@ export default function DownloadResumeComponent({}: Props) {
     }
     if (resumeState.id == "" && session) setResumeToDefaultState();
   }, [session]);
+
+  useEffect(() => {
+    setIsDetailSaved(true);
+  }, []);
 
   if (status == "unauthenticated") {
     router.push("/register");

@@ -31,6 +31,7 @@ import { Separator } from "../ui/separator";
 import { UseFormReturn } from "react-hook-form";
 import AIButton from "../ui/ai-button";
 import { toast } from "sonner";
+import DatePicker from "../ui/date-picker";
 
 type Props = {
   projects: Project[];
@@ -280,14 +281,11 @@ export default function ProjectForm({
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={startDate ?? undefined}
-                        onSelect={(e) => setStartDate(e ?? null)}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
+                      <DatePicker
+                        value={startDate ?? new Date()}
+                        onChange={(e) => setStartDate(e)}
+                        maxDate={new Date()}
+                        minDate={new Date("1900-01-01")}
                       />
                     </PopoverContent>
                   </Popover>
@@ -324,15 +322,11 @@ export default function ProjectForm({
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={endDate ?? undefined}
-                        onSelect={(e) => setEndDate(e ?? null)}
-                        disabled={(date) =>
-                          date > new Date() ||
-                          date < (startDate ?? new Date("1900-01-01"))
-                        }
-                        initialFocus
+                      <DatePicker
+                        value={endDate ?? new Date()}
+                        onChange={(e) => setEndDate(e)}
+                        maxDate={new Date()}
+                        minDate={startDate ?? new Date("1900-01-01")}
                       />
                     </PopoverContent>
                   </Popover>

@@ -23,9 +23,7 @@ import { Textarea } from "../ui/textarea";
 import { UseFormReturn } from "react-hook-form";
 import AIButton from "../ui/ai-button";
 import { toast } from "sonner";
-import DatePicker from "react-date-picker";
-import "react-date-picker/dist/DatePicker.css";
-import "react-calendar/dist/Calendar.css";
+import DatePicker from "../ui/date-picker";
 
 type Props = {
   form: UseFormReturn<
@@ -125,21 +123,11 @@ export default function ExperienceForm({
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    {/* <Calendar
-                      mode="single"
-                      selected={startDate ?? undefined}
-                      onSelect={(e) => setStartDate(e ?? null)}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                    /> */}
-
                     <DatePicker
-                      value={startDate}
-                      onChange={(e) => setStartDate(e as Date)}
+                      value={startDate ?? new Date()}
+                      onChange={(e) => setStartDate(e)}
                       maxDate={new Date()}
-                      calendarClassName={["!w-[300px] !p-4 !bg-background"]}
+                      minDate={new Date("1900-01-01")}
                     />
                   </PopoverContent>
                 </Popover>
@@ -176,15 +164,11 @@ export default function ExperienceForm({
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={endDate ?? undefined}
-                      onSelect={(e) => setEndDate(e ?? null)}
-                      disabled={(date) =>
-                        date > new Date() ||
-                        date < (startDate ?? new Date("1900-01-01"))
-                      }
-                      initialFocus
+                    <DatePicker
+                      value={endDate ?? new Date()}
+                      onChange={(e) => setEndDate(e)}
+                      maxDate={new Date()}
+                      minDate={startDate ?? new Date("1900-01-01")}
                     />
                   </PopoverContent>
                 </Popover>
