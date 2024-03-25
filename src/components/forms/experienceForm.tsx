@@ -15,7 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "../ui/button";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Pi } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -23,6 +23,9 @@ import { Textarea } from "../ui/textarea";
 import { UseFormReturn } from "react-hook-form";
 import AIButton from "../ui/ai-button";
 import { toast } from "sonner";
+import DatePicker from "react-date-picker";
+import "react-date-picker/dist/DatePicker.css";
+import "react-calendar/dist/Calendar.css";
 
 type Props = {
   form: UseFormReturn<
@@ -122,7 +125,7 @@ export default function ExperienceForm({
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
+                    {/* <Calendar
                       mode="single"
                       selected={startDate ?? undefined}
                       onSelect={(e) => setStartDate(e ?? null)}
@@ -130,6 +133,13 @@ export default function ExperienceForm({
                         date > new Date() || date < new Date("1900-01-01")
                       }
                       initialFocus
+                    /> */}
+
+                    <DatePicker
+                      value={startDate}
+                      onChange={(e) => setStartDate(e as Date)}
+                      maxDate={new Date()}
+                      calendarClassName={["!w-[300px] !p-4 !bg-background"]}
                     />
                   </PopoverContent>
                 </Popover>
