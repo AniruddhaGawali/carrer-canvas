@@ -5,9 +5,9 @@ import type { Metadata } from "next";
 import IsDetailSavedProvider from "@/provider/isDetailSavedProvider";
 
 export let metadata: Metadata = {
-  title: "Create Resume | Career Canves",
+  title: "Create Resume | Career Canvas",
   description:
-    "Craft. Create. Captivate. Elevate Your Career with Career Canves",
+    "Craft. Create. Captivate. Elevate Your Career with Career Canvas",
 };
 
 export default function StepLayout({
@@ -21,7 +21,7 @@ export default function StepLayout({
 
   const index = paths.indexOf(params.step);
   metadata = {
-    title: `${StepsLinks[index].name} | Career Canves`,
+    title: `${StepsLinks[index].name} | Career Canvas`,
     description: StepsLinks[index].desc,
   };
   return (

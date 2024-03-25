@@ -103,7 +103,7 @@ function HeroSection({ enterNoState }: Props) {
           onMouseEnter={() => setIsHover(true)}
           onMouseLeave={() => setIsHover(false)}
         >
-          <span>Career Canves</span>
+          <span>Career Canvas</span>
           <span className="ester-egg">🤫</span>
           <span className="ester-egg2">👻</span>
         </h1>

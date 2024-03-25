@@ -10,9 +10,9 @@ type Props = {
 };
 
 export let metadata: Metadata = {
-  title: "Create Resume | Career Canves",
+  title: "Create Resume | Career Canvas",
   description:
-    "Craft. Create. Captivate. Elevate Your Career with Career Canves",
+    "Craft. Create. Captivate. Elevate Your Career with Career Canvas",
 };
 
 async function ShareLayout({ children, params }: Props) {
@@ -23,9 +23,9 @@ async function ShareLayout({ children, params }: Props) {
     const user = await actions.getUserById(data.userId);
 
     metadata = {
-      title: `${data.title} - by ${user?.name} | Career Canves`,
+      title: `${data.title} - by ${user?.name} | Career Canvas`,
       description:
-        "Craft. Create. Captivate. Elevate Your Career with Career Canves",
+        "Craft. Create. Captivate. Elevate Your Career with Career Canvas",
     };
 
     return (

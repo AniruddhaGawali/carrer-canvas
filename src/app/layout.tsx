@@ -9,9 +9,9 @@ import { ThemeProvider } from "@/provider/theme-provider";
 import PageAnimatePresence from "@/components/pageTransition";
 
 export const metadata: Metadata = {
-  title: "Career Canves",
+  title: "Career Canvas",
   description:
-    "Craft. Create. Captivate. Elevate Your Career with Career Canves",
+    "Craft. Create. Captivate. Elevate Your Career with Career Canvas",
   icons: {
     icon: [
       { url: "/icons/favicon.ico" },

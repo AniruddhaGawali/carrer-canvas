@@ -5,8 +5,8 @@ import React from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Feedback | Career Canves",
-  description: "Feedback form for Career Canves",
+  title: "Feedback | Career Canvas",
+  description: "Feedback form for Career Canvas",
 };
 
 type Props = {

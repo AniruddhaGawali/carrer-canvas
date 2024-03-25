@@ -8,9 +8,9 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: "Dashboard | Career Canves",
+  title: "Dashboard | Career Canvas",
   description:
-    "Craft. Create. Captivate. Elevate Your Career with Careers Canves",
+    "Craft. Create. Captivate. Elevate Your Career with Careers Canvas",
 };
 
 function DashboardLayout({ children }: Props) {

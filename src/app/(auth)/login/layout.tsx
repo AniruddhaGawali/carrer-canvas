@@ -2,7 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Login | Career Canves",
+  title: "Login | Career Canvas",
   description: "Continue my Career canvas",
 };
 

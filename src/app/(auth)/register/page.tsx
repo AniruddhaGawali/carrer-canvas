@@ -42,7 +42,7 @@ const Register = (props: Props) => {
         <h2 className="mb-0 text-start text-4xl font-medium">
           Create New Account
         </h2>
-        <p className="-mt-1">Start your new carrier canves</p>
+        <p className="-mt-1">Start your new carrier Canvas</p>
       </div>
 
       <form
