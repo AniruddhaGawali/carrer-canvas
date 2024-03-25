@@ -35,7 +35,7 @@ function UpcomingFeatures({}: Props) {
                   />
                 </Button>
                 <p className="text-center text-xs font-normal">
-                  Generate resume using AI. Fill in the details with AI
+                  Making it more better and faster
                 </p>
               </BackgroundGradient>
             </div>
