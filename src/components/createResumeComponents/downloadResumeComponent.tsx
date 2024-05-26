@@ -7,7 +7,7 @@ import PdfDoc from "../pdfView";
 import useResume from "@/redux/dispatch/useResume";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Classic1 } from "@/data/resume-templetes/classic/default";
+import { Classic1 } from "@/templates/classic/default";
 import dynamic from "next/dynamic";
 import Confetti from "react-confetti";
 import useWindowSize from "react-use/lib/useWindowSize";
