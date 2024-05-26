@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import PdfDoc, { PdfDocWithoutToolTip } from "@/components/pdfView";
+import PdfDoc from "@/components/pdfView";
 
 import { useRouter } from "next/navigation";
 import * as action from "@/actions";
@@ -36,10 +36,11 @@ import { Download, Edit, Eye, MoreVertical, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import useResume from "@/redux/dispatch/useResume";
 import DownloadPDF from "../../downloadPDF";
-import { Classic1 } from "@/data/resume-templetes/classic/default";
+import { Classic1 } from "@/templates/classic/default";
 import { toast } from "sonner";
 import useResumeList from "@/redux/dispatch/useResumeList";
 
+import ResumeTemplete from "@/data/resume-templete";
 type Props = {
   resumes: Resume[];
 };
@@ -52,126 +53,138 @@ function DashboardGrid({ resumes }: Props) {
   const [open, setOpen] = useState(false);
   const { fetchResumesList, deleteResume, addResume } = useResumeList();
 
-  const [resumeSeleted, setResumeSeleted] = React.useState<Resume>();
+  const [resumeSeleted, setResumeSeleted] = React.useState<Resume | null>(null);
 
   if (isDesktop) {
     return (
       <Dialog open={open} defaultOpen={false} onOpenChange={setOpen}>
-        <div className="juc container my-20 grid grid-cols-1 items-center justify-center gap-20 md:grid-cols-2 lg:grid-cols-3">
+        <div className="container my-20 grid grid-cols-1 items-center justify-center gap-20 md:grid-cols-2 lg:grid-cols-3">
           <>
-            {resumes.map((item, index) => (
-              <div className="group relative" key={index}>
-                <div className="grainy-gradient-hover group relative m-auto h-96 w-full min-w-min max-w-sm cursor-pointer rounded-lg border-[3px] bg-secondary p-5 shadow-md transition-all duration-500 hover:border-black">
-                  <DialogTrigger
-                    asChild
-                    onClick={() => {
-                      setResumeSeleted(item);
-                    }}
-                  >
-                    <Button
-                      className="absolute right-14 top-2 z-20"
-                      variant={"default"}
-                      size={"icon"}
-                    >
-                      <Eye />
-                    </Button>
-                  </DialogTrigger>
-
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="absolute right-2 top-2 z-20">
-                      <Button variant={"default"} size={"icon"}>
-                        <MoreVertical />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent aria-label="submenu">
-                      <DropdownMenuItem
-                        onClick={() => {
-                          navigator.clipboard.writeText(
-                            `${process.env.NEXT_PUBLIC_SITE_URL}/share/${item.id}`,
-                          );
-                          toast("Link Copied to Clipboard");
-                        }}
-                      >
-                        Share Link
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={async () => {
-                          const resume = await action.copyResume(item, session);
-                          if (resume) {
-                            toast.success("Resume Copied");
-                            addResume(resume);
-                          }
-                        }}
-                      >
-                        Make a Copy
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={async () => {
-                          const deleteItem = await action.deleteResume(
-                            item.id,
-                            session,
-                          );
-                          if (deleteItem) deleteResume(item.id);
-                        }}
-                        className="text-destructive focus:bg-destructive/50"
-                      >
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <div className="absolute -bottom-10 -right-0 z-20  hidden h-10 w-full items-center justify-between border-black px-3 pt-5 group-hover:flex">
-                    <DownloadPDF
-                      doc={
-                        <Classic1
-                          awardsAndCertifications={item.awardsAndCertifications}
-                          education={item.education}
-                          experience={item.experience}
-                          social={item.social}
-                          skills={item.skills}
-                          projects={item.project}
-                          personalInfo={item.personalInfo}
-                        />
-                      }
-                      name={item.title}
-                    >
-                      <Button className="flex items-center justify-center gap-3 ">
-                        <Download size={20} />
-                        <span>Download</span>
-                      </Button>
-                    </DownloadPDF>
-                    <Button
-                      variant={"secondary"}
+            {resumes.map((item, index) => {
+              console.log(item.template);
+              return (
+                <div className="group relative" key={index}>
+                  <div className="grainy-gradient-hover group relative m-auto h-96 w-full min-w-min max-w-sm cursor-pointer rounded-lg border-[3px] bg-secondary p-5 shadow-md transition-all duration-500 hover:border-black">
+                    <DialogTrigger
+                      asChild
                       onClick={() => {
-                        setResumeState(item);
-                        router.push("/create-resume");
+                        setResumeSeleted(item);
                       }}
-                      className="flexitems-center justify-center gap-3  hover:bg-primary/20"
                     >
-                      <Edit size={20} />
-                      <span>Edit</span>
-                    </Button>
-                  </div>
+                      <Button
+                        className="absolute right-14 top-2 z-20"
+                        variant={"default"}
+                        size={"icon"}
+                      >
+                        <Eye />
+                      </Button>
+                    </DialogTrigger>
 
-                  <div className="h-2/3 min-h-[300px] w-full rounded-md bg-white shadow-inner transition-all duration-300">
-                    <PdfDocWithoutToolTip
-                      awardsAndCertifications={item.awardsAndCertifications}
-                      education={item.education}
-                      experience={item.experience}
-                      social={item.social}
-                      skills={item.skills}
-                      projects={item.project}
-                      personalInfo={item.personalInfo}
-                    />
-                  </div>
-                  <div className="mt-5  w-full">
-                    <h1 className="text-center text-2xl font-bold group-hover:underline">
-                      {item.title}
-                    </h1>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="absolute right-2 top-2 z-20">
+                        <Button variant={"default"} size={"icon"}>
+                          <MoreVertical />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent aria-label="submenu">
+                        <DropdownMenuItem
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              `${process.env.NEXT_PUBLIC_SITE_URL}/share/${item.id}`,
+                            );
+                            toast("Link Copied to Clipboard");
+                          }}
+                        >
+                          Share Link
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={async () => {
+                            const resume = await action.copyResume(
+                              item,
+                              session,
+                            );
+                            if (resume) {
+                              toast.success("Resume Copied");
+                              addResume(resume);
+                            }
+                          }}
+                        >
+                          Make a Copy
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={async () => {
+                            const deleteItem = await action.deleteResume(
+                              item.id,
+                              session,
+                            );
+                            if (deleteItem) deleteResume(item.id);
+                          }}
+                          className="text-destructive focus:bg-destructive/50"
+                        >
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <div className="absolute -bottom-10 -right-0 z-20  hidden h-10 w-full items-center justify-between border-black px-3 pt-5 group-hover:flex">
+                      <DownloadPDF
+                        doc={
+                          <Classic1
+                            awardsAndCertifications={
+                              item.awardsAndCertifications
+                            }
+                            education={item.education}
+                            experience={item.experience}
+                            social={item.social}
+                            skills={item.skills}
+                            projects={item.project}
+                            personalInfo={item.personalInfo}
+                          />
+                        }
+                        name={item.title}
+                      >
+                        <Button className="flex items-center justify-center gap-3 ">
+                          <Download size={20} />
+                          <span>Download</span>
+                        </Button>
+                      </DownloadPDF>
+                      <Button
+                        variant={"secondary"}
+                        onClick={() => {
+                          setResumeState(item);
+                          router.push("/create-resume");
+                        }}
+                        className="flexitems-center justify-center gap-3  hover:bg-primary/20"
+                      >
+                        <Edit size={20} />
+                        <span>Edit</span>
+                      </Button>
+                    </div>
+
+                    <div className="h-2/3 min-h-[300px] w-full rounded-md bg-white shadow-inner transition-all duration-300">
+                      <PdfDoc
+                        typeOfTemplate={
+                          ResumeTemplete[item.template ?? 0].templeteName
+                        }
+                        typeOfView={"WithoutToolTip"}
+                        awardsAndCertifications={item.awardsAndCertifications}
+                        education={item.education}
+                        experience={item.experience}
+                        social={item.social}
+                        skills={item.skills}
+                        projects={item.project}
+                        personalInfo={item.personalInfo}
+                      />
+                    </div>
+                    <div className="mt-5  w-full">
+                      <h1 className="text-center text-2xl font-bold group-hover:underline">
+                        {item.title}
+                      </h1>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </>
         </div>
 
@@ -221,15 +234,24 @@ function DashboardGrid({ resumes }: Props) {
               className="relative flex h-full w-full items-center justify-center bg-white"
               id="pdf"
             >
-              <PdfDocWithoutToolTip
-                awardsAndCertifications={resumeSeleted?.awardsAndCertifications}
-                education={resumeSeleted?.education}
-                experience={resumeSeleted?.experience}
-                social={resumeSeleted?.social}
-                skills={resumeSeleted?.skills}
-                projects={resumeSeleted?.project}
-                personalInfo={resumeSeleted?.personalInfo}
-              />
+              {resumeSeleted != null ? (
+                <PdfDoc
+                  typeOfTemplate={
+                    ResumeTemplete[resumeSeleted.template ?? 0].templeteName ??
+                    "Classic"
+                  }
+                  typeOfView={"WithoutToolTip"}
+                  awardsAndCertifications={
+                    resumeSeleted?.awardsAndCertifications
+                  }
+                  education={resumeSeleted?.education}
+                  experience={resumeSeleted?.experience}
+                  social={resumeSeleted?.social}
+                  skills={resumeSeleted?.skills}
+                  projects={resumeSeleted?.project}
+                  personalInfo={resumeSeleted?.personalInfo}
+                />
+              ) : null}
             </div>
           </div>
         </DialogContent>
@@ -331,15 +353,22 @@ function DashboardGrid({ resumes }: Props) {
                 </DropdownMenu>
 
                 <div className="h-full w-full rounded-md bg-white shadow-inner transition-all duration-300">
-                  <PdfDocWithoutToolTip
-                    awardsAndCertifications={item.awardsAndCertifications}
-                    education={item.education}
-                    experience={item.experience}
-                    social={item.social}
-                    skills={item.skills}
-                    projects={item.project}
-                    personalInfo={item.personalInfo}
-                  />
+                  {resumeSeleted != null ? (
+                    <PdfDoc
+                      typeOfTemplate={
+                        ResumeTemplete[resumeSeleted?.template ?? 0]
+                          .templeteName ?? "Classic"
+                      }
+                      typeOfView={"WithoutToolTip"}
+                      awardsAndCertifications={item.awardsAndCertifications}
+                      education={item.education}
+                      experience={item.experience}
+                      social={item.social}
+                      skills={item.skills}
+                      projects={item.project}
+                      personalInfo={item.personalInfo}
+                    />
+                  ) : null}
                 </div>
                 <div className="mt-5  w-full">
                   <h1 className="text-center text-2xl font-bold group-hover:underline">
@@ -389,16 +418,24 @@ function DashboardGrid({ resumes }: Props) {
               <span>Edit</span>
             </Button>
           </DrawerHeader>
+
           <div className="h-2/3 min-h-[300px] w-full rounded-md bg-white shadow-inner transition-all duration-300">
-            <PdfDoc
-              awardsAndCertifications={resumeSeleted?.awardsAndCertifications}
-              education={resumeSeleted?.education}
-              experience={resumeSeleted?.experience}
-              social={resumeSeleted?.social}
-              skills={resumeSeleted?.skills}
-              projects={resumeSeleted?.project}
-              personalInfo={resumeSeleted?.personalInfo}
-            />
+            {resumeSeleted != null ? (
+              <PdfDoc
+                typeOfTemplate={
+                  ResumeTemplete[resumeSeleted?.template ?? 0].templeteName ??
+                  "Classic"
+                }
+                typeOfView={"WithoutToolTip"}
+                awardsAndCertifications={resumeSeleted?.awardsAndCertifications}
+                education={resumeSeleted?.education}
+                experience={resumeSeleted?.experience}
+                social={resumeSeleted?.social}
+                skills={resumeSeleted?.skills}
+                projects={resumeSeleted?.project}
+                personalInfo={resumeSeleted?.personalInfo}
+              />
+            ) : null}
           </div>
           <DrawerFooter className="pt-2">
             <DrawerClose asChild>
