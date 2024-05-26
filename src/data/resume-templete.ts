@@ -16,7 +16,6 @@ const templetes: ResumeTemplate[] = [
     skills: 15,
     experience_project: 3,
   },
-
 ];
 
 export default templetes;

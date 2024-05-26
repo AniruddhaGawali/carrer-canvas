@@ -21,9 +21,8 @@ import {
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { IsDetailSavedContext } from "@/provider/isDetailSavedProvider";
-import PdfDoc from "../pdfView";
+import PdfDoc, { PdfDocWithoutToolTip } from "../pdfView";
 import { dummyResumeData } from "@/data/dummy-resume-data";
-import { ResumeTypeTemplate, TemplateViewType } from "@/templates/enum";
 
 type Props = {
   currentStep: number;
@@ -124,9 +123,7 @@ function SelectTempleteComponent() {
                   </DrawerHeader>
 
                   <div className="h-[50vh] w-1/3">
-                    <PdfDoc
-                      typeOfTemplate={ResumeTypeTemplate.Classic}
-                      typeOfView={TemplateViewType.WithToolTip}
+                    <PdfDocWithoutToolTip
                       personalInfo={dummyResumeData.personalInfo}
                       social={dummyResumeData.social}
                       skills={dummyResumeData.skills}

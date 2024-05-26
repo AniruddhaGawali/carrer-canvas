@@ -44,8 +44,6 @@ export default function PersonalInformationComponent({}: Props) {
     /^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/,
   );
 
-  console.log(selectedTemplete);
-
   const personalInformationFormSchema = z.object({
     name: selectedTemplete.personalInfo.name
       ? z
@@ -343,8 +341,6 @@ export default function PersonalInformationComponent({}: Props) {
               id="pdf"
             >
               <PdfDoc
-                // typeOfTemplate={ResumeTypeTemplate.Classic}
-                // typeOfView={TemplateViewType.WithToolTip}
                 personalInfo={{
                   id: selectedSuggestionId ?? "",
                   name: form.watch("name") ?? "",

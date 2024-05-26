@@ -1,10 +1,6 @@
-type ResumeTypeTemplate = "Classic" | "Modern";
-
-type TemplateViewType = "WithToolTip" | "WithoutToolTip";
-
 type ResumeTemplate = {
   id: number;
-  templeteName: ResumeTypeTemplate;
+  templeteName: string;
   description: string;
   image: string;
   personalInfo: {
